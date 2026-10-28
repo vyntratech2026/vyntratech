@@ -230,9 +230,11 @@ export type Database = {
           created_by: string | null
           customer_id: string | null
           id: string
+          kind: string
           notes: string | null
           payment_date: string
           payment_method: Database["public"]["Enums"]["payment_method"]
+          product_id: string | null
         }
         Insert: {
           amount: number
@@ -242,9 +244,11 @@ export type Database = {
           created_by?: string | null
           customer_id?: string | null
           id?: string
+          kind?: string
           notes?: string | null
           payment_date?: string
           payment_method: Database["public"]["Enums"]["payment_method"]
+          product_id?: string | null
         }
         Update: {
           amount?: number
@@ -254,9 +258,11 @@ export type Database = {
           created_by?: string | null
           customer_id?: string | null
           id?: string
+          kind?: string
           notes?: string | null
           payment_date?: string
           payment_method?: Database["public"]["Enums"]["payment_method"]
+          product_id?: string | null
         }
         Relationships: [
           {
@@ -278,6 +284,13 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
             referencedColumns: ["id"]
           },
         ]
