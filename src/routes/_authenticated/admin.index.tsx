@@ -40,7 +40,9 @@ function Dashboard() {
           .order("start_at"),
         supabase.from("payments").select("amount, kind, barber_id").gte("payment_date", month.start).lt("payment_date", month.end),
         supabase.from("customers").select("id", { count: "exact", head: true }),
-        supabase.from("barbers").select("id, commission_percent").eq("user_id", staff?.userId ?? ""),
+        staff?.barberId
+          ? supabase.from("barbers").select("commission_percent").eq("id", staff.barberId)
+          : Promise.resolve({ data: [] as { commission_percent: number }[] }),
       ]);
       const m = monthAppts.data ?? [];
       const pay = payments.data ?? [];
