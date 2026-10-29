@@ -572,6 +572,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_create_booking: {
+        Args: {
+          p_barber_id: string
+          p_full_name: string
+          p_notes?: string
+          p_phone: string
+          p_service_id: string
+          p_start_at: string
+        }
+        Returns: string
+      }
       admin_exists: { Args: never; Returns: boolean }
       barber_slot_ok: {
         Args: {
