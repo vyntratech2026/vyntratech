@@ -15,6 +15,13 @@
       "when": 1793183249377,
       "tag": "0001_owner_adjustments",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793232331588,
+      "tag": "0002_admin_manual_booking",
+      "breakpoints": true
     }
   ]
 }

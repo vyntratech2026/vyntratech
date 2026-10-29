@@ -385,7 +385,7 @@ function Row({ icon, label, value }: { icon: React.ReactNode; label: string; val
     <div className="flex items-center gap-3 p-4 [&_svg]:size-4 [&_svg]:text-primary">
       {icon}
       <span className="w-20 text-sm text-muted-foreground">{label}</span>
-      <span className="flex-1 text-right font-medium capitalize-first">{value}</span>
+      <span className="flex-1 text-right font-medium">{value}</span>
     </div>
   );
 }
