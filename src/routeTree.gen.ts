@@ -18,7 +18,9 @@ import { Route as AgendamentoTokenRouteImport } from './routes/agendamento.$toke
 import { Route as ProfissionalIdRouteImport } from './routes/profissional.$id'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAgendamentosRouteImport } from './routes/_authenticated/admin.agendamentos'
+import { Route as AuthenticatedAdminBarbeirosRouteImport } from './routes/_authenticated/admin.barbeiros'
 import { Route as AuthenticatedAdminBloqueiosRouteImport } from './routes/_authenticated/admin.bloqueios'
+import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
 import { Route as AuthenticatedAdminServicosRouteImport } from './routes/_authenticated/admin.servicos'
 
 const IndexRoute = IndexRouteImport.update({
@@ -66,10 +68,22 @@ const AuthenticatedAdminAgendamentosRoute =
     path: '/agendamentos',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminBarbeirosRoute =
+  AuthenticatedAdminBarbeirosRouteImport.update({
+    id: '/barbeiros',
+    path: '/barbeiros',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminBloqueiosRoute =
   AuthenticatedAdminBloqueiosRouteImport.update({
     id: '/bloqueios',
     path: '/bloqueios',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminConfiguracoesRoute =
+  AuthenticatedAdminConfiguracoesRouteImport.update({
+    id: '/configuracoes',
+    path: '/configuracoes',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminServicosRoute =
@@ -87,7 +101,9 @@ export interface FileRoutesByFullPath {
   '/agendamento/$token': typeof AgendamentoTokenRoute
   '/profissional/$id': typeof ProfissionalIdRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/admin/barbeiros': typeof AuthenticatedAdminBarbeirosRoute
   '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
+  '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/servicos': typeof AuthenticatedAdminServicosRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -98,7 +114,9 @@ export interface FileRoutesByTo {
   '/agendamento/$token': typeof AgendamentoTokenRoute
   '/profissional/$id': typeof ProfissionalIdRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/admin/barbeiros': typeof AuthenticatedAdminBarbeirosRoute
   '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
+  '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/servicos': typeof AuthenticatedAdminServicosRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
@@ -112,7 +130,9 @@ export interface FileRoutesById {
   '/agendamento/$token': typeof AgendamentoTokenRoute
   '/profissional/$id': typeof ProfissionalIdRoute
   '/_authenticated/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/_authenticated/admin/barbeiros': typeof AuthenticatedAdminBarbeirosRoute
   '/_authenticated/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
+  '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/_authenticated/admin/servicos': typeof AuthenticatedAdminServicosRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -126,7 +146,9 @@ export interface FileRouteTypes {
     | '/agendamento/$token'
     | '/profissional/$id'
     | '/admin/agendamentos'
+    | '/admin/barbeiros'
     | '/admin/bloqueios'
+    | '/admin/configuracoes'
     | '/admin/servicos'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -137,7 +159,9 @@ export interface FileRouteTypes {
     | '/agendamento/$token'
     | '/profissional/$id'
     | '/admin/agendamentos'
+    | '/admin/barbeiros'
     | '/admin/bloqueios'
+    | '/admin/configuracoes'
     | '/admin/servicos'
     | '/admin'
   id:
@@ -150,7 +174,9 @@ export interface FileRouteTypes {
     | '/agendamento/$token'
     | '/profissional/$id'
     | '/_authenticated/admin/agendamentos'
+    | '/_authenticated/admin/barbeiros'
     | '/_authenticated/admin/bloqueios'
+    | '/_authenticated/admin/configuracoes'
     | '/_authenticated/admin/servicos'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
@@ -229,11 +255,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAgendamentosRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/barbeiros': {
+      id: '/_authenticated/admin/barbeiros'
+      path: '/barbeiros'
+      fullPath: '/admin/barbeiros'
+      preLoaderRoute: typeof AuthenticatedAdminBarbeirosRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/bloqueios': {
       id: '/_authenticated/admin/bloqueios'
       path: '/bloqueios'
       fullPath: '/admin/bloqueios'
       preLoaderRoute: typeof AuthenticatedAdminBloqueiosRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/configuracoes': {
+      id: '/_authenticated/admin/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/admin/configuracoes'
+      preLoaderRoute: typeof AuthenticatedAdminConfiguracoesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/servicos': {
@@ -248,14 +288,18 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAgendamentosRoute: typeof AuthenticatedAdminAgendamentosRoute
+  AuthenticatedAdminBarbeirosRoute: typeof AuthenticatedAdminBarbeirosRoute
   AuthenticatedAdminBloqueiosRoute: typeof AuthenticatedAdminBloqueiosRoute
+  AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
   AuthenticatedAdminServicosRoute: typeof AuthenticatedAdminServicosRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAgendamentosRoute: AuthenticatedAdminAgendamentosRoute,
+  AuthenticatedAdminBarbeirosRoute: AuthenticatedAdminBarbeirosRoute,
   AuthenticatedAdminBloqueiosRoute: AuthenticatedAdminBloqueiosRoute,
+  AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
   AuthenticatedAdminServicosRoute: AuthenticatedAdminServicosRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
