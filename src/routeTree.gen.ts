@@ -17,6 +17,8 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AgendamentoTokenRouteImport } from './routes/agendamento.$token'
 import { Route as ProfissionalIdRouteImport } from './routes/profissional.$id'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminAgendamentosRouteImport } from './routes/_authenticated/admin.agendamentos'
+import { Route as AuthenticatedAdminBloqueiosRouteImport } from './routes/_authenticated/admin.bloqueios'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -57,6 +59,18 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminAgendamentosRoute =
+  AuthenticatedAdminAgendamentosRouteImport.update({
+    id: '/agendamentos',
+    path: '/agendamentos',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminBloqueiosRoute =
+  AuthenticatedAdminBloqueiosRouteImport.update({
+    id: '/bloqueios',
+    path: '/bloqueios',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -65,6 +79,8 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamento/$token': typeof AgendamentoTokenRoute
   '/profissional/$id': typeof ProfissionalIdRoute
+  '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -73,6 +89,8 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/agendamento/$token': typeof AgendamentoTokenRoute
   '/profissional/$id': typeof ProfissionalIdRoute
+  '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
@@ -84,6 +102,8 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamento/$token': typeof AgendamentoTokenRoute
   '/profissional/$id': typeof ProfissionalIdRoute
+  '/_authenticated/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/_authenticated/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -95,6 +115,8 @@ export interface FileRouteTypes {
     | '/admin'
     | '/agendamento/$token'
     | '/profissional/$id'
+    | '/admin/agendamentos'
+    | '/admin/bloqueios'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -103,6 +125,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/agendamento/$token'
     | '/profissional/$id'
+    | '/admin/agendamentos'
+    | '/admin/bloqueios'
     | '/admin'
   id:
     | '__root__'
@@ -113,6 +137,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/agendamento/$token'
     | '/profissional/$id'
+    | '/_authenticated/admin/agendamentos'
+    | '/_authenticated/admin/bloqueios'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -183,14 +209,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/agendamentos': {
+      id: '/_authenticated/admin/agendamentos'
+      path: '/agendamentos'
+      fullPath: '/admin/agendamentos'
+      preLoaderRoute: typeof AuthenticatedAdminAgendamentosRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/bloqueios': {
+      id: '/_authenticated/admin/bloqueios'
+      path: '/bloqueios'
+      fullPath: '/admin/bloqueios'
+      preLoaderRoute: typeof AuthenticatedAdminBloqueiosRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAgendamentosRoute: typeof AuthenticatedAdminAgendamentosRoute
+  AuthenticatedAdminBloqueiosRoute: typeof AuthenticatedAdminBloqueiosRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAgendamentosRoute: AuthenticatedAdminAgendamentosRoute,
+  AuthenticatedAdminBloqueiosRoute: AuthenticatedAdminBloqueiosRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
