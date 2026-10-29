@@ -17,7 +17,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Logo } from "@/components/site/brand";
 import { Button } from "@/components/ui/button";
 import { useStaff } from "@/lib/use-staff";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -150,18 +149,6 @@ function AdminLayout() {
           <Outlet />
         </div>
       </main>
-    </div>
-  );
-}
-
-export function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: string; actions?: React.ReactNode }) {
-  return (
-    <div className={cn("mb-8 flex flex-wrap items-end justify-between gap-4")}>
-      <div>
-        <h1 className="text-2xl font-bold sm:text-3xl">{title}</h1>
-        {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
-      </div>
-      {actions}
     </div>
   );
 }
