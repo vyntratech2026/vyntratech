@@ -50,7 +50,7 @@ function FinancePage() {
   const [period, setPeriod] = useState<Period>("month");
   const [from, setFrom] = useState(addDaysKey(todayInShop(), -7));
   const [to, setTo] = useState(todayInShop());
-  const [dialog, setDialog] = useState<null | { appointmentId?: string }>(null);
+  const [dialog, setDialog] = useState<null | { appointmentId?: string | undefined }>(null);
   const range = periodRange(period, from, to);
 
   const q = useQuery({
@@ -293,7 +293,7 @@ function Breakdown({ title, rows }: { title: string; rows: [string, number][] })
   );
 }
 
-function PaymentDialog({ appointmentId, onClose, onSaved }: { appointmentId?: string; onClose: () => void; onSaved: () => void }) {
+function PaymentDialog({ appointmentId, onClose, onSaved }: { appointmentId?: string | undefined; onClose: () => void; onSaved: () => void }) {
   const [kind, setKind] = useState<"service" | "product">("service");
   const [apptId, setApptId] = useState(appointmentId ?? "");
   const [productId, setProductId] = useState("");
