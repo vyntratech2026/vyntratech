@@ -19,6 +19,9 @@ function friendlyAuthError(message: string): string {
   if (/already been registered|already exists/i.test(message)) {
     return "Este número de celular já tem um acesso cadastrado.";
   }
+  if (/weak|easy to guess|pwned/i.test(message)) {
+    return "Essa senha é muito fácil de adivinhar. Use uma mais forte, misturando letras, números e símbolos.";
+  }
   return message;
 }
 
@@ -118,7 +121,7 @@ export const resetBarberPassword = createServerFn({ method: "POST" })
     const { data: barber } = await admin.from("barbers").select("user_id").eq("id", data.barberId).single();
     if (!barber?.user_id) throw new Error("Este barbeiro ainda não tem acesso.");
     const { error } = await admin.auth.admin.updateUserById(barber.user_id, { password: data.password });
-    if (error) throw new Error("Não foi possível trocar a senha.");
+    if (error) throw new Error(friendlyAuthError(error.message));
     return { ok: true };
   });
 

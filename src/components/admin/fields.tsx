@@ -43,7 +43,10 @@ export function PhotoField({
             e.target.value = "";
             if (!file) return;
             const problem = validateImage(file);
-            if (problem) return toast.error(problem);
+            if (problem) {
+              toast.error(problem);
+              return;
+            }
             setBusy(true);
             try {
               onChange(await uploadImage(file, folder));
@@ -68,7 +71,7 @@ export function PhotoField({
   );
 }
 
-export function StatCard({ label, value, hint, accent }: { label: string; value: string | number; hint?: string; accent?: boolean }) {
+export function StatCard({ label, value, hint, accent }: { label: string; value: string | number; hint?: string | undefined; accent?: boolean }) {
   return (
     <div className={cn("surface-card p-5", accent && "border-primary/40 shadow-glow")}>
       <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</p>

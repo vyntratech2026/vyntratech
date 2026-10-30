@@ -1,0 +1,1 @@
+create unique index payments_one_per_appointment on public.payments (appointment_id) where appointment_id is not null;

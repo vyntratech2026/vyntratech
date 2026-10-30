@@ -259,8 +259,9 @@ function BarbersPage() {
               <TabsContent value="horarios" className="space-y-2 pt-4">
                 <p className="text-xs text-muted-foreground">Os horários também respeitam o funcionamento da barbearia (Configurações).</p>
                 {[1, 2, 3, 4, 5, 6, 0].map((d) => {
-                  const h = form.hours[d];
-                  const set = (patch: Partial<typeof h>) => setForm({ ...form, hours: { ...form.hours, [d]: { ...h, ...patch } } });
+                  const h = form.hours[d] ?? { on: false, start: "09:00", end: "18:00" };
+                  const set = (patch: Partial<Hours[number]>) =>
+                    setForm({ ...form, hours: { ...form.hours, [d]: { ...h, ...patch } as Hours[number] } });
                   return (
                     <div key={d} className="flex flex-wrap items-center gap-3 rounded-lg border border-border p-3">
                       <label className="flex w-28 items-center gap-2 text-sm">

@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 function monthRange() {
   const today = todayInShop();
   const first = `${today.slice(0, 7)}-01`;
-  const [y, m] = first.split("-").map(Number);
+  const [y = 1970, m = 1] = first.split("-").map(Number);
   const next = m === 12 ? `${y + 1}-01-01` : `${y}-${String(m + 1).padStart(2, "0")}-01`;
   return { start: shopDayStartIso(first), end: shopDayStartIso(next) };
 }

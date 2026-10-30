@@ -70,13 +70,13 @@ export function toShopDateKey(d: Date | string): string {
 
 /** Add days to a YYYY-MM-DD key (calendar math, timezone independent). */
 export function addDaysKey(key: string, days: number): string {
-  const [y, m, d] = key.split("-").map(Number);
+  const [y = 1970, m = 1, d = 1] = key.split("-").map(Number);
   const dt = new Date(Date.UTC(y, m - 1, d + days));
   return dt.toISOString().slice(0, 10);
 }
 
 export function dayOfWeekFromKey(key: string): number {
-  const [y, m, d] = key.split("-").map(Number);
+  const [y = 1970, m = 1, d = 1] = key.split("-").map(Number);
   return new Date(Date.UTC(y, m - 1, d)).getUTCDay();
 }
 

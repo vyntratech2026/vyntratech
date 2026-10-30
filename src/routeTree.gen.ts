@@ -18,9 +18,13 @@ import { Route as AgendamentoTokenRouteImport } from './routes/agendamento.$toke
 import { Route as ProfissionalIdRouteImport } from './routes/profissional.$id'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAgendamentosRouteImport } from './routes/_authenticated/admin.agendamentos'
+import { Route as AuthenticatedAdminAvaliacoesRouteImport } from './routes/_authenticated/admin.avaliacoes'
 import { Route as AuthenticatedAdminBarbeirosRouteImport } from './routes/_authenticated/admin.barbeiros'
 import { Route as AuthenticatedAdminBloqueiosRouteImport } from './routes/_authenticated/admin.bloqueios'
+import { Route as AuthenticatedAdminClientesRouteImport } from './routes/_authenticated/admin.clientes'
 import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
+import { Route as AuthenticatedAdminFinanceiroRouteImport } from './routes/_authenticated/admin.financeiro'
+import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin.produtos'
 import { Route as AuthenticatedAdminServicosRouteImport } from './routes/_authenticated/admin.servicos'
 
 const IndexRoute = IndexRouteImport.update({
@@ -68,6 +72,12 @@ const AuthenticatedAdminAgendamentosRoute =
     path: '/agendamentos',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminAvaliacoesRoute =
+  AuthenticatedAdminAvaliacoesRouteImport.update({
+    id: '/avaliacoes',
+    path: '/avaliacoes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminBarbeirosRoute =
   AuthenticatedAdminBarbeirosRouteImport.update({
     id: '/barbeiros',
@@ -80,10 +90,28 @@ const AuthenticatedAdminBloqueiosRoute =
     path: '/bloqueios',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminClientesRoute =
+  AuthenticatedAdminClientesRouteImport.update({
+    id: '/clientes',
+    path: '/clientes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminConfiguracoesRoute =
   AuthenticatedAdminConfiguracoesRouteImport.update({
     id: '/configuracoes',
     path: '/configuracoes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminFinanceiroRoute =
+  AuthenticatedAdminFinanceiroRouteImport.update({
+    id: '/financeiro',
+    path: '/financeiro',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminProdutosRoute =
+  AuthenticatedAdminProdutosRouteImport.update({
+    id: '/produtos',
+    path: '/produtos',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminServicosRoute =
@@ -101,9 +129,13 @@ export interface FileRoutesByFullPath {
   '/agendamento/$token': typeof AgendamentoTokenRoute
   '/profissional/$id': typeof ProfissionalIdRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/admin/barbeiros': typeof AuthenticatedAdminBarbeirosRoute
   '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
+  '/admin/clientes': typeof AuthenticatedAdminClientesRoute
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
+  '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin/servicos': typeof AuthenticatedAdminServicosRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -114,9 +146,13 @@ export interface FileRoutesByTo {
   '/agendamento/$token': typeof AgendamentoTokenRoute
   '/profissional/$id': typeof ProfissionalIdRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/admin/barbeiros': typeof AuthenticatedAdminBarbeirosRoute
   '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
+  '/admin/clientes': typeof AuthenticatedAdminClientesRoute
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
+  '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin/servicos': typeof AuthenticatedAdminServicosRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
@@ -130,9 +166,13 @@ export interface FileRoutesById {
   '/agendamento/$token': typeof AgendamentoTokenRoute
   '/profissional/$id': typeof ProfissionalIdRoute
   '/_authenticated/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
+  '/_authenticated/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/_authenticated/admin/barbeiros': typeof AuthenticatedAdminBarbeirosRoute
   '/_authenticated/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
+  '/_authenticated/admin/clientes': typeof AuthenticatedAdminClientesRoute
   '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/_authenticated/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
+  '/_authenticated/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/_authenticated/admin/servicos': typeof AuthenticatedAdminServicosRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -146,9 +186,13 @@ export interface FileRouteTypes {
     | '/agendamento/$token'
     | '/profissional/$id'
     | '/admin/agendamentos'
+    | '/admin/avaliacoes'
     | '/admin/barbeiros'
     | '/admin/bloqueios'
+    | '/admin/clientes'
     | '/admin/configuracoes'
+    | '/admin/financeiro'
+    | '/admin/produtos'
     | '/admin/servicos'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -159,9 +203,13 @@ export interface FileRouteTypes {
     | '/agendamento/$token'
     | '/profissional/$id'
     | '/admin/agendamentos'
+    | '/admin/avaliacoes'
     | '/admin/barbeiros'
     | '/admin/bloqueios'
+    | '/admin/clientes'
     | '/admin/configuracoes'
+    | '/admin/financeiro'
+    | '/admin/produtos'
     | '/admin/servicos'
     | '/admin'
   id:
@@ -174,9 +222,13 @@ export interface FileRouteTypes {
     | '/agendamento/$token'
     | '/profissional/$id'
     | '/_authenticated/admin/agendamentos'
+    | '/_authenticated/admin/avaliacoes'
     | '/_authenticated/admin/barbeiros'
     | '/_authenticated/admin/bloqueios'
+    | '/_authenticated/admin/clientes'
     | '/_authenticated/admin/configuracoes'
+    | '/_authenticated/admin/financeiro'
+    | '/_authenticated/admin/produtos'
     | '/_authenticated/admin/servicos'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
@@ -255,6 +307,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAgendamentosRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/avaliacoes': {
+      id: '/_authenticated/admin/avaliacoes'
+      path: '/avaliacoes'
+      fullPath: '/admin/avaliacoes'
+      preLoaderRoute: typeof AuthenticatedAdminAvaliacoesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/barbeiros': {
       id: '/_authenticated/admin/barbeiros'
       path: '/barbeiros'
@@ -269,11 +328,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminBloqueiosRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/clientes': {
+      id: '/_authenticated/admin/clientes'
+      path: '/clientes'
+      fullPath: '/admin/clientes'
+      preLoaderRoute: typeof AuthenticatedAdminClientesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/configuracoes': {
       id: '/_authenticated/admin/configuracoes'
       path: '/configuracoes'
       fullPath: '/admin/configuracoes'
       preLoaderRoute: typeof AuthenticatedAdminConfiguracoesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/financeiro': {
+      id: '/_authenticated/admin/financeiro'
+      path: '/financeiro'
+      fullPath: '/admin/financeiro'
+      preLoaderRoute: typeof AuthenticatedAdminFinanceiroRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/produtos': {
+      id: '/_authenticated/admin/produtos'
+      path: '/produtos'
+      fullPath: '/admin/produtos'
+      preLoaderRoute: typeof AuthenticatedAdminProdutosRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/servicos': {
@@ -288,18 +368,26 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAgendamentosRoute: typeof AuthenticatedAdminAgendamentosRoute
+  AuthenticatedAdminAvaliacoesRoute: typeof AuthenticatedAdminAvaliacoesRoute
   AuthenticatedAdminBarbeirosRoute: typeof AuthenticatedAdminBarbeirosRoute
   AuthenticatedAdminBloqueiosRoute: typeof AuthenticatedAdminBloqueiosRoute
+  AuthenticatedAdminClientesRoute: typeof AuthenticatedAdminClientesRoute
   AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
+  AuthenticatedAdminFinanceiroRoute: typeof AuthenticatedAdminFinanceiroRoute
+  AuthenticatedAdminProdutosRoute: typeof AuthenticatedAdminProdutosRoute
   AuthenticatedAdminServicosRoute: typeof AuthenticatedAdminServicosRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAgendamentosRoute: AuthenticatedAdminAgendamentosRoute,
+  AuthenticatedAdminAvaliacoesRoute: AuthenticatedAdminAvaliacoesRoute,
   AuthenticatedAdminBarbeirosRoute: AuthenticatedAdminBarbeirosRoute,
   AuthenticatedAdminBloqueiosRoute: AuthenticatedAdminBloqueiosRoute,
+  AuthenticatedAdminClientesRoute: AuthenticatedAdminClientesRoute,
   AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
+  AuthenticatedAdminFinanceiroRoute: AuthenticatedAdminFinanceiroRoute,
+  AuthenticatedAdminProdutosRoute: AuthenticatedAdminProdutosRoute,
   AuthenticatedAdminServicosRoute: AuthenticatedAdminServicosRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }

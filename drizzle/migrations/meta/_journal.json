@@ -22,6 +22,13 @@
       "when": 1793232331588,
       "tag": "0002_admin_manual_booking",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793328145944,
+      "tag": "0003_payments_one_per_appointment",
+      "breakpoints": true
     }
   ]
 }
