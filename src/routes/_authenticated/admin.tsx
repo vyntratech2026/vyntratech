@@ -5,6 +5,10 @@ import {
   CalendarClock,
   CalendarOff,
   ExternalLink,
+  Package,
+  Star,
+  UserRound,
+  Wallet,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -39,8 +43,12 @@ const ADMIN_NAV: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/agendamentos", label: "Agendamentos", icon: CalendarClock },
   { to: "/admin/bloqueios", label: "Folgas e bloqueios", icon: CalendarOff },
+  { to: "/admin/clientes", label: "Clientes", icon: UserRound },
+  { to: "/admin/financeiro", label: "Financeiro", icon: Wallet },
   { to: "/admin/barbeiros", label: "Barbeiros", icon: Users },
   { to: "/admin/servicos", label: "Serviços", icon: Scissors },
+  { to: "/admin/produtos", label: "Produtos", icon: Package },
+  { to: "/admin/avaliacoes", label: "Avaliações", icon: Star },
   { to: "/admin/configuracoes", label: "Configurações", icon: Settings },
 ];
 
@@ -48,6 +56,7 @@ const BARBER_NAV: NavItem[] = [
   { to: "/admin", label: "Meu painel", icon: LayoutDashboard, exact: true },
   { to: "/admin/agendamentos", label: "Meus agendamentos", icon: CalendarClock },
   { to: "/admin/bloqueios", label: "Fechar agenda", icon: CalendarOff },
+  { to: "/admin/clientes", label: "Meus clientes", icon: UserRound },
 ];
 
 function AdminLayout() {
