@@ -55,11 +55,8 @@ export function SiteFooter() {
         )}
       </div>
       <div className="border-t border-border">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-5 text-xs text-muted-foreground sm:flex-row sm:px-6">
+        <div className="mx-auto flex max-w-6xl items-center justify-center px-4 py-5 text-xs text-muted-foreground sm:px-6">
           <p>© {new Date().getFullYear()} Studio Cleison Cortes. Todos os direitos reservados.</p>
-          <Link to="/auth" className="hover:text-primary">
-            Área da equipe
-          </Link>
         </div>
       </div>
     </footer>
