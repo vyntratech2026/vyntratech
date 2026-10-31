@@ -514,6 +514,33 @@ export type Database = {
         }
         Relationships: []
       }
+      site_videos: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          sort_order: number
+          title: string | null
+          video_path: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          sort_order?: number
+          title?: string | null
+          video_path: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          sort_order?: number
+          title?: string | null
+          video_path?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
