@@ -14,6 +14,7 @@
 - [x] Agendamentos (lista do dia, filtros, ações de status, agendamento manual)
 - [x] Landing page, perfil do profissional, fluxo de agendamento + WhatsApp
 - [x] Página privada do agendamento (cancelar / avaliar)
+- [x] Vídeos na página inicial, gerenciados em Configurações
 - [x] Clientes (busca, histórico), Avaliações (moderação), Financeiro (pagamentos, comissão, gráfico diário)
 
 ## Próximos
