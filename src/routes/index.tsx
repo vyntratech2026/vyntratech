@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { Logo, MediaImage } from "@/components/site/brand";
+import { VideosSection } from "@/components/site/videos-section";
 import {
   barbersQuery,
   productsQuery,
@@ -139,6 +140,8 @@ function Index() {
           </div>
         </div>
       </section>
+
+      <VideosSection />
 
       {/* SERVIÇOS */}
       {!!services?.length && (

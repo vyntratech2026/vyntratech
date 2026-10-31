@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminOnly, PageHeader } from "@/components/admin/page-header";
 import { PhotoField } from "@/components/admin/fields";
+import { VideosManager } from "@/components/admin/videos-manager";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -116,6 +117,10 @@ function SettingsPage() {
             <Field label="Sobre a barbearia">
               <Textarea value={f.description ?? ""} onChange={(e) => set("description", e.target.value)} rows={4} />
             </Field>
+          </Section>
+
+          <Section title="Vídeos do site">
+            <VideosManager />
           </Section>
 
           <Section title="Contato">

@@ -72,18 +72,11 @@ export function VideosManager() {
   });
 
   const move = (index: number, dir: -1 | 1) => {
-    const items = list.data ?? [];
-    const a = items[index];
-    const b = items[index + dir];
-    if (!a || !b) return;
-    update.mutate([
-      { id: a.id, patch: { sort_order: index + dir + 1 } },
-      { id: b.id, patch: { sort_order: index + 1 } },
-      ...items
-        .map((v, i) => ({ v, i }))
-        .filter(({ v }) => v.id !== a.id && v.id !== b.id && v.sort_order !== 0)
-        .map(({ v, i }) => ({ id: v.id, patch: { sort_order: i + 1 } })),
-    ]);
+    const items = [...(list.data ?? [])];
+    const target = index + dir;
+    if (target < 0 || target >= items.length) return;
+    [items[index], items[target]] = [items[target]!, items[index]!];
+    update.mutate(items.map((v, i) => ({ id: v.id, patch: { sort_order: i + 1 } })));
   };
 
   return (
