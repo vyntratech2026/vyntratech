@@ -2,6 +2,7 @@ import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-rout
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
+  Bell,
   CalendarClock,
   CalendarOff,
   ExternalLink,
@@ -49,6 +50,7 @@ const ADMIN_NAV: NavItem[] = [
   { to: "/admin/servicos", label: "Serviços", icon: Scissors },
   { to: "/admin/produtos", label: "Produtos", icon: Package },
   { to: "/admin/avaliacoes", label: "Avaliações", icon: Star },
+  { to: "/admin/notificacoes", label: "Notificações", icon: Bell },
   { to: "/admin/configuracoes", label: "Configurações", icon: Settings },
 ];
 
