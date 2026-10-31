@@ -24,6 +24,7 @@ export type Database = {
           id: string
           manage_token: string
           notes: string | null
+          notified_at: string | null
           price: number
           service_id: string
           service_name: string
@@ -41,6 +42,7 @@ export type Database = {
           id?: string
           manage_token?: string
           notes?: string | null
+          notified_at?: string | null
           price: number
           service_id: string
           service_name: string
@@ -58,6 +60,7 @@ export type Database = {
           id?: string
           manage_token?: string
           notes?: string | null
+          notified_at?: string | null
           price?: number
           service_id?: string
           service_name?: string
@@ -218,6 +221,27 @@ export type Database = {
           id?: string
           notes?: string | null
           phone?: string
+        }
+        Relationships: []
+      }
+      notification_settings: {
+        Row: {
+          id: number
+          pushcut_enabled: boolean
+          pushcut_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          id?: number
+          pushcut_enabled?: boolean
+          pushcut_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          pushcut_enabled?: boolean
+          pushcut_url?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
