@@ -26,6 +26,7 @@ import {
   whatsappLink,
 } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { notifyNewBooking } from "@/lib/notifications.functions";
 
 const searchSchema = z.object({
   servico: z.string().uuid().optional().catch(undefined),
@@ -136,6 +137,7 @@ function BookingPage() {
     onSuccess: (data) => {
       setResult(data);
       window.scrollTo({ top: 0, behavior: "smooth" });
+      if (data?.token) notifyNewBooking({ data: { token: data.token } }).catch(() => {});
     },
     onError: (err) => {
       toast.error(errorMessage(err));
