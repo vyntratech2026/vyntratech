@@ -14,5 +14,5 @@
 - Public visitors never read private tables directly: booking, cancel and review go through SECURITY DEFINER RPCs keyed by the appointment `manage_token`.
 - Anon access to public tables uses column-level GRANTs; always select explicit columns on public pages (no `select("*")`).
 - Staff log in with phone + password mapped to a synthetic email (`src/lib/staff-auth.ts`); staff accounts are created only through server functions with the admin client, never by public sign-up.
-- Photos live in the private `media` bucket; store the object path in `*_url` columns and render through `useSignedUrls` (public buckets are blocked in this workspace).
+- Photos live in the private `media` bucket (5 MB) and site videos in the private `videos` bucket (50 MB, table `site_videos`); store object paths in the DB and render through signed URLs (public buckets are blocked in this workspace).
 - All dates/times are computed and displayed in America/Maceio (fixed UTC-3) via `src/lib/format.ts`.
