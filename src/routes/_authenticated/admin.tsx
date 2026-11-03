@@ -104,7 +104,7 @@ function AdminLayout() {
         <Logo className="size-10" />
         <div className="leading-tight">
           <p className="font-display text-xs font-semibold uppercase tracking-wider">
-            Cleison <span className="text-primary">Cortes</span>
+            <BrandName />
           </p>
           <p className="text-[11px] text-muted-foreground">{staff.isAdmin ? "Administrador" : "Barbeiro"}</p>
         </div>
