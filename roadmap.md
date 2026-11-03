@@ -15,6 +15,8 @@
 - [x] Landing page, perfil do profissional, fluxo de agendamento + WhatsApp
 - [x] Página privada do agendamento (cancelar / avaliar)
 - [x] Vídeos na página inicial, gerenciados em Configurações
+- [x] Notificações por Pushcut a cada agendamento online
+- [x] Aparência: trocar logo, nome e cores do site e do painel
 - [x] Clientes (busca, histórico), Avaliações (moderação), Financeiro (pagamentos, comissão, gráfico diário)
 
 ## Próximos

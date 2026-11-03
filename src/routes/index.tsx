@@ -5,7 +5,7 @@ import heroFallback from "@/assets/hero-fallback.jpg";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
-import { Logo, MediaImage } from "@/components/site/brand";
+import { BrandName, Logo, MediaImage } from "@/components/site/brand";
 import { VideosSection } from "@/components/site/videos-section";
 import {
   barbersQuery,
@@ -74,7 +74,7 @@ function Index() {
           <div className="max-w-2xl animate-fade-up space-y-6">
             <Logo className="size-24 animate-glow-pulse sm:size-28" />
             <h1 className="text-4xl font-bold leading-[1.05] sm:text-6xl">
-              Studio Cleison <span className="text-primary text-glow">Cortes</span>
+              <BrandName accentClassName="text-glow" />
             </h1>
             <p className="max-w-lg text-lg text-foreground/80">
               {s?.tagline || "Barbearia em Aracaju. Escolha o serviço, o barbeiro e o horário em poucos toques."}

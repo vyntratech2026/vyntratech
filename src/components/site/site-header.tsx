@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Logo } from "./brand";
+import { BrandName, Logo } from "./brand";
 
 const NAV = [
   { href: "/#inicio", label: "Início" },
@@ -20,7 +20,7 @@ export function SiteHeader() {
         <Link to="/" className="flex items-center gap-3">
           <Logo className="size-10" />
           <span className="hidden font-display text-sm font-semibold uppercase tracking-wider sm:block">
-            Studio Cleison <span className="text-primary">Cortes</span>
+            <BrandName />
           </span>
         </Link>
         <nav className="hidden items-center gap-7 md:flex">

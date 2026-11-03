@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   Bell,
+  Palette,
   CalendarClock,
   CalendarOff,
   ExternalLink,
@@ -19,7 +20,7 @@ import {
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Logo } from "@/components/site/brand";
+import { BrandName, Logo } from "@/components/site/brand";
 import { Button } from "@/components/ui/button";
 import { useStaff } from "@/lib/use-staff";
 
@@ -51,6 +52,7 @@ const ADMIN_NAV: NavItem[] = [
   { to: "/admin/produtos", label: "Produtos", icon: Package },
   { to: "/admin/avaliacoes", label: "Avaliações", icon: Star },
   { to: "/admin/notificacoes", label: "Notificações", icon: Bell },
+  { to: "/admin/aparencia", label: "Aparência", icon: Palette },
   { to: "/admin/configuracoes", label: "Configurações", icon: Settings },
 ];
 
@@ -104,7 +106,7 @@ function AdminLayout() {
         <Logo className="size-10" />
         <div className="leading-tight">
           <p className="font-display text-xs font-semibold uppercase tracking-wider">
-            Cleison <span className="text-primary">Cortes</span>
+            <BrandName />
           </p>
           <p className="text-[11px] text-muted-foreground">{staff.isAdmin ? "Administrador" : "Barbeiro"}</p>
         </div>

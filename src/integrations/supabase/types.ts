@@ -475,6 +475,9 @@ export type Database = {
       settings: {
         Row: {
           address: string | null
+          brand_background: string
+          brand_primary: string
+          brand_text: string
           business_name: string
           cancellation_min_hours: number
           cancellation_policy: string | null
@@ -496,6 +499,9 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          brand_background?: string
+          brand_primary?: string
+          brand_text?: string
           business_name?: string
           cancellation_min_hours?: number
           cancellation_policy?: string | null
@@ -517,6 +523,9 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          brand_background?: string
+          brand_primary?: string
+          brand_text?: string
           business_name?: string
           cancellation_min_hours?: number
           cancellation_policy?: string | null

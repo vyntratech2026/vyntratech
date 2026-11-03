@@ -14,6 +14,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { loadBrand } from "@/lib/brand";
+import { themeCss } from "@/lib/theme";
 
 function NotFoundComponent() {
   return (
@@ -76,6 +78,8 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  loader: async () => ({ brand: await loadBrand() }),
+  staleTime: 5 * 60 * 1000,
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -134,8 +138,12 @@ function RootComponent() {
     return () => data.subscription.unsubscribe();
   }, [router, queryClient]);
 
+  const { brand } = Route.useLoaderData();
+  const css = themeCss(brand.colors);
+
   return (
     <QueryClientProvider client={queryClient}>
+      {css && <style id="brand-theme" dangerouslySetInnerHTML={{ __html: css }} />}
       <Outlet />
       <Toaster position="top-center" richColors theme="dark" />
     </QueryClientProvider>

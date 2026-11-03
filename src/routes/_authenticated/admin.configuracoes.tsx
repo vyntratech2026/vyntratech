@@ -61,7 +61,6 @@ function SettingsPage() {
       const { error } = await supabase
         .from("settings")
         .update({
-          business_name: f.business_name.trim() || "Studio Cleison Cortes",
           tagline: f.tagline?.trim() || null,
           description: f.description?.trim() || null,
           cover_url: f.cover_url,
@@ -108,9 +107,6 @@ function SettingsPage() {
         <div className="space-y-8">
           <Section title="Página inicial">
             <PhotoField value={f.cover_url} onChange={(p) => set("cover_url", p)} folder="cover" className="h-20 w-32" label="Foto de capa" />
-            <Field label="Nome da barbearia">
-              <Input value={f.business_name} onChange={(e) => set("business_name", e.target.value)} />
-            </Field>
             <Field label="Frase de apresentação">
               <Input value={f.tagline ?? ""} onChange={(e) => set("tagline", e.target.value)} maxLength={160} />
             </Field>

@@ -1,17 +1,37 @@
 import logoAsset from "@/assets/logo.png.asset.json";
 import { useSignedUrl } from "@/lib/media";
+import { splitBrandName, useBrand } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 import { ImageOff } from "lucide-react";
 
-export function Logo({ className }: { className?: string }) {
+/** Shop logo: the one uploaded in "Aparência", or the original logo. */
+export function Logo({ className, path }: { className?: string; path?: string | null }) {
+  const brand = useBrand();
+  const logoPath = path === undefined ? brand.logoPath : path;
+  const signed = useSignedUrl(logoPath);
+  if (logoPath && !signed) {
+    return <div className={cn("rounded-full bg-surface-raised", className)} aria-label={brand.name} />;
+  }
   return (
     <img
-      src={logoAsset.url}
-      alt="Studio Cleison Cortes"
+      src={logoPath ? signed : logoAsset.url}
+      alt={brand.name}
       width={1080}
       height={1080}
-      className={cn("rounded-full", className)}
+      className={cn("rounded-full object-cover", className)}
     />
+  );
+}
+
+/** Business name with the last word in the highlight color. */
+export function BrandName({ name, accentClassName }: { name?: string; accentClassName?: string }) {
+  const brand = useBrand();
+  const [first, last] = splitBrandName(name ?? brand.name);
+  return (
+    <>
+      {first && `${first} `}
+      <span className={cn("text-primary", accentClassName)}>{last}</span>
+    </>
   );
 }
 
