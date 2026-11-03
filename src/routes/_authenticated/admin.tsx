@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   Bell,
+  Palette,
   CalendarClock,
   CalendarOff,
   ExternalLink,
@@ -19,7 +20,7 @@ import {
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Logo } from "@/components/site/brand";
+import { BrandName, Logo } from "@/components/site/brand";
 import { Button } from "@/components/ui/button";
 import { useStaff } from "@/lib/use-staff";
 
