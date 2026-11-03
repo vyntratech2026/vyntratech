@@ -27,6 +27,7 @@ import {
 } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { notifyNewBooking } from "@/lib/notifications.functions";
+import { useBrand } from "@/lib/brand";
 
 const searchSchema = z.object({
   servico: z.string().uuid().optional().catch(undefined),
@@ -407,12 +408,14 @@ function Empty({ text }: { text: string }) {
 }
 
 function BookingDone({ result, whatsapp }: { result: BookingResult; whatsapp: string }) {
+  const brand = useBrand();
   const msg = bookingWhatsappMessage({
     customerName: result.customer_name,
     serviceName: result.service_name,
     barberName: result.barber_name,
     startAt: result.start_at,
     price: result.price,
+    businessName: brand.name,
   });
   const manageUrl = typeof window !== "undefined" ? `${window.location.origin}/agendamento/${result.token}` : "";
   return (

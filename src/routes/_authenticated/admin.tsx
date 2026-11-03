@@ -52,6 +52,7 @@ const ADMIN_NAV: NavItem[] = [
   { to: "/admin/produtos", label: "Produtos", icon: Package },
   { to: "/admin/avaliacoes", label: "Avaliações", icon: Star },
   { to: "/admin/notificacoes", label: "Notificações", icon: Bell },
+  { to: "/admin/aparencia", label: "Aparência", icon: Palette },
   { to: "/admin/configuracoes", label: "Configurações", icon: Settings },
 ];
 

@@ -2,17 +2,19 @@ import { useQuery } from "@tanstack/react-query";
 import { Instagram, MapPin, MessageCircle } from "lucide-react";
 import { settingsQuery, hasOpeningHours } from "@/lib/public-data";
 import { DAY_NAMES, SHOP_WHATSAPP, whatsappLink } from "@/lib/format";
+import { useBrand } from "@/lib/brand";
 import { Logo } from "./brand";
 
 export function SiteFooter() {
   const { data: s } = useQuery(settingsQuery());
+  const brand = useBrand();
   const oh = s?.opening_hours;
   return (
     <footer className="border-t border-border bg-surface/40">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3">
         <div className="space-y-4">
           <Logo className="size-16" />
-          <p className="font-display text-lg font-semibold">{s?.business_name ?? "Studio Cleison Cortes"}</p>
+          <p className="font-display text-lg font-semibold">{brand.name}</p>
         </div>
         <div className="space-y-3 text-sm text-muted-foreground">
           <p className="eyebrow">Contato</p>
@@ -55,7 +57,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-6xl items-center justify-center px-4 py-5 text-xs text-muted-foreground sm:px-6">
-          <p>© {new Date().getFullYear()} Studio Cleison Cortes. Todos os direitos reservados.</p>
+          <p>© {new Date().getFullYear()} {brand.name}. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>

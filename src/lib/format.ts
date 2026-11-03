@@ -116,11 +116,12 @@ export interface BookingMessageInput {
   barberName: string;
   startAt: string;
   price: number | string;
+  businessName?: string;
 }
 
 export function bookingWhatsappMessage(b: BookingMessageInput): string {
   return [
-    "Olá! Gostaria de confirmar meu agendamento no Studio Cleison Cortes.",
+    `Olá! Gostaria de confirmar meu agendamento no ${b.businessName || "Studio Cleison Cortes"}.`,
     "",
     `Nome: ${b.customerName}`,
     `Serviço: ${b.serviceName}`,
