@@ -81,6 +81,7 @@ export function themeVars(input: Partial<BrandColors> | null | undefined): Recor
     "--input": mix(T, 14, "transparent"),
     "--sidebar-border": mix(T, 8, "transparent"),
     "--gradient-hero": `linear-gradient(180deg, ${mix(BG, 30, "transparent")} 0%, ${mix(BG, 75, "transparent")} 60%, ${BG} 100%)`,
+    "--gradient-radial-glow": `radial-gradient(60% 50% at 50% 0%, ${mix(P, 18, "transparent")} 0%, transparent 70%)`,
   };
 }
 
