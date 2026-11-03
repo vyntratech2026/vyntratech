@@ -138,8 +138,12 @@ function RootComponent() {
     return () => data.subscription.unsubscribe();
   }, [router, queryClient]);
 
+  const { brand } = Route.useLoaderData();
+  const css = themeCss(brand.colors);
+
   return (
     <QueryClientProvider client={queryClient}>
+      {css && <style id="brand-theme" dangerouslySetInnerHTML={{ __html: css }} />}
       <Outlet />
       <Toaster position="top-center" richColors theme="dark" />
     </QueryClientProvider>
