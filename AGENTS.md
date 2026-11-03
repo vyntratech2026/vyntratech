@@ -16,3 +16,5 @@
 - Staff log in with phone + password mapped to a synthetic email (`src/lib/staff-auth.ts`); staff accounts are created only through server functions with the admin client, never by public sign-up.
 - Photos live in the private `media` bucket (5 MB) and site videos in the private `videos` bucket (50 MB, table `site_videos`); store object paths in the DB and render through signed URLs (public buckets are blocked in this workspace).
 - All dates/times are computed and displayed in America/Maceio (fixed UTC-3) via `src/lib/format.ts`.
+- Brand (name, logo path, 3 hex colors) lives in `settings` and is loaded by the root route loader (`src/lib/brand.ts`); colors re-theme the site by overriding CSS variables via `src/lib/theme.ts` — never hardcode the business name or brand colors in components.
+- New-booking push notices go through the server function `notifyNewBooking` (keyed by manage_token, once per appointment via `notified_at`); Pushcut URLs are restricted to api.pushcut.io and stored in admin-only `notification_settings`.
