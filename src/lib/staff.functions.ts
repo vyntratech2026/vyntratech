@@ -1,13 +1,14 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { normalizePhone } from "./format";
-import { staffEmailFromPhone } from "./staff-auth";
+import { isRealEmail } from "./staff-auth";
 
-const phoneSchema = z
+const emailSchema = z
   .string()
-  .transform((v) => normalizePhone(v))
-  .refine((v) => /^\d{10,11}$/.test(v), "Número de celular inválido. Use DDD + número.");
+  .trim()
+  .toLowerCase()
+  .max(254)
+  .refine((v) => isRealEmail(v), "Informe um e-mail válido.");
 const passwordSchema = z.string().min(8, "A senha precisa ter pelo menos 8 caracteres.").max(72);
 
 async function getAdminClient() {
@@ -17,7 +18,10 @@ async function getAdminClient() {
 
 function friendlyAuthError(message: string): string {
   if (/already been registered|already exists/i.test(message)) {
-    return "Este número de celular já tem um acesso cadastrado.";
+    return "Este e-mail já tem um acesso cadastrado.";
+  }
+  if (/already registered|email.*exists|duplicate/i.test(message)) {
+    return "Este e-mail já está sendo usado por outro acesso.";
   }
   if (/weak|easy to guess|pwned/i.test(message)) {
     return "Essa senha é muito fácil de adivinhar. Use uma mais forte, misturando letras, números e símbolos.";
@@ -31,7 +35,7 @@ export const setupFirstAdmin = createServerFn({ method: "POST" })
     z
       .object({
         name: z.string().trim().min(2, "Informe seu nome.").max(120),
-        phone: phoneSchema,
+        email: emailSchema,
         password: passwordSchema,
       })
       .parse(input),
@@ -46,10 +50,10 @@ export const setupFirstAdmin = createServerFn({ method: "POST" })
     if ((count ?? 0) > 0) throw new Error("O administrador já foi criado. Faça login.");
 
     const { data: created, error } = await admin.auth.admin.createUser({
-      email: staffEmailFromPhone(data.phone),
+      email: data.email,
       password: data.password,
       email_confirm: true,
-      user_metadata: { full_name: data.name, phone: data.phone },
+      user_metadata: { full_name: data.name },
     });
     if (error || !created.user) throw new Error(friendlyAuthError(error?.message ?? "Erro ao criar acesso."));
 
@@ -76,7 +80,7 @@ async function assertAdmin(context: { supabase: any; userId: string }) {
 export const createBarberAccess = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    z.object({ barberId: z.string().uuid(), phone: phoneSchema, password: passwordSchema }).parse(input),
+    z.object({ barberId: z.string().uuid(), email: emailSchema, password: passwordSchema }).parse(input),
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
@@ -91,10 +95,10 @@ export const createBarberAccess = createServerFn({ method: "POST" })
     if (barber.user_id) throw new Error("Este barbeiro já tem acesso. Use 'Trocar senha'.");
 
     const { data: created, error } = await admin.auth.admin.createUser({
-      email: staffEmailFromPhone(data.phone),
+      email: data.email,
       password: data.password,
       email_confirm: true,
-      user_metadata: { full_name: barber.name, phone: data.phone },
+      user_metadata: { full_name: barber.name },
     });
     if (error || !created.user) throw new Error(friendlyAuthError(error?.message ?? "Erro ao criar acesso."));
 
@@ -137,4 +141,26 @@ export const revokeBarberAccess = createServerFn({ method: "POST" })
     await admin.from("barbers").update({ user_id: null }).eq("id", data.barberId);
     await admin.auth.admin.deleteUser(barber.user_id);
     return { ok: true };
+  });
+
+/**
+ * A team member sets the e-mail used to sign in (and to recover the password / use Google).
+ * Done server-side because older accounts have an internal address that cannot confirm a change.
+ */
+export const updateMyLoginEmail = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ email: emailSchema }).parse(input))
+  .handler(async ({ data, context }) => {
+    const [{ data: isAdmin }, { data: isBarber }] = await Promise.all([
+      context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" }),
+      context.supabase.rpc("has_role", { _user_id: context.userId, _role: "barber" }),
+    ]);
+    if (!isAdmin && !isBarber) throw new Error("Apenas a equipe pode fazer isso.");
+    const admin = await getAdminClient();
+    const { error } = await admin.auth.admin.updateUserById(context.userId, {
+      email: data.email,
+      email_confirm: true,
+    });
+    if (error) throw new Error(friendlyAuthError(error.message));
+    return { ok: true, email: data.email };
   });
