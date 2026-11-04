@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   Bell,
+  CircleUser,
   Palette,
   CalendarClock,
   CalendarOff,
@@ -54,6 +55,7 @@ const ADMIN_NAV: NavItem[] = [
   { to: "/admin/notificacoes", label: "Notificações", icon: Bell },
   { to: "/admin/aparencia", label: "Aparência", icon: Palette },
   { to: "/admin/configuracoes", label: "Configurações", icon: Settings },
+  { to: "/admin/conta", label: "Minha conta", icon: CircleUser },
 ];
 
 const BARBER_NAV: NavItem[] = [
@@ -61,6 +63,7 @@ const BARBER_NAV: NavItem[] = [
   { to: "/admin/agendamentos", label: "Meus agendamentos", icon: CalendarClock },
   { to: "/admin/bloqueios", label: "Fechar agenda", icon: CalendarOff },
   { to: "/admin/clientes", label: "Meus clientes", icon: UserRound },
+  { to: "/admin/conta", label: "Minha conta", icon: CircleUser },
 ];
 
 function AdminLayout() {

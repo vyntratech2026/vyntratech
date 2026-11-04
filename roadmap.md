@@ -17,6 +17,7 @@
 - [x] Vídeos na página inicial, gerenciados em Configurações
 - [x] Notificações por Pushcut a cada agendamento online
 - [x] Aparência: trocar logo, nome e cores do site e do painel
+- [x] Login da equipe por e-mail + senha e Google, mostrar senha, recuperar senha por e-mail, Minha conta
 - [x] Clientes (busca, histórico), Avaliações (moderação), Financeiro (pagamentos, comissão, gráfico diário)
 
 ## Próximos

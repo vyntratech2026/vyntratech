@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AgendarRouteImport } from './routes/agendar'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AgendamentoTokenRouteImport } from './routes/agendamento.$token'
 import { Route as ProfissionalIdRouteImport } from './routes/profissional.$id'
@@ -24,6 +25,7 @@ import { Route as AuthenticatedAdminBarbeirosRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminBloqueiosRouteImport } from './routes/_authenticated/admin.bloqueios'
 import { Route as AuthenticatedAdminClientesRouteImport } from './routes/_authenticated/admin.clientes'
 import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
+import { Route as AuthenticatedAdminContaRouteImport } from './routes/_authenticated/admin.conta'
 import { Route as AuthenticatedAdminFinanceiroRouteImport } from './routes/_authenticated/admin.financeiro'
 import { Route as AuthenticatedAdminNotificacoesRouteImport } from './routes/_authenticated/admin.notificacoes'
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin.produtos'
@@ -46,6 +48,11 @@ const AgendarRoute = AgendarRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -110,6 +117,11 @@ const AuthenticatedAdminConfiguracoesRoute =
     path: '/configuracoes',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminContaRoute = AuthenticatedAdminContaRouteImport.update({
+  id: '/conta',
+  path: '/conta',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminFinanceiroRoute =
   AuthenticatedAdminFinanceiroRouteImport.update({
     id: '/financeiro',
@@ -139,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/agendar': typeof AgendarRoute
   '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamento/$token': typeof AgendamentoTokenRoute
   '/profissional/$id': typeof ProfissionalIdRoute
@@ -149,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
   '/admin/clientes': typeof AuthenticatedAdminClientesRoute
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/admin/conta': typeof AuthenticatedAdminContaRoute
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
   '/admin/notificacoes': typeof AuthenticatedAdminNotificacoesRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
@@ -159,6 +173,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/agendar': typeof AgendarRoute
   '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/agendamento/$token': typeof AgendamentoTokenRoute
   '/profissional/$id': typeof ProfissionalIdRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
@@ -168,6 +183,7 @@ export interface FileRoutesByTo {
   '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
   '/admin/clientes': typeof AuthenticatedAdminClientesRoute
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/admin/conta': typeof AuthenticatedAdminContaRoute
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
   '/admin/notificacoes': typeof AuthenticatedAdminNotificacoesRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
@@ -180,6 +196,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/agendar': typeof AgendarRoute
   '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamento/$token': typeof AgendamentoTokenRoute
   '/profissional/$id': typeof ProfissionalIdRoute
@@ -190,6 +207,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
   '/_authenticated/admin/clientes': typeof AuthenticatedAdminClientesRoute
   '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/_authenticated/admin/conta': typeof AuthenticatedAdminContaRoute
   '/_authenticated/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
   '/_authenticated/admin/notificacoes': typeof AuthenticatedAdminNotificacoesRoute
   '/_authenticated/admin/produtos': typeof AuthenticatedAdminProdutosRoute
@@ -202,6 +220,7 @@ export interface FileRouteTypes {
     | '/'
     | '/agendar'
     | '/auth'
+    | '/reset-password'
     | '/admin'
     | '/agendamento/$token'
     | '/profissional/$id'
@@ -212,6 +231,7 @@ export interface FileRouteTypes {
     | '/admin/bloqueios'
     | '/admin/clientes'
     | '/admin/configuracoes'
+    | '/admin/conta'
     | '/admin/financeiro'
     | '/admin/notificacoes'
     | '/admin/produtos'
@@ -222,6 +242,7 @@ export interface FileRouteTypes {
     | '/'
     | '/agendar'
     | '/auth'
+    | '/reset-password'
     | '/agendamento/$token'
     | '/profissional/$id'
     | '/admin/agendamentos'
@@ -231,6 +252,7 @@ export interface FileRouteTypes {
     | '/admin/bloqueios'
     | '/admin/clientes'
     | '/admin/configuracoes'
+    | '/admin/conta'
     | '/admin/financeiro'
     | '/admin/notificacoes'
     | '/admin/produtos'
@@ -242,6 +264,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/agendar'
     | '/auth'
+    | '/reset-password'
     | '/_authenticated/admin'
     | '/agendamento/$token'
     | '/profissional/$id'
@@ -252,6 +275,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/bloqueios'
     | '/_authenticated/admin/clientes'
     | '/_authenticated/admin/configuracoes'
+    | '/_authenticated/admin/conta'
     | '/_authenticated/admin/financeiro'
     | '/_authenticated/admin/notificacoes'
     | '/_authenticated/admin/produtos'
@@ -264,6 +288,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AgendarRoute: typeof AgendarRoute
   AuthRoute: typeof AuthRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   AgendamentoTokenRoute: typeof AgendamentoTokenRoute
   ProfissionalIdRoute: typeof ProfissionalIdRoute
 }
@@ -296,6 +321,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -375,6 +407,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminConfiguracoesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/conta': {
+      id: '/_authenticated/admin/conta'
+      path: '/conta'
+      fullPath: '/admin/conta'
+      preLoaderRoute: typeof AuthenticatedAdminContaRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/financeiro': {
       id: '/_authenticated/admin/financeiro'
       path: '/financeiro'
@@ -414,6 +453,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminBloqueiosRoute: typeof AuthenticatedAdminBloqueiosRoute
   AuthenticatedAdminClientesRoute: typeof AuthenticatedAdminClientesRoute
   AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
+  AuthenticatedAdminContaRoute: typeof AuthenticatedAdminContaRoute
   AuthenticatedAdminFinanceiroRoute: typeof AuthenticatedAdminFinanceiroRoute
   AuthenticatedAdminNotificacoesRoute: typeof AuthenticatedAdminNotificacoesRoute
   AuthenticatedAdminProdutosRoute: typeof AuthenticatedAdminProdutosRoute
@@ -429,6 +469,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminBloqueiosRoute: AuthenticatedAdminBloqueiosRoute,
   AuthenticatedAdminClientesRoute: AuthenticatedAdminClientesRoute,
   AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
+  AuthenticatedAdminContaRoute: AuthenticatedAdminContaRoute,
   AuthenticatedAdminFinanceiroRoute: AuthenticatedAdminFinanceiroRoute,
   AuthenticatedAdminNotificacoesRoute: AuthenticatedAdminNotificacoesRoute,
   AuthenticatedAdminProdutosRoute: AuthenticatedAdminProdutosRoute,
@@ -455,6 +496,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AgendarRoute: AgendarRoute,
   AuthRoute: AuthRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   AgendamentoTokenRoute: AgendamentoTokenRoute,
   ProfissionalIdRoute: ProfissionalIdRoute,
 }

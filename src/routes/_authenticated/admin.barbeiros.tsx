@@ -301,18 +301,18 @@ function AccessPanel({ barberId, hasAccess, onChanged }: { barberId: string; has
   const createFn = useServerFn(createBarberAccess);
   const resetFn = useServerFn(resetBarberPassword);
   const revokeFn = useServerFn(revokeBarberAccess);
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const run = useMutation({
     mutationFn: async (action: "create" | "reset" | "revoke") => {
-      if (action === "create") await createFn({ data: { barberId, phone, password } });
+      if (action === "create") await createFn({ data: { barberId, email, password } });
       if (action === "reset") await resetFn({ data: { barberId, password } });
       if (action === "revoke") await revokeFn({ data: { barberId } });
       return action;
     },
     onSuccess: (action) => {
-      toast.success(action === "create" ? "Acesso criado. Envie o celular e a senha ao barbeiro." : action === "reset" ? "Senha trocada" : "Acesso removido");
+      toast.success(action === "create" ? "Acesso criado. Envie o e-mail e a senha ao barbeiro." : action === "reset" ? "Senha trocada" : "Acesso removido");
       setPassword("");
       onChanged(action !== "revoke");
       qc.invalidateQueries({ queryKey: ["admin", "barbers"] });
@@ -323,16 +323,16 @@ function AccessPanel({ barberId, hasAccess, onChanged }: { barberId: string; has
   if (!hasAccess) {
     return (
       <div className="space-y-4">
-        <p className="text-sm text-muted-foreground">Crie o login do barbeiro. Ele entra na Área da equipe com o celular e a senha.</p>
+        <p className="text-sm text-muted-foreground">Crie o login do barbeiro. Ele entra na Área da equipe com o e-mail e a senha. Se for um Gmail, também pode usar "Entrar com Google".</p>
         <div className="space-y-2">
-          <Label>Celular de login</Label>
-          <Input inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(79) 90000-0000" />
+          <Label>E-mail de login</Label>
+          <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="barbeiro@gmail.com" />
         </div>
         <div className="space-y-2">
           <Label>Senha inicial (mín. 8 caracteres)</Label>
           <Input type="text" value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
-        <Button variant="secondary" disabled={run.isPending || password.length < 8 || !phone} onClick={() => run.mutate("create")}>
+        <Button variant="secondary" disabled={run.isPending || password.length < 8 || !email} onClick={() => run.mutate("create")}>
           {run.isPending ? <Loader2 className="animate-spin" /> : <ShieldCheck />} Criar acesso
         </Button>
       </div>
