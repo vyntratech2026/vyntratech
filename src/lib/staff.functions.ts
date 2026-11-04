@@ -76,7 +76,7 @@ async function assertAdmin(context: { supabase: any; userId: string }) {
   if (error || !isAdmin) throw new Error("Apenas o administrador pode fazer isso.");
 }
 
-/** Admin creates (or replaces) the login of a barber: phone + password. */
+/** Admin creates (or replaces) the login of a barber: e-mail + password. */
 export const createBarberAccess = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
