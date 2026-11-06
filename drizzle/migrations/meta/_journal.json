@@ -50,6 +50,13 @@
       "when": 1793727959535,
       "tag": "0006_brand_colors",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793933110256,
+      "tag": "0007_multi_company_platform",
+      "breakpoints": true
     }
   ]
 }
