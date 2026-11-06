@@ -17,6 +17,7 @@ export type Database = {
       appointments: {
         Row: {
           barber_id: string
+          company_id: string
           created_at: string
           customer_id: string
           duration_minutes: number
@@ -35,6 +36,7 @@ export type Database = {
         }
         Insert: {
           barber_id: string
+          company_id?: string
           created_at?: string
           customer_id: string
           duration_minutes: number
@@ -53,6 +55,7 @@ export type Database = {
         }
         Update: {
           barber_id?: string
+          company_id?: string
           created_at?: string
           customer_id?: string
           duration_minutes?: number
@@ -71,6 +74,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "appointments_barber_company_fkey"
+            columns: ["barber_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "barbers"
+            referencedColumns: ["id", "company_id"]
+          },
+          {
             foreignKeyName: "appointments_barber_id_fkey"
             columns: ["barber_id"]
             isOneToOne: false
@@ -78,11 +88,32 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "appointments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_customer_company_fkey"
+            columns: ["customer_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id", "company_id"]
+          },
+          {
             foreignKeyName: "appointments_customer_id_fkey"
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_service_company_fkey"
+            columns: ["service_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id", "company_id"]
           },
           {
             foreignKeyName: "appointments_service_id_fkey"
@@ -96,26 +127,50 @@ export type Database = {
       barber_services: {
         Row: {
           barber_id: string
+          company_id: string
           id: string
           service_id: string
         }
         Insert: {
           barber_id: string
+          company_id?: string
           id?: string
           service_id: string
         }
         Update: {
           barber_id?: string
+          company_id?: string
           id?: string
           service_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "barber_services_barber_company_fkey"
+            columns: ["barber_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "barbers"
+            referencedColumns: ["id", "company_id"]
+          },
           {
             foreignKeyName: "barber_services_barber_id_fkey"
             columns: ["barber_id"]
             isOneToOne: false
             referencedRelation: "barbers"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "barber_services_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "barber_services_service_company_fkey"
+            columns: ["service_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id", "company_id"]
           },
           {
             foreignKeyName: "barber_services_service_id_fkey"
@@ -129,6 +184,7 @@ export type Database = {
       barbers: {
         Row: {
           commission_percent: number
+          company_id: string
           created_at: string
           description: string | null
           id: string
@@ -141,6 +197,7 @@ export type Database = {
         }
         Insert: {
           commission_percent?: number
+          company_id?: string
           created_at?: string
           description?: string | null
           id?: string
@@ -153,6 +210,7 @@ export type Database = {
         }
         Update: {
           commission_percent?: number
+          company_id?: string
           created_at?: string
           description?: string | null
           id?: string
@@ -163,11 +221,20 @@ export type Database = {
           specialties?: string[]
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "barbers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       blocked_times: {
         Row: {
           barber_id: string | null
+          company_id: string
           created_at: string
           end_at: string
           id: string
@@ -176,6 +243,7 @@ export type Database = {
         }
         Insert: {
           barber_id?: string | null
+          company_id?: string
           created_at?: string
           end_at: string
           id?: string
@@ -184,6 +252,7 @@ export type Database = {
         }
         Update: {
           barber_id?: string | null
+          company_id?: string
           created_at?: string
           end_at?: string
           id?: string
@@ -192,16 +261,90 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "blocked_times_barber_company_fkey"
+            columns: ["barber_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "barbers"
+            referencedColumns: ["id", "company_id"]
+          },
+          {
             foreignKeyName: "blocked_times_barber_id_fkey"
             columns: ["barber_id"]
             isOneToOne: false
             referencedRelation: "barbers"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "blocked_times_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      companies: {
+        Row: {
+          business_type: string
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          business_type?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          business_type?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      company_members: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_members_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
         ]
       }
       customers: {
         Row: {
+          company_id: string
           created_at: string
           full_name: string
           id: string
@@ -209,6 +352,7 @@ export type Database = {
           phone: string
         }
         Insert: {
+          company_id?: string
           created_at?: string
           full_name: string
           id?: string
@@ -216,40 +360,61 @@ export type Database = {
           phone: string
         }
         Update: {
+          company_id?: string
           created_at?: string
           full_name?: string
           id?: string
           notes?: string | null
           phone?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "customers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notification_settings: {
         Row: {
+          company_id: string
           id: number
           pushcut_enabled: boolean
           pushcut_url: string | null
           updated_at: string
         }
         Insert: {
+          company_id?: string
           id?: number
           pushcut_enabled?: boolean
           pushcut_url?: string | null
           updated_at?: string
         }
         Update: {
+          company_id?: string
           id?: number
           pushcut_enabled?: boolean
           pushcut_url?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "notification_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       payments: {
         Row: {
           amount: number
           appointment_id: string | null
           barber_id: string | null
+          company_id: string
           created_at: string
           created_by: string | null
           customer_id: string | null
@@ -264,6 +429,7 @@ export type Database = {
           amount: number
           appointment_id?: string | null
           barber_id?: string | null
+          company_id?: string
           created_at?: string
           created_by?: string | null
           customer_id?: string | null
@@ -278,6 +444,7 @@ export type Database = {
           amount?: number
           appointment_id?: string | null
           barber_id?: string | null
+          company_id?: string
           created_at?: string
           created_by?: string | null
           customer_id?: string | null
@@ -290,11 +457,25 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "payments_appointment_company_fkey"
+            columns: ["appointment_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id", "company_id"]
+          },
+          {
             foreignKeyName: "payments_appointment_id_fkey"
             columns: ["appointment_id"]
             isOneToOne: false
             referencedRelation: "appointments"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_barber_company_fkey"
+            columns: ["barber_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "barbers"
+            referencedColumns: ["id", "company_id"]
           },
           {
             foreignKeyName: "payments_barber_id_fkey"
@@ -304,11 +485,32 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "payments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_customer_company_fkey"
+            columns: ["customer_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id", "company_id"]
+          },
+          {
             foreignKeyName: "payments_customer_id_fkey"
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_product_company_fkey"
+            columns: ["product_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id", "company_id"]
           },
           {
             foreignKeyName: "payments_product_id_fkey"
@@ -321,6 +523,7 @@ export type Database = {
       }
       products: {
         Row: {
+          company_id: string
           created_at: string
           description: string | null
           id: string
@@ -330,6 +533,7 @@ export type Database = {
           price: number
         }
         Insert: {
+          company_id?: string
           created_at?: string
           description?: string | null
           id?: string
@@ -339,6 +543,7 @@ export type Database = {
           price: number
         }
         Update: {
+          company_id?: string
           created_at?: string
           description?: string | null
           id?: string
@@ -347,7 +552,15 @@ export type Database = {
           photo_url?: string | null
           price?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -386,6 +599,7 @@ export type Database = {
           appointment_id: string
           barber_id: string | null
           comment: string | null
+          company_id: string
           created_at: string
           customer_id: string
           id: string
@@ -397,6 +611,7 @@ export type Database = {
           appointment_id: string
           barber_id?: string | null
           comment?: string | null
+          company_id: string
           created_at?: string
           customer_id: string
           id?: string
@@ -408,6 +623,7 @@ export type Database = {
           appointment_id?: string
           barber_id?: string | null
           comment?: string | null
+          company_id?: string
           created_at?: string
           customer_id?: string
           id?: string
@@ -417,6 +633,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "reviews_appointment_company_fkey"
+            columns: ["appointment_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id", "company_id"]
+          },
+          {
             foreignKeyName: "reviews_appointment_id_fkey"
             columns: ["appointment_id"]
             isOneToOne: true
@@ -424,11 +647,32 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "reviews_barber_company_fkey"
+            columns: ["barber_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "barbers"
+            referencedColumns: ["id", "company_id"]
+          },
+          {
             foreignKeyName: "reviews_barber_id_fkey"
             columns: ["barber_id"]
             isOneToOne: false
             referencedRelation: "barbers"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_customer_company_fkey"
+            columns: ["customer_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id", "company_id"]
           },
           {
             foreignKeyName: "reviews_customer_id_fkey"
@@ -441,6 +685,7 @@ export type Database = {
       }
       services: {
         Row: {
+          company_id: string
           created_at: string
           description: string | null
           duration_minutes: number
@@ -451,6 +696,7 @@ export type Database = {
           price: number
         }
         Insert: {
+          company_id?: string
           created_at?: string
           description?: string | null
           duration_minutes: number
@@ -461,6 +707,7 @@ export type Database = {
           price: number
         }
         Update: {
+          company_id?: string
           created_at?: string
           description?: string | null
           duration_minutes?: number
@@ -470,7 +717,15 @@ export type Database = {
           photo_url?: string | null
           price?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "services_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       settings: {
         Row: {
@@ -481,6 +736,7 @@ export type Database = {
           business_name: string
           cancellation_min_hours: number
           cancellation_policy: string | null
+          company_id: string
           cover_url: string | null
           description: string | null
           id: number
@@ -505,6 +761,7 @@ export type Database = {
           business_name?: string
           cancellation_min_hours?: number
           cancellation_policy?: string | null
+          company_id: string
           cover_url?: string | null
           description?: string | null
           id?: number
@@ -529,6 +786,7 @@ export type Database = {
           business_name?: string
           cancellation_min_hours?: number
           cancellation_policy?: string | null
+          company_id?: string
           cover_url?: string | null
           description?: string | null
           id?: number
@@ -545,10 +803,19 @@ export type Database = {
           updated_at?: string
           whatsapp?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       site_videos: {
         Row: {
+          company_id: string
           created_at: string
           id: string
           is_active: boolean
@@ -557,6 +824,7 @@ export type Database = {
           video_path: string
         }
         Insert: {
+          company_id?: string
           created_at?: string
           id?: string
           is_active?: boolean
@@ -565,6 +833,7 @@ export type Database = {
           video_path: string
         }
         Update: {
+          company_id?: string
           created_at?: string
           id?: string
           is_active?: boolean
@@ -572,7 +841,15 @@ export type Database = {
           title?: string | null
           video_path?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "site_videos_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -595,6 +872,7 @@ export type Database = {
       working_hours: {
         Row: {
           barber_id: string
+          company_id: string
           day_of_week: number
           end_time: string
           id: string
@@ -603,6 +881,7 @@ export type Database = {
         }
         Insert: {
           barber_id: string
+          company_id?: string
           day_of_week: number
           end_time: string
           id?: string
@@ -611,6 +890,7 @@ export type Database = {
         }
         Update: {
           barber_id?: string
+          company_id?: string
           day_of_week?: number
           end_time?: string
           id?: string
@@ -619,10 +899,24 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "working_hours_barber_company_fkey"
+            columns: ["barber_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "barbers"
+            referencedColumns: ["id", "company_id"]
+          },
+          {
             foreignKeyName: "working_hours_barber_id_fkey"
             columns: ["barber_id"]
             isOneToOne: false
             referencedRelation: "barbers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "working_hours_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -664,7 +958,12 @@ export type Database = {
         }
         Returns: Json
       }
+      create_company: {
+        Args: { p_name: string; p_slug: string; p_type: string }
+        Returns: Json
+      }
       current_barber_id: { Args: never; Returns: string }
+      current_company_id: { Args: never; Returns: string }
       get_available_slots: {
         Args: { p_barber_id?: string; p_date: string; p_service_id: string }
         Returns: {
@@ -680,8 +979,12 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_company_admin: { Args: { _cid: string }; Returns: boolean }
+      is_company_member: { Args: { _cid: string }; Returns: boolean }
       is_staff: { Args: never; Returns: boolean }
       normalize_phone: { Args: { p: string }; Returns: string }
+      slug_problem: { Args: { p_slug: string }; Returns: string }
+      storage_company: { Args: { _name: string }; Returns: string }
       submit_review: {
         Args: { p_comment: string; p_rating: number; p_token: string }
         Returns: boolean
