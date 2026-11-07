@@ -1,3 +1,4 @@
+import { useCompany } from "@/lib/brand";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Clock } from "lucide-react";
@@ -8,12 +9,12 @@ import { MediaImage } from "@/components/site/brand";
 import { barberServicesQuery, barbersQuery, servicesQuery } from "@/lib/public-data";
 import { formatDuration, formatPrice } from "@/lib/format";
 
-export const Route = createFileRoute("/profissional/$id")({
+export const Route = createFileRoute("/$slug/profissional/$id")({
   head: () => ({
     meta: [
-      { title: "Profissional — Studio Cleison Cortes" },
-      { name: "description", content: "Conheça o profissional do Studio Cleison Cortes e agende com ele." },
-      { property: "og:title", content: "Profissional — Studio Cleison Cortes" },
+      { title: "Profissional" },
+      { name: "description", content: "Conheça o profissional e agende com ele." },
+      { property: "og:title", content: "Profissional" },
       { property: "og:description", content: "Conheça o profissional e agende seu horário online." },
       { property: "og:type", content: "profile" },
       { name: "twitter:card", content: "summary" },
@@ -23,10 +24,11 @@ export const Route = createFileRoute("/profissional/$id")({
 });
 
 function BarberProfile() {
+  const slugCompany = useCompany();
   const { id } = Route.useParams();
-  const { data: barbers, isLoading } = useQuery(barbersQuery());
-  const { data: services } = useQuery(servicesQuery());
-  const { data: links } = useQuery(barberServicesQuery());
+  const { data: barbers, isLoading } = useQuery(barbersQuery(slugCompany.id));
+  const { data: services } = useQuery(servicesQuery(slugCompany.id));
+  const { data: links } = useQuery(barberServicesQuery(slugCompany.id));
   const barber = barbers?.find((b) => b.id === id);
   const offered = services?.filter((s) => links?.some((l) => l.barber_id === id && l.service_id === s.id)) ?? [];
 
@@ -34,7 +36,7 @@ function BarberProfile() {
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <main className="mx-auto max-w-4xl px-4 pb-24 pt-28 sm:px-6">
-        <Link to="/" hash="profissionais" className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
+        <Link to="/$slug" params={{ slug: slugCompany.slug }} hash="profissionais" className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
           <ArrowLeft className="size-4" /> Voltar
         </Link>
         {isLoading ? (
@@ -57,7 +59,7 @@ function BarberProfile() {
               )}
               {barber.description && <p className="whitespace-pre-line text-muted-foreground">{barber.description}</p>}
               <Button asChild variant="hero" size="lg">
-                <Link to="/agendar" search={{ barbeiro: barber.id }}>
+                <Link to="/$slug/agendar" params={{ slug: slugCompany.slug }} search={{ barbeiro: barber.id }}>
                   Agendar com {barber.name.split(" ")[0]}
                 </Link>
               </Button>

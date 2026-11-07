@@ -41,7 +41,7 @@ function BlocksPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("blocked_times")
-        .select("id, start_at, end_at, reason, barber_id, barbers(name)")
+        .select("id, start_at, end_at, reason, barber_id, barbers!blocked_times_barber_id_fkey(name)")
         .gte("end_at", new Date().toISOString())
         .order("start_at");
       if (error) throw error;

@@ -1,3 +1,4 @@
+import { useCompany } from "@/lib/brand";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Clock, Instagram, MapPin, MessageCircle, Star } from "lucide-react";
@@ -15,22 +16,15 @@ import {
   settingsQuery,
 } from "@/lib/public-data";
 import { useSignedUrl } from "@/lib/media";
-import { formatDate, formatDuration, formatPrice, SHOP_WHATSAPP, whatsappLink } from "@/lib/format";
+import { formatDate, formatDuration, formatPrice, whatsappLink } from "@/lib/format";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/$slug/")({
   head: () => ({
     meta: [
-      { title: "Studio Cleison Cortes — Barbearia em Aracaju | Agende online" },
-      {
-        name: "description",
-        content:
-          "Studio Cleison Cortes, barbearia na Rua Urbano Neto, 763, Aracaju. Veja serviços, profissionais e agende seu horário online.",
-      },
-      { property: "og:title", content: "Studio Cleison Cortes — Barbearia em Aracaju" },
-      {
-        property: "og:description",
-        content: "Agende seu corte online no Studio Cleison Cortes, em Aracaju – SE.",
-      },
+      { title: "Agende seu horário online" },
+      { name: "description", content: "Veja serviços, profissionais e agende seu horário online." },
+      { property: "og:title", content: "Agende seu horário online" },
+      { property: "og:description", content: "Veja serviços, profissionais e agende seu horário online." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -48,11 +42,12 @@ function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
 }
 
 function Index() {
-  const { data: s } = useQuery(settingsQuery());
-  const { data: services } = useQuery(servicesQuery());
-  const { data: barbers } = useQuery(barbersQuery());
-  const { data: products } = useQuery(productsQuery());
-  const { data: reviews } = useQuery(reviewsQuery());
+  const slugCompany = useCompany();
+  const { data: s } = useQuery(settingsQuery(slugCompany.id));
+  const { data: services } = useQuery(servicesQuery(slugCompany.id));
+  const { data: barbers } = useQuery(barbersQuery(slugCompany.id));
+  const { data: products } = useQuery(productsQuery(slugCompany.id));
+  const { data: reviews } = useQuery(reviewsQuery(slugCompany.id));
   const coverUrl = useSignedUrl(s?.cover_url);
 
   return (
@@ -77,11 +72,11 @@ function Index() {
               <BrandName accentClassName="text-glow" />
             </h1>
             <p className="max-w-lg text-lg text-foreground/80">
-              {s?.tagline || "Barbearia em Aracaju. Escolha o serviço, o barbeiro e o horário em poucos toques."}
+              {s?.tagline || "Barbearia em Aracaju. Escolha o serviço, o profissional e o horário em poucos toques."}
             </p>
             <div className="flex flex-wrap gap-3 pt-2">
               <Button asChild variant="hero" size="xl">
-                <Link to="/agendar">Agendar horário</Link>
+                <Link to="/$slug/agendar" params={{ slug: slugCompany.slug }}>Agendar horário</Link>
               </Button>
               <Button asChild variant="outline" size="xl">
                 <a href={whatsappLink(s?.whatsapp || SHOP_WHATSAPP)} target="_blank" rel="noreferrer">
@@ -97,7 +92,7 @@ function Index() {
       <section id="sobre" className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
         <div className="grid gap-10 md:grid-cols-2 md:items-center">
           <div>
-            <SectionTitle eyebrow="A barbearia" title="Sobre o Studio" />
+            <SectionTitle eyebrow="Quem somos" title="Sobre nós" />
             {s?.description ? (
               <p className="whitespace-pre-line text-base leading-relaxed text-muted-foreground">{s.description}</p>
             ) : null}
@@ -163,7 +158,7 @@ function Index() {
                         <Clock className="size-3.5" /> {formatDuration(sv.duration_minutes)}
                       </span>
                       <Button asChild size="sm">
-                        <Link to="/agendar" search={{ servico: sv.id }}>
+                        <Link to="/$slug/agendar" params={{ slug: slugCompany.slug }} search={{ servico: sv.id }}>
                           Agendar
                         </Link>
                       </Button>
@@ -198,12 +193,12 @@ function Index() {
                   {b.description && <p className="line-clamp-3 text-sm text-muted-foreground">{b.description}</p>}
                   <div className="flex gap-2 pt-1">
                     <Button asChild variant="outline" size="sm" className="flex-1">
-                      <Link to="/profissional/$id" params={{ id: b.id }}>
+                      <Link to="/$slug/profissional/$id" params={{ slug: slugCompany.slug, id: b.id }}>
                         Ver perfil
                       </Link>
                     </Button>
                     <Button asChild size="sm" className="flex-1">
-                      <Link to="/agendar" search={{ barbeiro: b.id }}>
+                      <Link to="/$slug/agendar" params={{ slug: slugCompany.slug }} search={{ barbeiro: b.id }}>
                         Agendar
                       </Link>
                     </Button>
@@ -219,7 +214,7 @@ function Index() {
       {!!products?.length && (
         <section id="produtos" className="border-t border-border bg-surface/30">
           <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
-            <SectionTitle eyebrow="Disponíveis na barbearia" title="Produtos" />
+            <SectionTitle eyebrow="Disponíveis no local" title="Produtos" />
             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
               {products.map((p) => (
                 <article key={p.id} className="surface-card overflow-hidden">
@@ -269,9 +264,9 @@ function Index() {
         <div className="absolute inset-0 bg-radial-glow" />
         <div className="relative mx-auto max-w-3xl px-4 py-24 text-center sm:px-6">
           <h2 className="text-3xl font-bold sm:text-4xl">Bora dar um trato no visual?</h2>
-          <p className="mt-4 text-muted-foreground">Escolha o serviço, o barbeiro e o horário que preferir.</p>
+          <p className="mt-4 text-muted-foreground">Escolha o serviço, o profissional e o horário que preferir.</p>
           <Button asChild variant="hero" size="xl" className="mt-8">
-            <Link to="/agendar">Agendar horário</Link>
+            <Link to="/$slug/agendar" params={{ slug: slugCompany.slug }}>Agendar horário</Link>
           </Button>
         </div>
       </section>

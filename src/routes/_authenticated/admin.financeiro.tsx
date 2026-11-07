@@ -61,14 +61,14 @@ function FinancePage() {
       const [pay, barbers, completed] = await Promise.all([
         supabase
           .from("payments")
-          .select("id, amount, kind, payment_method, payment_date, barber_id, notes, appointment_id, appointments(service_name), products(name), customers(full_name)")
+          .select("id, amount, kind, payment_method, payment_date, barber_id, notes, appointment_id, appointments!payments_appointment_id_fkey(service_name), products!payments_product_id_fkey(name), customers!payments_customer_id_fkey(full_name)")
           .gte("payment_date", start)
           .lt("payment_date", end)
           .order("payment_date", { ascending: false }),
         supabase.from("barbers").select("id, name, commission_percent").order("name"),
         supabase
           .from("appointments")
-          .select("id, start_at, service_name, price, customers(full_name), barbers(name), payments(id)")
+          .select("id, start_at, service_name, price, customers!appointments_customer_id_fkey(full_name), barbers!appointments_barber_id_fkey(name), payments!payments_appointment_id_fkey(id)")
           .eq("status", "completed")
           .gte("start_at", start)
           .lt("start_at", end)
@@ -309,7 +309,7 @@ function PaymentDialog({ appointmentId, onClose, onSaved }: { appointmentId?: st
       const [a, p] = await Promise.all([
         supabase
           .from("appointments")
-          .select("id, start_at, service_name, price, customer_id, barber_id, customers(full_name), barbers(name), payments(id)")
+          .select("id, start_at, service_name, price, customer_id, barber_id, customers!appointments_customer_id_fkey(full_name), barbers!appointments_barber_id_fkey(name), payments!payments_appointment_id_fkey(id)")
           .eq("status", "completed")
           .gte("start_at", since)
           .order("start_at", { ascending: false }),

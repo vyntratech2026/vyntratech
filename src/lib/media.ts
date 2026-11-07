@@ -13,8 +13,9 @@ export function useSignedUrls(paths: (string | null | undefined)[]) {
     enabled: clean.length > 0,
     staleTime: 50 * 60 * 1000,
     queryFn: async () => {
-      const external = clean.filter((p) => /^https?:\/\//.test(p));
-      const stored = clean.filter((p) => !/^https?:\/\//.test(p));
+      const isExternal = (p: string) => /^(https?:\/\/|\/)/.test(p);
+      const external = clean.filter(isExternal);
+      const stored = clean.filter((p) => !isExternal(p));
       const map: Record<string, string> = {};
       external.forEach((p) => (map[p] = p));
       if (stored.length) {
@@ -40,11 +41,11 @@ export function validateImage(file: File): string | null {
   return null;
 }
 
-export async function uploadImage(file: File, folder: string): Promise<string> {
+export async function uploadImage(file: File, folder: string, companyId: string): Promise<string> {
   const problem = validateImage(file);
   if (problem) throw new Error(problem);
   const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
-  const path = `${folder}/${crypto.randomUUID()}.${ext}`;
+  const path = `${companyId}/${folder}/${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
     contentType: file.type,
     upsert: false,

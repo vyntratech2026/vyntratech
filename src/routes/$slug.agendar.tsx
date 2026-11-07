@@ -1,3 +1,4 @@
+import { useCompany } from "@/lib/brand";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
@@ -21,7 +22,6 @@ import {
   formatPrice,
   formatTime,
   isValidPhone,
-  SHOP_WHATSAPP,
   todayInShop,
   whatsappLink,
 } from "@/lib/format";
@@ -34,14 +34,14 @@ const searchSchema = z.object({
   barbeiro: z.string().uuid().optional().catch(undefined),
 });
 
-export const Route = createFileRoute("/agendar")({
+export const Route = createFileRoute("/$slug/agendar")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "Agendar horário — Studio Cleison Cortes" },
-      { name: "description", content: "Escolha serviço, barbeiro, dia e horário no Studio Cleison Cortes, em Aracaju." },
-      { property: "og:title", content: "Agendar horário — Studio Cleison Cortes" },
-      { property: "og:description", content: "Agende seu corte online em poucos passos." },
+      { title: "Agendar horário online" },
+      { name: "description", content: "Escolha serviço, profissional, dia e horário em poucos passos." },
+      { property: "og:title", content: "Agendar horário online" },
+      { property: "og:description", content: "Agende seu horário online em poucos passos." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -49,7 +49,7 @@ export const Route = createFileRoute("/agendar")({
   component: BookingPage,
 });
 
-const STEPS = ["Serviço", "Barbeiro", "Horário", "Seus dados", "Revisão"];
+const STEPS = ["Serviço", "Profissional", "Horário", "Seus dados", "Revisão"];
 
 interface BookingResult {
   token: string;
@@ -62,11 +62,12 @@ interface BookingResult {
 }
 
 function BookingPage() {
+  const slugCompany = useCompany();
   const search = Route.useSearch();
-  const { data: settings } = useQuery(settingsQuery());
-  const { data: services, isLoading: loadingServices } = useQuery(servicesQuery());
-  const { data: barbers } = useQuery(barbersQuery());
-  const { data: links } = useQuery(barberServicesQuery());
+  const { data: settings } = useQuery(settingsQuery(slugCompany.id));
+  const { data: services, isLoading: loadingServices } = useQuery(servicesQuery(slugCompany.id));
+  const { data: barbers } = useQuery(barbersQuery(slugCompany.id));
+  const { data: links } = useQuery(barberServicesQuery(slugCompany.id));
 
   const [step, setStep] = useState(0);
   const [serviceId, setServiceId] = useState<string | undefined>(search.servico);
@@ -150,7 +151,7 @@ function BookingPage() {
     },
   });
 
-  if (result) return <BookingDone result={result} whatsapp={settings?.whatsapp || SHOP_WHATSAPP} />;
+  if (result) return <BookingDone result={result} whatsapp={settings?.whatsapp || ""} />;
 
   const nameOk = name.trim().length >= 2;
   const phoneOk = isValidPhone(phone);
@@ -160,7 +161,7 @@ function BookingPage() {
       <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-4">
           {step === 0 ? (
-            <Link to="/" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
+            <Link to="/$slug" params={{ slug: slugCompany.slug }} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
               <ArrowLeft className="size-4" /> Início
             </Link>
           ) : (
@@ -187,7 +188,7 @@ function BookingPage() {
             {loadingServices ? (
               <LoadingList />
             ) : visibleServices.length === 0 ? (
-              <Empty text="Os serviços ainda estão sendo cadastrados. Fale com a barbearia pelo WhatsApp." />
+              <Empty text="Os serviços ainda estão sendo cadastrados. Fale com o estabelecimento pelo WhatsApp." />
             ) : (
               <div className="grid gap-3">
                 {visibleServices.map((s) => (
@@ -222,9 +223,9 @@ function BookingPage() {
 
         {step === 1 && (
           <section className="animate-fade-up space-y-5">
-            <h1 className="text-2xl font-bold sm:text-3xl">Escolha o barbeiro</h1>
+            <h1 className="text-2xl font-bold sm:text-3xl">Escolha o profissional</h1>
             {serviceBarbers.length === 0 ? (
-              <Empty text="Nenhum barbeiro faz este serviço no momento." />
+              <Empty text="Nenhum profissional faz este serviço no momento." />
             ) : (
               <div className="grid gap-3 sm:grid-cols-2">
                 {serviceBarbers.map((b) => (
@@ -257,7 +258,7 @@ function BookingPage() {
           <section className="animate-fade-up space-y-6">
             <h1 className="text-2xl font-bold sm:text-3xl">Escolha dia e horário</h1>
             {days.length === 0 ? (
-              <Empty text="A agenda online ainda não está aberta. Fale com a barbearia pelo WhatsApp." />
+              <Empty text="A agenda online ainda não está aberta. Fale com o estabelecimento pelo WhatsApp." />
             ) : (
               <>
                 <div className="-mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-2">
@@ -294,7 +295,7 @@ function BookingPage() {
                 ) : slotsQuery.isError ? (
                   <Empty text="Não foi possível carregar os horários. Tente novamente." />
                 ) : !slotsQuery.data?.length ? (
-                  <Empty text={`${barber?.name ?? "O barbeiro"} não tem horários livres neste dia. Escolha outro dia.`} />
+                  <Empty text={`${barber?.name ?? "O profissional"} não tem horários livres neste dia. Escolha outro dia.`} />
                 ) : (
                   <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
                     {slotsQuery.data.map((s) => (
@@ -359,7 +360,7 @@ function BookingPage() {
             <h1 className="text-2xl font-bold sm:text-3xl">Revise seu agendamento</h1>
             <div className="surface-card divide-y divide-border">
               <Row icon={<Scissors />} label="Serviço" value={service.name} />
-              <Row icon={<User />} label="Barbeiro" value={barber.name} />
+              <Row icon={<User />} label="Profissional" value={barber.name} />
               <Row icon={<Calendar />} label="Data" value={formatLongDate(slot)} />
               <Row icon={<Clock />} label="Horário" value={`${formatTime(slot)} · ${formatDuration(service.duration_minutes)}`} />
               <Row icon={<User />} label="Cliente" value={`${name.trim()} · ${formatPhone(phone)}`} />
@@ -408,6 +409,7 @@ function Empty({ text }: { text: string }) {
 }
 
 function BookingDone({ result, whatsapp }: { result: BookingResult; whatsapp: string }) {
+  const slugCompany = useCompany();
   const brand = useBrand();
   const msg = bookingWhatsappMessage({
     customerName: result.customer_name,
@@ -440,7 +442,7 @@ function BookingDone({ result, whatsapp }: { result: BookingResult; whatsapp: st
             </a>
           </Button>
           <p className="text-xs text-muted-foreground">
-            O WhatsApp abre com a mensagem pronta. Ela só chega à barbearia depois que você tocar em enviar.
+            O WhatsApp abre com a mensagem pronta. Ela só chega ao estabelecimento depois que você tocar em enviar.
           </p>
         </div>
 
@@ -466,7 +468,7 @@ function BookingDone({ result, whatsapp }: { result: BookingResult; whatsapp: st
         </div>
 
         <Button asChild variant="link" className="mt-6">
-          <Link to="/">Voltar ao início</Link>
+          <Link to="/$slug" params={{ slug: slugCompany.slug }}>Voltar ao início</Link>
         </Button>
       </main>
     </div>

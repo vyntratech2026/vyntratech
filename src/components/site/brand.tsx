@@ -1,10 +1,9 @@
-import logoAsset from "@/assets/logo.png.asset.json";
 import { useSignedUrl } from "@/lib/media";
-import { splitBrandName, useBrand } from "@/lib/brand";
+import { initials, splitBrandName, useBrand } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 import { ImageOff } from "lucide-react";
 
-/** Shop logo: the one uploaded in "Aparência", or the original logo. */
+/** Company logo uploaded in "Aparência"; without one, the initials in the brand color. */
 export function Logo({ className, path }: { className?: string; path?: string | null }) {
   const brand = useBrand();
   const logoPath = path === undefined ? brand.logoPath : path;
@@ -12,9 +11,19 @@ export function Logo({ className, path }: { className?: string; path?: string | 
   if (logoPath && !signed) {
     return <div className={cn("rounded-full bg-surface-raised", className)} aria-label={brand.name} />;
   }
+  if (!logoPath) {
+    return (
+      <div
+        className={cn("flex items-center justify-center rounded-full border-2 border-primary bg-background font-display font-bold text-primary [container-type:size]", className)}
+        aria-label={brand.name}
+      >
+        <span style={{ fontSize: "38cqw", lineHeight: 1 }}>{initials(brand.name)}</span>
+      </div>
+    );
+  }
   return (
     <img
-      src={logoPath ? signed : logoAsset.url}
+      src={signed}
       alt={brand.name}
       width={1080}
       height={1080}

@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { Instagram, MapPin, MessageCircle } from "lucide-react";
 import { settingsQuery, hasOpeningHours } from "@/lib/public-data";
-import { DAY_NAMES, SHOP_WHATSAPP, whatsappLink } from "@/lib/format";
-import { useBrand } from "@/lib/brand";
+import { DAY_NAMES, whatsappLink } from "@/lib/format";
+import { useBrand, useCompany } from "@/lib/brand";
 import { Logo } from "./brand";
 
 export function SiteFooter() {
-  const { data: s } = useQuery(settingsQuery());
+  const { data: s } = useQuery(settingsQuery(useCompany().id));
   const brand = useBrand();
   const oh = s?.opening_hours;
   return (
@@ -23,17 +23,19 @@ export function SiteFooter() {
               <MapPin className="mt-0.5 size-4 shrink-0 text-primary" /> {s.address}
             </p>
           )}
-          <a
-            href={whatsappLink(s?.whatsapp || SHOP_WHATSAPP)}
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-2 hover:text-primary"
-          >
-            <MessageCircle className="size-4 text-primary" /> {s?.phone ?? "(79) 99689-1622"}
-          </a>
+          {s?.whatsapp && (
+            <a
+              href={whatsappLink(s.whatsapp)}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 hover:text-primary"
+            >
+              <MessageCircle className="size-4 text-primary" /> {s.phone || "WhatsApp"}
+            </a>
+          )}
           {s?.instagram && (
             <a href={s.instagram} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-primary">
-              <Instagram className="size-4 text-primary" /> @studiocleisoncortes
+              <Instagram className="size-4 text-primary" /> Instagram
             </a>
           )}
         </div>

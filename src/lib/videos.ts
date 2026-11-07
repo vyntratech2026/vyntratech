@@ -5,13 +5,14 @@ export const VIDEO_BUCKET = "videos";
 export const VIDEO_MAX_BYTES = 50 * 1024 * 1024;
 const VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/webm"];
 
-export const publicVideosQuery = () =>
+export const publicVideosQuery = (companyId: string) =>
   queryOptions({
-    queryKey: ["public", "videos"],
+    queryKey: ["public", "videos", companyId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("site_videos")
         .select("id, title, video_path, sort_order")
+        .eq("company_id", companyId)
         .eq("is_active", true)
         .order("sort_order")
         .order("created_at");
@@ -45,11 +46,11 @@ export function validateVideo(file: File): string | null {
   return null;
 }
 
-export async function uploadVideo(file: File): Promise<string> {
+export async function uploadVideo(file: File, companyId: string): Promise<string> {
   const problem = validateVideo(file);
   if (problem) throw new Error(problem);
   const ext = file.type === "video/webm" ? "webm" : file.type === "video/quicktime" ? "mov" : "mp4";
-  const path = `site/${crypto.randomUUID()}.${ext}`;
+  const path = `${companyId}/site/${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage.from(VIDEO_BUCKET).upload(path, file, { contentType: file.type, upsert: false });
   if (error) {
     if (/exceeded|too large|maximum allowed size/i.test(error.message)) throw new Error("O vídeo é grande demais. Máximo 50 MB.");

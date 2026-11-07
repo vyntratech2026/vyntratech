@@ -61,7 +61,7 @@ function AppointmentsPage() {
     queryFn: async () => {
       let q = supabase
         .from("appointments")
-        .select("id, start_at, duration_minutes, service_name, price, status, source, notes, manage_token, barber_id, barbers(name), customers(full_name, phone)")
+        .select("id, start_at, duration_minutes, service_name, price, status, source, notes, manage_token, barber_id, barbers!appointments_barber_id_fkey(name), customers!appointments_customer_id_fkey(full_name, phone)")
         .gte("start_at", shopDayStartIso(day))
         .lt("start_at", shopDayStartIso(addDaysKey(day, 1)))
         .order("start_at");

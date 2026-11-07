@@ -34,7 +34,7 @@ function Dashboard() {
         supabase.from("appointments").select("id, status, price, barber_id").gte("start_at", month.start).lt("start_at", month.end),
         supabase
           .from("appointments")
-          .select("id, status, start_at, service_name, barber_id, customers(full_name), barbers(name)")
+          .select("id, status, start_at, service_name, barber_id, customers!appointments_customer_id_fkey(full_name), barbers!appointments_barber_id_fkey(name)")
           .gte("start_at", dayStart)
           .lt("start_at", dayEnd)
           .order("start_at"),

@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { MediaImage } from "@/components/site/brand";
 import { uploadImage, validateImage } from "@/lib/media";
+import { useCompany } from "@/lib/brand";
 import { errorMessage } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +30,7 @@ export function PhotoField({
 }) {
   const ref = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
+  const companyId = useCompany().id;
   return (
     <div className="flex items-center gap-4">
       <MediaImage path={value} alt={label} className={cn("size-20 shrink-0 rounded-lg", className)} />
@@ -49,7 +51,7 @@ export function PhotoField({
             }
             setBusy(true);
             try {
-              onChange(await uploadImage(file, folder));
+              onChange(await uploadImage(file, folder, companyId));
             } catch (err) {
               toast.error(errorMessage(err, "Não foi possível enviar a imagem."));
             } finally {
