@@ -5,13 +5,14 @@ export const VIDEO_BUCKET = "videos";
 export const VIDEO_MAX_BYTES = 50 * 1024 * 1024;
 const VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/webm"];
 
-export const publicVideosQuery = () =>
+export const publicVideosQuery = (companyId: string) =>
   queryOptions({
-    queryKey: ["public", "videos"],
+    queryKey: ["public", "videos", companyId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("site_videos")
         .select("id, title, video_path, sort_order")
+        .eq("company_id", companyId)
         .eq("is_active", true)
         .order("sort_order")
         .order("created_at");

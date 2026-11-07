@@ -20,29 +20,30 @@ export interface PublicSettings {
   cancellation_policy: string | null;
 }
 
-export const settingsQuery = () =>
+export const settingsQuery = (companyId: string) =>
   queryOptions({
-    queryKey: ["public", "settings"],
+    queryKey: ["public", "settings", companyId],
     queryFn: async (): Promise<PublicSettings> => {
       const { data, error } = await supabase
         .from("settings")
         .select(
           "business_name, tagline, description, logo_url, cover_url, address, phone, whatsapp, instagram, maps_url, opening_hours, max_advance_days, cancellation_min_hours, cancellation_policy",
         )
-        .eq("id", 1)
+        .eq("company_id", companyId)
         .single();
       if (error) throw error;
       return { ...data, opening_hours: (data.opening_hours ?? {}) as OpeningHours };
     },
   });
 
-export const servicesQuery = () =>
+export const servicesQuery = (companyId: string) =>
   queryOptions({
-    queryKey: ["public", "services"],
+    queryKey: ["public", "services", companyId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("services")
         .select("id, name, description, photo_url, price, duration_minutes")
+        .eq("company_id", companyId)
         .eq("is_active", true)
         .order("name");
       if (error) throw error;
@@ -50,13 +51,14 @@ export const servicesQuery = () =>
     },
   });
 
-export const barbersQuery = () =>
+export const barbersQuery = (companyId: string) =>
   queryOptions({
-    queryKey: ["public", "barbers"],
+    queryKey: ["public", "barbers", companyId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("barbers")
         .select("id, name, photo_url, description, specialties")
+        .eq("company_id", companyId)
         .eq("is_active", true)
         .order("name");
       if (error) throw error;
@@ -64,36 +66,38 @@ export const barbersQuery = () =>
     },
   });
 
-export const barberServicesQuery = () =>
+export const barberServicesQuery = (companyId: string) =>
   queryOptions({
-    queryKey: ["public", "barber-services"],
+    queryKey: ["public", "barber-services", companyId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("barber_services").select("barber_id, service_id");
+      const { data, error } = await supabase.from("barber_services").select("barber_id, service_id").eq("company_id", companyId);
       if (error) throw error;
       return data;
     },
   });
 
-export const productsQuery = () =>
+export const productsQuery = (companyId: string) =>
   queryOptions({
-    queryKey: ["public", "products"],
+    queryKey: ["public", "products", companyId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
         .select("id, name, description, photo_url, price, is_available")
+        .eq("company_id", companyId)
         .order("name");
       if (error) throw error;
       return data;
     },
   });
 
-export const reviewsQuery = () =>
+export const reviewsQuery = (companyId: string) =>
   queryOptions({
-    queryKey: ["public", "reviews"],
+    queryKey: ["public", "reviews", companyId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reviews")
         .select("id, reviewer_name, rating, comment, created_at")
+        .eq("company_id", companyId)
         .eq("is_approved", true)
         .order("created_at", { ascending: false })
         .limit(12);
