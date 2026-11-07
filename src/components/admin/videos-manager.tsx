@@ -7,17 +7,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { errorMessage } from "@/lib/format";
+import { useCompany } from "@/lib/brand";
 import { uploadVideo, useVideoUrls, validateVideo, VIDEO_BUCKET } from "@/lib/videos";
 
 export function VideosManager() {
   const qc = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState("");
+  const companyId = useCompany().id;
 
   const list = useQuery({
-    queryKey: ["admin", "videos"],
+    queryKey: ["admin", "videos", companyId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("site_videos").select("*").order("sort_order").order("created_at");
+      const { data, error } = await supabase.from("site_videos").select("*").eq("company_id", companyId).order("sort_order").order("created_at");
       if (error) throw error;
       return data;
     },
@@ -31,7 +33,7 @@ export function VideosManager() {
 
   const add = useMutation({
     mutationFn: async (file: File) => {
-      const path = await uploadVideo(file);
+      const path = await uploadVideo(file, companyId);
       const nextOrder = (list.data?.reduce((m, v) => Math.max(m, v.sort_order), 0) ?? 0) + 1;
       const { error } = await supabase.from("site_videos").insert({ video_path: path, title: title.trim() || null, sort_order: nextOrder });
       if (error) {

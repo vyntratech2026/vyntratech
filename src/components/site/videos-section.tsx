@@ -3,10 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
 import { publicVideosQuery, useVideoUrls } from "@/lib/videos";
 import { cn } from "@/lib/utils";
+import { useCompany } from "@/lib/brand";
 
 /** Reel of the shop's videos: plays muted on loop while visible, swipeable on phones. */
 export function VideosSection() {
-  const { data: videos } = useQuery(publicVideosQuery());
+  const { data: videos } = useQuery(publicVideosQuery(useCompany().id));
   const urls = useVideoUrls(videos?.map((v) => v.video_path) ?? []);
   const scroller = useRef<HTMLDivElement>(null);
 
