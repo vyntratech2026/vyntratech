@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -31,6 +32,11 @@ import { Route as AuthenticatedAdminNotificacoesRouteImport } from './routes/_au
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin.produtos'
 import { Route as AuthenticatedAdminServicosRouteImport } from './routes/_authenticated/admin.servicos'
 
+const SlugRoute = SlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
@@ -46,14 +52,14 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const SlugIndexRoute = SlugIndexRouteImport.update({
-  id: '/$slug/',
-  path: '/$slug/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => SlugRoute,
 } as any)
 const SlugAgendarRoute = SlugAgendarRouteImport.update({
-  id: '/$slug/agendar',
-  path: '/$slug/agendar',
-  getParentRoute: () => rootRouteImport,
+  id: '/agendar',
+  path: '/agendar',
+  getParentRoute: () => SlugRoute,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
@@ -66,9 +72,9 @@ const AgendamentoTokenRoute = AgendamentoTokenRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const SlugProfissionalIdRoute = SlugProfissionalIdRouteImport.update({
-  id: '/$slug/profissional/$id',
-  path: '/$slug/profissional/$id',
-  getParentRoute: () => rootRouteImport,
+  id: '/profissional/$id',
+  path: '/profissional/$id',
+  getParentRoute: () => SlugRoute,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
@@ -149,6 +155,7 @@ const AuthenticatedAdminServicosRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedRouteRouteWithChildren
+  '/$slug': typeof SlugRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/$slug/agendar': typeof SlugAgendarRoute
@@ -195,6 +202,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/$slug': typeof SlugRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/$slug/agendar': typeof SlugAgendarRoute
@@ -220,6 +228,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$slug'
     | '/auth'
     | '/reset-password'
     | '/$slug/agendar'
@@ -265,6 +274,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_authenticated'
+    | '/$slug'
     | '/auth'
     | '/reset-password'
     | '/$slug/agendar'
@@ -289,16 +299,21 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  SlugRoute: typeof SlugRouteWithChildren
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
-  SlugAgendarRoute: typeof SlugAgendarRoute
   AgendamentoTokenRoute: typeof AgendamentoTokenRoute
-  SlugIndexRoute: typeof SlugIndexRoute
-  SlugProfissionalIdRoute: typeof SlugProfissionalIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/$slug': {
+      id: '/$slug'
+      path: '/$slug'
+      fullPath: '/$slug'
+      preLoaderRoute: typeof SlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
@@ -322,17 +337,17 @@ declare module '@tanstack/react-router' {
     }
     '/$slug/': {
       id: '/$slug/'
-      path: '/$slug'
+      path: '/'
       fullPath: '/$slug/'
       preLoaderRoute: typeof SlugIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof SlugRoute
     }
     '/$slug/agendar': {
       id: '/$slug/agendar'
-      path: '/$slug/agendar'
+      path: '/agendar'
       fullPath: '/$slug/agendar'
       preLoaderRoute: typeof SlugAgendarRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof SlugRoute
     }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
@@ -350,10 +365,10 @@ declare module '@tanstack/react-router' {
     }
     '/$slug/profissional/$id': {
       id: '/$slug/profissional/$id'
-      path: '/$slug/profissional/$id'
+      path: '/profissional/$id'
       fullPath: '/$slug/profissional/$id'
       preLoaderRoute: typeof SlugProfissionalIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof SlugRoute
     }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
@@ -495,14 +510,26 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-const rootRouteChildren: RootRouteChildren = {
-  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
-  ResetPasswordRoute: ResetPasswordRoute,
+interface SlugRouteChildren {
+  SlugAgendarRoute: typeof SlugAgendarRoute
+  SlugIndexRoute: typeof SlugIndexRoute
+  SlugProfissionalIdRoute: typeof SlugProfissionalIdRoute
+}
+
+const SlugRouteChildren: SlugRouteChildren = {
   SlugAgendarRoute: SlugAgendarRoute,
-  AgendamentoTokenRoute: AgendamentoTokenRoute,
   SlugIndexRoute: SlugIndexRoute,
   SlugProfissionalIdRoute: SlugProfissionalIdRoute,
+}
+
+const SlugRouteWithChildren = SlugRoute._addFileChildren(SlugRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  SlugRoute: SlugRouteWithChildren,
+  AuthRoute: AuthRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  AgendamentoTokenRoute: AgendamentoTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
