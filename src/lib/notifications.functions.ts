@@ -26,7 +26,7 @@ export const notifyNewBooking = createServerFn({ method: "POST" })
         .eq("source", "online")
         .is("notified_at", null)
         .gte("created_at", since)
-        .select("id, start_at, service_name, price, barbers(name), customers!appointments_customer_id_fkey(full_name, phone)")
+        .select("id, start_at, service_name, price, barbers!appointments_barber_id_fkey(name), customers!appointments_customer_id_fkey(full_name, phone)")
         .maybeSingle();
       if (error || !appt) return { sent: false };
 
