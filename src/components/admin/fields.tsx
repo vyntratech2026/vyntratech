@@ -30,6 +30,7 @@ export function PhotoField({
 }) {
   const ref = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
+  const companyId = useCompany().id;
   return (
     <div className="flex items-center gap-4">
       <MediaImage path={value} alt={label} className={cn("size-20 shrink-0 rounded-lg", className)} />
