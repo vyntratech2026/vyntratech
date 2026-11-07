@@ -3,21 +3,24 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BrandName, Logo } from "./brand";
+import { useCompany } from "@/lib/brand";
 
-const NAV = [
-  { href: "/#inicio", label: "Início" },
-  { href: "/#servicos", label: "Serviços" },
-  { href: "/#profissionais", label: "Profissionais" },
-  { href: "/#produtos", label: "Produtos" },
-  { href: "/#avaliacoes", label: "Avaliações" },
+const SECTIONS = [
+  { hash: "inicio", label: "Início" },
+  { hash: "servicos", label: "Serviços" },
+  { hash: "profissionais", label: "Profissionais" },
+  { hash: "produtos", label: "Produtos" },
+  { hash: "avaliacoes", label: "Avaliações" },
 ];
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const { slug } = useCompany();
+  const NAV = SECTIONS.map((n) => ({ ...n, href: `/${slug}#${n.hash}` }));
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/75 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-3">
+        <Link to="/$slug" params={{ slug }} className="flex items-center gap-3">
           <Logo className="size-10" />
           <span className="hidden font-display text-sm font-semibold uppercase tracking-wider sm:block">
             <BrandName />
@@ -36,7 +39,7 @@ export function SiteHeader() {
         </nav>
         <div className="flex items-center gap-2">
           <Button asChild size="sm" className="hidden sm:inline-flex">
-            <Link to="/agendar">Agendar</Link>
+            <Link to="/$slug/agendar" params={{ slug }}>Agendar</Link>
           </Button>
           <Button
             variant="ghost"
@@ -62,7 +65,7 @@ export function SiteHeader() {
             </a>
           ))}
           <Button asChild className="mt-3 w-full">
-            <Link to="/agendar" onClick={() => setOpen(false)}>
+            <Link to="/$slug/agendar" params={{ slug }} onClick={() => setOpen(false)}>
               Agendar horário
             </Link>
           </Button>
