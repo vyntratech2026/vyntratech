@@ -14,10 +14,10 @@ export function Logo({ className, path }: { className?: string; path?: string | 
   if (!logoPath) {
     return (
       <div
-        className={cn("flex items-center justify-center rounded-full border-2 border-primary bg-background font-display font-bold text-primary glow-primary", className)}
+        className={cn("flex items-center justify-center rounded-full border-2 border-primary bg-background font-display font-bold text-primary [container-type:size]", className)}
         aria-label={brand.name}
       >
-        <span className="text-[min(1.1em,40cqw)]" style={{ fontSize: "clamp(0.7rem, 38%, 2.5rem)" }}>{initials(brand.name)}</span>
+        <span style={{ fontSize: "38cqw", lineHeight: 1 }}>{initials(brand.name)}</span>
       </div>
     );
   }
