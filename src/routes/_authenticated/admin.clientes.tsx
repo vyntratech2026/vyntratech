@@ -25,7 +25,7 @@ function CustomersPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("customers")
-        .select("id, full_name, phone, created_at, appointments(start_at, status)")
+        .select("id, full_name, phone, created_at, appointments!appointments_customer_id_fkey(start_at, status)")
         .order("full_name");
       if (error) throw error;
       return data;
@@ -82,7 +82,7 @@ function CustomerDetail({ id, onClose }: { id: string | null; onClose: () => voi
     queryFn: async () => {
       const { data, error } = await supabase
         .from("customers")
-        .select("id, full_name, phone, created_at, appointments(id, start_at, service_name, price, status, barbers(name))")
+        .select("id, full_name, phone, created_at, appointments!appointments_customer_id_fkey(id, start_at, service_name, price, status, barbers!appointments_barber_id_fkey(name))")
         .eq("id", id!)
         .single();
       if (error) throw error;

@@ -20,7 +20,7 @@ function ReviewsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reviews")
-        .select("id, reviewer_name, rating, comment, is_approved, created_at, barbers(name), appointments(service_name, start_at)")
+        .select("id, reviewer_name, rating, comment, is_approved, created_at, barbers!reviews_barber_id_fkey(name), appointments!reviews_appointment_id_fkey(service_name, start_at)")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
