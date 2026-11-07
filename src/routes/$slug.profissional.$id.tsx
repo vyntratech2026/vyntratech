@@ -8,7 +8,7 @@ import { MediaImage } from "@/components/site/brand";
 import { barberServicesQuery, barbersQuery, servicesQuery } from "@/lib/public-data";
 import { formatDuration, formatPrice } from "@/lib/format";
 
-export const Route = createFileRoute("/profissional/$id")({
+export const Route = createFileRoute("/$slug/profissional/$id")({
   head: () => ({
     meta: [
       { title: "Profissional — Studio Cleison Cortes" },

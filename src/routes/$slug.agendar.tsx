@@ -34,7 +34,7 @@ const searchSchema = z.object({
   barbeiro: z.string().uuid().optional().catch(undefined),
 });
 
-export const Route = createFileRoute("/agendar")({
+export const Route = createFileRoute("/$slug/agendar")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [

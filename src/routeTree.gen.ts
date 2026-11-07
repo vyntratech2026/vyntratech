@@ -9,14 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AgendarRouteImport } from './routes/agendar'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SlugIndexRouteImport } from './routes/$slug.index'
+import { Route as SlugAgendarRouteImport } from './routes/$slug.agendar'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AgendamentoTokenRouteImport } from './routes/agendamento.$token'
-import { Route as ProfissionalIdRouteImport } from './routes/profissional.$id'
+import { Route as SlugProfissionalIdRouteImport } from './routes/$slug.profissional.$id'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAgendamentosRouteImport } from './routes/_authenticated/admin.agendamentos'
 import { Route as AuthenticatedAdminAparenciaRouteImport } from './routes/_authenticated/admin.aparencia'
@@ -31,18 +31,8 @@ import { Route as AuthenticatedAdminNotificacoesRouteImport } from './routes/_au
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin.produtos'
 import { Route as AuthenticatedAdminServicosRouteImport } from './routes/_authenticated/admin.servicos'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AgendarRoute = AgendarRouteImport.update({
-  id: '/agendar',
-  path: '/agendar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -55,6 +45,16 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SlugIndexRoute = SlugIndexRouteImport.update({
+  id: '/$slug/',
+  path: '/$slug/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SlugAgendarRoute = SlugAgendarRouteImport.update({
+  id: '/$slug/agendar',
+  path: '/$slug/agendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -65,9 +65,9 @@ const AgendamentoTokenRoute = AgendamentoTokenRouteImport.update({
   path: '/agendamento/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProfissionalIdRoute = ProfissionalIdRouteImport.update({
-  id: '/profissional/$id',
-  path: '/profissional/$id',
+const SlugProfissionalIdRoute = SlugProfissionalIdRouteImport.update({
+  id: '/$slug/profissional/$id',
+  path: '/$slug/profissional/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
@@ -148,13 +148,14 @@ const AuthenticatedAdminServicosRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/agendar': typeof AgendarRoute
+  '/': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/$slug/agendar': typeof SlugAgendarRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamento/$token': typeof AgendamentoTokenRoute
-  '/profissional/$id': typeof ProfissionalIdRoute
+  '/$slug/': typeof SlugIndexRoute
+  '/$slug/profissional/$id': typeof SlugProfissionalIdRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/admin/aparencia': typeof AuthenticatedAdminAparenciaRoute
   '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
@@ -170,12 +171,13 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/agendar': typeof AgendarRoute
+  '/': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/$slug/agendar': typeof SlugAgendarRoute
   '/agendamento/$token': typeof AgendamentoTokenRoute
-  '/profissional/$id': typeof ProfissionalIdRoute
+  '/$slug': typeof SlugIndexRoute
+  '/$slug/profissional/$id': typeof SlugProfissionalIdRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/admin/aparencia': typeof AuthenticatedAdminAparenciaRoute
   '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
@@ -192,14 +194,14 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/agendar': typeof AgendarRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/$slug/agendar': typeof SlugAgendarRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamento/$token': typeof AgendamentoTokenRoute
-  '/profissional/$id': typeof ProfissionalIdRoute
+  '/$slug/': typeof SlugIndexRoute
+  '/$slug/profissional/$id': typeof SlugProfissionalIdRoute
   '/_authenticated/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/_authenticated/admin/aparencia': typeof AuthenticatedAdminAparenciaRoute
   '/_authenticated/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
@@ -218,12 +220,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/agendar'
     | '/auth'
     | '/reset-password'
+    | '/$slug/agendar'
     | '/admin'
     | '/agendamento/$token'
-    | '/profissional/$id'
+    | '/$slug/'
+    | '/$slug/profissional/$id'
     | '/admin/agendamentos'
     | '/admin/aparencia'
     | '/admin/avaliacoes'
@@ -240,11 +243,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/agendar'
     | '/auth'
     | '/reset-password'
+    | '/$slug/agendar'
     | '/agendamento/$token'
-    | '/profissional/$id'
+    | '/$slug'
+    | '/$slug/profissional/$id'
     | '/admin/agendamentos'
     | '/admin/aparencia'
     | '/admin/avaliacoes'
@@ -260,14 +264,14 @@ export interface FileRouteTypes {
     | '/admin'
   id:
     | '__root__'
-    | '/'
     | '/_authenticated'
-    | '/agendar'
     | '/auth'
     | '/reset-password'
+    | '/$slug/agendar'
     | '/_authenticated/admin'
     | '/agendamento/$token'
-    | '/profissional/$id'
+    | '/$slug/'
+    | '/$slug/profissional/$id'
     | '/_authenticated/admin/agendamentos'
     | '/_authenticated/admin/aparencia'
     | '/_authenticated/admin/avaliacoes'
@@ -284,36 +288,22 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AgendarRoute: typeof AgendarRoute
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SlugAgendarRoute: typeof SlugAgendarRoute
   AgendamentoTokenRoute: typeof AgendamentoTokenRoute
-  ProfissionalIdRoute: typeof ProfissionalIdRoute
+  SlugIndexRoute: typeof SlugIndexRoute
+  SlugProfissionalIdRoute: typeof SlugProfissionalIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/agendar': {
-      id: '/agendar'
-      path: '/agendar'
-      fullPath: '/agendar'
-      preLoaderRoute: typeof AgendarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -330,6 +320,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$slug/': {
+      id: '/$slug/'
+      path: '/$slug'
+      fullPath: '/$slug/'
+      preLoaderRoute: typeof SlugIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$slug/agendar': {
+      id: '/$slug/agendar'
+      path: '/$slug/agendar'
+      fullPath: '/$slug/agendar'
+      preLoaderRoute: typeof SlugAgendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -344,11 +348,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgendamentoTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/profissional/$id': {
-      id: '/profissional/$id'
-      path: '/profissional/$id'
-      fullPath: '/profissional/$id'
-      preLoaderRoute: typeof ProfissionalIdRouteImport
+    '/$slug/profissional/$id': {
+      id: '/$slug/profissional/$id'
+      path: '/$slug/profissional/$id'
+      fullPath: '/$slug/profissional/$id'
+      preLoaderRoute: typeof SlugProfissionalIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -492,13 +496,13 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AgendarRoute: AgendarRoute,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SlugAgendarRoute: SlugAgendarRoute,
   AgendamentoTokenRoute: AgendamentoTokenRoute,
-  ProfissionalIdRoute: ProfissionalIdRoute,
+  SlugIndexRoute: SlugIndexRoute,
+  SlugProfissionalIdRoute: SlugProfissionalIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

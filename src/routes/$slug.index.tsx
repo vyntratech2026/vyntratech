@@ -17,7 +17,7 @@ import {
 import { useSignedUrl } from "@/lib/media";
 import { formatDate, formatDuration, formatPrice, SHOP_WHATSAPP, whatsappLink } from "@/lib/format";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/$slug/")({
   head: () => ({
     meta: [
       { title: "Studio Cleison Cortes — Barbearia em Aracaju | Agende online" },
