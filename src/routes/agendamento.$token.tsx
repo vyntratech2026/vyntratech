@@ -188,6 +188,7 @@ function ManageBooking() {
       </main>
     </div>
   );
+  return company ? <CompanyProvider company={company}>{page}</CompanyProvider> : page;
 }
 
 function Line({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
