@@ -1,3 +1,5 @@
+import { CompanyProvider, type CompanyInfo } from "@/lib/brand";
+import { themeCss } from "@/lib/theme";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -26,7 +28,6 @@ import {
   formatLongDate,
   formatPrice,
   formatTime,
-  SHOP_WHATSAPP,
   whatsappLink,
   type AppointmentStatus,
 } from "@/lib/format";
@@ -59,6 +60,13 @@ interface Booking {
   can_cancel: boolean;
   can_review: boolean;
   cancellation_min_hours: number;
+  company_slug: string;
+  business_name: string;
+  whatsapp: string | null;
+  logo_url: string | null;
+  brand_primary: string;
+  brand_background: string;
+  brand_text: string;
 }
 
 function ManageBooking() {
@@ -89,14 +97,31 @@ function ManageBooking() {
   });
 
   const b = q.data;
+  const company: CompanyInfo | null = b
+    ? {
+        id: "",
+        slug: b.company_slug,
+        brand: {
+          name: b.business_name,
+          logoPath: b.logo_url,
+          colors: { primary: b.brand_primary, background: b.brand_background, text: b.brand_text },
+        },
+      }
+    : null;
+  const css = company ? themeCss(company.brand.colors) : "";
 
-  return (
+  const page = (
     <div className="relative min-h-screen bg-background">
+      {css && <style dangerouslySetInnerHTML={{ __html: css }} />}
       <div className="absolute inset-x-0 top-0 h-80 bg-radial-glow" />
       <main className="relative mx-auto max-w-lg px-4 py-12">
-        <Link to="/" className="mx-auto block w-fit">
-          <Logo className="size-16" />
-        </Link>
+        {company ? (
+          <Link to="/$slug" params={{ slug: company.slug }} className="mx-auto block w-fit">
+            <Logo className="size-16" />
+          </Link>
+        ) : (
+          <Logo className="mx-auto size-16" />
+        )}
         <h1 className="mt-6 text-center text-2xl font-bold">Meu agendamento</h1>
 
         {!validToken || (q.isSuccess && !b) ? (
@@ -143,10 +168,10 @@ function ManageBooking() {
             )}
             {!b.can_cancel && (b.status === "pending" || b.status === "confirmed") && (
               <p className="text-center text-xs text-muted-foreground">
-                Cancelamento pelo site só até {b.cancellation_min_hours}h antes. Fale com a barbearia:
-                <a href={whatsappLink(SHOP_WHATSAPP)} target="_blank" rel="noreferrer" className="ml-1 inline-flex items-center gap-1 text-primary">
+                Cancelamento pelo site só até {b.cancellation_min_hours}h antes. Fale com o estabelecimento{b.whatsapp ? ":" : "."}
+                {b.whatsapp && <a href={whatsappLink(b.whatsapp)} target="_blank" rel="noreferrer" className="ml-1 inline-flex items-center gap-1 text-primary">
                   <MessageCircle className="size-3" /> WhatsApp
-                </a>
+                </a>}
               </p>
             )}
 
@@ -154,7 +179,7 @@ function ManageBooking() {
             {b.has_review && <p className="text-center text-sm text-primary">Obrigado pela sua avaliação!</p>}
 
             <Button asChild variant="hero" size="lg" className="w-full">
-              <Link to="/agendar">Fazer novo agendamento</Link>
+              <Link to="/$slug/agendar" params={{ slug: b.company_slug }}>Fazer novo agendamento</Link>
             </Button>
           </div>
         ) : (
