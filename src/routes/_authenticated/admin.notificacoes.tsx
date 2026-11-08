@@ -1,3 +1,4 @@
+import { useCompany } from "@/lib/brand";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/_authenticated/admin/notificacoes")({
 });
 
 function NotificationsPage() {
+  const companyId = useCompany().id;
   const { data: staff } = useStaff();
   const qc = useQueryClient();
   const testFn = useServerFn(sendPushcutTest);
@@ -30,7 +32,7 @@ function NotificationsPage() {
       const { data, error } = await supabase
         .from("notification_settings")
         .select("pushcut_enabled, pushcut_url")
-        .eq("id", 1)
+        .eq("company_id", companyId)
         .maybeSingle();
       if (error) throw error;
       return data;
@@ -41,7 +43,7 @@ function NotificationsPage() {
 
   useEffect(() => {
     if (q.isSuccess) {
-      setEnabled(q.data?.pushcut_enabled ?? true);
+      setEnabled(q.data?.pushcut_enabled ?? false);
       setUrl(q.data?.pushcut_url ?? "");
     }
   }, [q.isSuccess, q.data]);
@@ -54,7 +56,7 @@ function NotificationsPage() {
       if (!urlOk) throw new Error("Link do Pushcut inválido. Ele começa com https://api.pushcut.io/");
       const { error } = await supabase
         .from("notification_settings")
-        .upsert({ id: 1, pushcut_enabled: enabled, pushcut_url: trimmed || null });
+        .upsert({ company_id: companyId, pushcut_enabled: enabled, pushcut_url: trimmed || null });
       if (error) throw error;
     },
     onSuccess: () => {

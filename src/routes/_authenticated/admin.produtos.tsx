@@ -1,3 +1,4 @@
+import { useCompany } from "@/lib/brand";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -32,6 +33,7 @@ interface ProductForm {
 const EMPTY: ProductForm = { name: "", description: "", photo_url: null, price: "", is_available: true };
 
 function ProductsPage() {
+  const companyId = useCompany().id;
   const { data: staff } = useStaff();
   const qc = useQueryClient();
   const [form, setForm] = useState<ProductForm | null>(null);
@@ -39,7 +41,7 @@ function ProductsPage() {
   const list = useQuery({
     queryKey: ["admin", "products"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("products").select("*").order("name");
+      const { data, error } = await supabase.from("products").select("*").eq("company_id", companyId).order("name");
       if (error) throw error;
       return data;
     },

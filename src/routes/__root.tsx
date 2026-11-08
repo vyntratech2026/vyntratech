@@ -14,8 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { loadBrand } from "@/lib/brand";
-import { themeCss } from "@/lib/theme";
+import { PLATFORM_NAME } from "@/lib/brand";
 
 function NotFoundComponent() {
   return (
@@ -78,19 +77,17 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  loader: async () => ({ brand: await loadBrand() }),
-  staleTime: 5 * 60 * 1000,
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#080808" },
-      { title: "Studio Cleison Cortes — Barbearia em Aracaju" },
+      { title: `${PLATFORM_NAME} — Agenda online para o seu negócio` },
       {
         name: "description",
-        content: "Barbearia Studio Cleison Cortes em Aracaju. Agende seu horário online.",
+        content: "Site de agendamento e painel de gestão para negócios com horário marcado.",
       },
-      { property: "og:site_name", content: "Studio Cleison Cortes" },
+      { property: "og:site_name", content: PLATFORM_NAME },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -138,12 +135,9 @@ function RootComponent() {
     return () => data.subscription.unsubscribe();
   }, [router, queryClient]);
 
-  const { brand } = Route.useLoaderData();
-  const css = themeCss(brand.colors);
 
   return (
     <QueryClientProvider client={queryClient}>
-      {css && <style id="brand-theme" dangerouslySetInnerHTML={{ __html: css }} />}
       <Outlet />
       <Toaster position="top-center" richColors theme="dark" />
     </QueryClientProvider>

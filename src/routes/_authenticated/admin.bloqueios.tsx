@@ -1,3 +1,4 @@
+import { useCompany } from "@/lib/brand";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/_authenticated/admin/bloqueios")({
 const SHOP = "__shop__";
 
 function BlocksPage() {
+  const companyId = useCompany().id;
   const { data: staff } = useStaff();
   const isAdmin = !!staff?.isAdmin;
   const qc = useQueryClient();
@@ -33,7 +35,7 @@ function BlocksPage() {
   const barbers = useQuery({
     queryKey: ["admin", "barbers-lite"],
     enabled: isAdmin,
-    queryFn: async () => (await supabase.from("barbers").select("id, name, is_active").order("name")).data ?? [],
+    queryFn: async () => (await supabase.from("barbers").select("id, name, is_active").eq("company_id", companyId).order("name")).data ?? [],
   });
 
   const blocks = useQuery({

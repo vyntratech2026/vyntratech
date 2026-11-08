@@ -1,3 +1,4 @@
+import { useCompany } from "@/lib/brand";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -33,6 +34,7 @@ const COLOR_FIELDS: { key: keyof BrandColors; label: string; hint: string }[] = 
 ];
 
 function AppearancePage() {
+  const companyId = useCompany().id;
   const { data: staff } = useStaff();
   const qc = useQueryClient();
   const router = useRouter();
@@ -43,7 +45,7 @@ function AppearancePage() {
       const { data, error } = await supabase
         .from("settings")
         .select("business_name, logo_url, brand_primary, brand_background, brand_text")
-        .eq("id", 1)
+        .eq("company_id", companyId)
         .single();
       if (error) throw error;
       return data;
@@ -83,7 +85,7 @@ function AppearancePage() {
   const save = useMutation({
     mutationFn: async () => {
       const trimmed = name.trim();
-      if (trimmed.length < 2) throw new Error("Informe o nome da barbearia.");
+      if (trimmed.length < 2) throw new Error("Informe o nome da empresa.");
       if (trimmed.length > 60) throw new Error("O nome pode ter no máximo 60 letras.");
       const { error } = await supabase
         .from("settings")
@@ -94,7 +96,7 @@ function AppearancePage() {
           brand_background: colors.background,
           brand_text: colors.text,
         })
-        .eq("id", 1);
+        .eq("company_id", companyId);
       if (error) throw error;
     },
     onSuccess: async () => {

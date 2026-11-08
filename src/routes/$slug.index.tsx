@@ -2,7 +2,6 @@ import { useCompany } from "@/lib/brand";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Clock, Instagram, MapPin, MessageCircle, Star } from "lucide-react";
-import heroFallback from "@/assets/hero-fallback.jpg";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
@@ -56,13 +55,9 @@ function Index() {
 
       {/* HERO */}
       <section id="inicio" className="relative flex min-h-[92vh] items-end overflow-hidden pt-16">
-        <img
-          src={coverUrl ?? heroFallback}
-          alt=""
-          width={1920}
-          height={1088}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+        {coverUrl && (
+          <img src={coverUrl} alt="" width={1920} height={1088} className="absolute inset-0 h-full w-full object-cover" />
+        )}
         <div className="absolute inset-0 bg-hero-overlay" />
         <div className="absolute inset-0 bg-radial-glow opacity-60" />
         <div className="relative mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6 sm:pb-28">
@@ -78,11 +73,13 @@ function Index() {
               <Button asChild variant="hero" size="xl">
                 <Link to="/$slug/agendar" params={{ slug: slugCompany.slug }}>Agendar horário</Link>
               </Button>
-              <Button asChild variant="outline" size="xl">
-                <a href={whatsappLink(s?.whatsapp || SHOP_WHATSAPP)} target="_blank" rel="noreferrer">
-                  <MessageCircle /> WhatsApp
-                </a>
-              </Button>
+              {s?.whatsapp && (
+                <Button asChild variant="outline" size="xl">
+                  <a href={whatsappLink(s.whatsapp)} target="_blank" rel="noreferrer">
+                    <MessageCircle /> WhatsApp
+                  </a>
+                </Button>
+              )}
             </div>
           </div>
         </div>
