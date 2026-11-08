@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
+import { useMutation } from "@tanstack/react-query";
+import { z } from "zod";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Loader2, MailCheck } from "lucide-react";
 import { toast } from "sonner";
@@ -13,15 +13,16 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { Logo } from "@/components/site/brand";
 import { errorMessage } from "@/lib/format";
 import { isRealEmail, loginEmail } from "@/lib/staff-auth";
-import { setupFirstAdmin } from "@/lib/staff.functions";
+import { PLATFORM_NAME } from "@/lib/brand";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: z.object({ modo: z.enum(["cadastro"]).optional().catch(undefined) }),
   head: () => ({
     meta: [
-      { title: "Área da equipe — Studio Cleison Cortes" },
-      { name: "description", content: "Acesso restrito da equipe do Studio Cleison Cortes." },
-      { property: "og:title", content: "Área da equipe — Studio Cleison Cortes" },
-      { property: "og:description", content: "Acesso restrito da equipe." },
+      { title: `Entrar ou criar conta — ${PLATFORM_NAME}` },
+      { name: "description", content: "Entre no painel da sua empresa ou crie uma conta grátis." },
+      { property: "og:title", content: `Entrar ou criar conta — ${PLATFORM_NAME}` },
+      { property: "og:description", content: "Entre no painel da sua empresa ou crie uma conta grátis." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/auth")({
 
 function friendlyGoogleError(message: string): string {
   if (/signups? not allowed|not allowed for this instance|user not found/i.test(message)) {
-    return "Esta conta Google não faz parte da equipe. Use o mesmo e-mail que o administrador cadastrou para você.";
+    return "Não foi possível entrar com essa conta Google. Tente de novo ou use e-mail e senha.";
   }
   return message || "Não foi possível entrar com o Google.";
 }
@@ -47,13 +48,14 @@ function GoogleIcon() {
 
 function AuthPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"login" | "forgot">("login");
+  const search = Route.useSearch();
+  const [mode, setMode] = useState<"login" | "forgot" | "signup">(search.modo === "cadastro" ? "signup" : "login");
+  const [confirmSentTo, setConfirmSentTo] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [resetSentTo, setResetSentTo] = useState<string | null>(null);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const setupFn = useServerFn(setupFirstAdmin);
 
   useEffect(() => {
     // Errors coming back from the Google sign-in redirect.
@@ -68,27 +70,34 @@ function AuthPage() {
     });
   }, [navigate]);
 
-  const adminExists = useQuery({
-    queryKey: ["admin-exists"],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc("admin_exists");
-      if (error) throw error;
-      return data;
-    },
-  });
-  const isSetup = adminExists.data === false;
+  const isSetup = mode === "signup";
 
   const submit = useMutation({
     mutationFn: async () => {
       if (isSetup) {
-        if (!isRealEmail(email)) throw new Error("Informe um e-mail válido.");
-        await setupFn({ data: { name, email, password } });
-        adminExists.refetch();
+        const address = email.trim().toLowerCase();
+        if (!isRealEmail(address)) throw new Error("Informe um e-mail válido.");
+        if (password.length < 8) throw new Error("A senha precisa ter pelo menos 8 caracteres.");
+        const { data, error } = await supabase.auth.signUp({
+          email: address,
+          password,
+          options: { emailRedirectTo: `${window.location.origin}/auth`, data: { full_name: name.trim() } },
+        });
+        if (error) {
+          if (/already|registered/i.test(error.message)) throw new Error("Este e-mail já tem conta. Use Entrar.");
+          if (/weak|pwned|easy/i.test(error.message)) throw new Error("Essa senha é muito fácil de adivinhar. Use uma mais forte.");
+          throw error;
+        }
+        if (!data.session) return address;
+        return null;
       }
       const { error } = await supabase.auth.signInWithPassword({ email: loginEmail(email), password });
       if (error) throw new Error(/invalid/i.test(error.message) ? "E-mail ou senha incorretos." : error.message);
     },
-    onSuccess: () => navigate({ to: "/admin", replace: true }),
+    onSuccess: (pendingConfirm) => {
+      if (typeof pendingConfirm === "string") setConfirmSentTo(pendingConfirm);
+      else navigate({ to: "/admin", replace: true });
+    },
     onError: (e) => toast.error(errorMessage(e)),
   });
 
@@ -124,9 +133,9 @@ function AuthPage() {
     navigate({ to: "/admin", replace: true });
   };
 
-  const title = isSetup ? "Criar acesso do administrador" : mode === "forgot" ? "Recuperar senha" : "Área da equipe";
+  const title = isSetup ? "Criar conta grátis" : mode === "forgot" ? "Recuperar senha" : "Entrar";
   const subtitle = isSetup
-    ? "Primeiro acesso: cadastre o dono da barbearia."
+    ? "Em seguida você cadastra sua empresa e já ganha seu site de agendamento."
     : mode === "forgot"
       ? "Enviaremos um link para você criar uma senha nova."
       : "Entre com seu e-mail e senha.";
@@ -136,14 +145,24 @@ function AuthPage() {
       <div className="absolute inset-x-0 top-0 h-96 bg-radial-glow" />
       <div className="relative w-full max-w-sm">
         <Link to="/" className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
-          <ArrowLeft className="size-4" /> Voltar ao site
+          <ArrowLeft className="size-4" /> Início
         </Link>
         <div className="surface-card p-7">
           <Logo className="mx-auto size-20" />
           <h1 className="mt-5 text-center text-xl font-bold">{title}</h1>
           <p className="mt-1 text-center text-sm text-muted-foreground">{subtitle}</p>
 
-          {mode === "forgot" && !isSetup ? (
+          {confirmSentTo ? (
+            <div className="mt-6 space-y-4 text-center">
+              <MailCheck className="mx-auto size-10 text-primary" />
+              <p className="text-sm">
+                Enviamos um link de confirmação para <strong>{confirmSentTo}</strong>. Abra o e-mail e toque no link para ativar sua conta. Confira também o spam.
+              </p>
+              <Button variant="outline" className="w-full" onClick={() => { setMode("login"); setConfirmSentTo(null); }}>
+                Já confirmei, quero entrar
+              </Button>
+            </div>
+          ) : mode === "forgot" ? (
             resetSentTo ? (
               <div className="mt-6 space-y-4 text-center">
                 <MailCheck className="mx-auto size-10 text-primary" />
@@ -223,9 +242,9 @@ function AuthPage() {
                   />
                   {isSetup && <p className="text-xs text-muted-foreground">Mínimo de 8 caracteres.</p>}
                 </div>
-                <Button type="submit" size="lg" className="w-full" disabled={submit.isPending || adminExists.isLoading}>
+                <Button type="submit" size="lg" className="w-full" disabled={submit.isPending}>
                   {submit.isPending && <Loader2 className="animate-spin" />}
-                  {isSetup ? "Criar e entrar" : "Entrar"}
+                  {isSetup ? "Criar conta" : "Entrar"}
                 </Button>
               </form>
 
@@ -233,13 +252,14 @@ function AuthPage() {
                 <span className="h-px flex-1 bg-border" /> ou <span className="h-px flex-1 bg-border" />
               </div>
               <Button type="button" variant="outline" size="lg" className="w-full" disabled={googleLoading} onClick={signInWithGoogle}>
-                {googleLoading ? <Loader2 className="animate-spin" /> : <GoogleIcon />} Entrar com Google
+                {googleLoading ? <Loader2 className="animate-spin" /> : <GoogleIcon />} {isSetup ? "Criar conta com Google" : "Entrar com Google"}
               </Button>
-              {!isSetup && (
-                <p className="mt-5 text-center text-xs text-muted-foreground">
-                  O Google só funciona com o mesmo e-mail que o administrador cadastrou para você.
-                </p>
-              )}
+              <p className="mt-5 text-center text-sm text-muted-foreground">
+                {isSetup ? "Já tem conta? " : "Ainda não tem conta? "}
+                <button type="button" className="font-semibold text-primary hover:underline" onClick={() => setMode(isSetup ? "login" : "signup")}>
+                  {isSetup ? "Entrar" : "Criar conta grátis"}
+                </button>
+              </p>
             </>
           )}
         </div>
