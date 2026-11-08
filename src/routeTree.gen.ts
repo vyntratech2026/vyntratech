@@ -11,12 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AgendarRouteImport } from './routes/agendar'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SlugIndexRouteImport } from './routes/$slug.index'
 import { Route as SlugAgendarRouteImport } from './routes/$slug.agendar'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AgendamentoTokenRouteImport } from './routes/agendamento.$token'
+import { Route as ProfissionalIdRouteImport } from './routes/profissional.$id'
 import { Route as SlugProfissionalIdRouteImport } from './routes/$slug.profissional.$id'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAgendamentosRouteImport } from './routes/_authenticated/admin.agendamentos'
@@ -39,6 +41,11 @@ const SlugRoute = SlugRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgendarRoute = AgendarRouteImport.update({
+  id: '/agendar',
+  path: '/agendar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -69,6 +76,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
 const AgendamentoTokenRoute = AgendamentoTokenRouteImport.update({
   id: '/agendamento/$token',
   path: '/agendamento/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfissionalIdRoute = ProfissionalIdRouteImport.update({
+  id: '/profissional/$id',
+  path: '/profissional/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SlugProfissionalIdRoute = SlugProfissionalIdRouteImport.update({
@@ -156,11 +168,13 @@ const AuthenticatedAdminServicosRoute =
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedRouteRouteWithChildren
   '/$slug': typeof SlugRouteWithChildren
+  '/agendar': typeof AgendarRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/$slug/agendar': typeof SlugAgendarRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamento/$token': typeof AgendamentoTokenRoute
+  '/profissional/$id': typeof ProfissionalIdRoute
   '/$slug/': typeof SlugIndexRoute
   '/$slug/profissional/$id': typeof SlugProfissionalIdRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
@@ -179,10 +193,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof AuthenticatedRouteRouteWithChildren
+  '/agendar': typeof AgendarRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/$slug/agendar': typeof SlugAgendarRoute
   '/agendamento/$token': typeof AgendamentoTokenRoute
+  '/profissional/$id': typeof ProfissionalIdRoute
   '/$slug': typeof SlugIndexRoute
   '/$slug/profissional/$id': typeof SlugProfissionalIdRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
@@ -203,11 +219,13 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/$slug': typeof SlugRouteWithChildren
+  '/agendar': typeof AgendarRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/$slug/agendar': typeof SlugAgendarRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamento/$token': typeof AgendamentoTokenRoute
+  '/profissional/$id': typeof ProfissionalIdRoute
   '/$slug/': typeof SlugIndexRoute
   '/$slug/profissional/$id': typeof SlugProfissionalIdRoute
   '/_authenticated/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
@@ -229,11 +247,13 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$slug'
+    | '/agendar'
     | '/auth'
     | '/reset-password'
     | '/$slug/agendar'
     | '/admin'
     | '/agendamento/$token'
+    | '/profissional/$id'
     | '/$slug/'
     | '/$slug/profissional/$id'
     | '/admin/agendamentos'
@@ -252,10 +272,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/agendar'
     | '/auth'
     | '/reset-password'
     | '/$slug/agendar'
     | '/agendamento/$token'
+    | '/profissional/$id'
     | '/$slug'
     | '/$slug/profissional/$id'
     | '/admin/agendamentos'
@@ -275,11 +297,13 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_authenticated'
     | '/$slug'
+    | '/agendar'
     | '/auth'
     | '/reset-password'
     | '/$slug/agendar'
     | '/_authenticated/admin'
     | '/agendamento/$token'
+    | '/profissional/$id'
     | '/$slug/'
     | '/$slug/profissional/$id'
     | '/_authenticated/admin/agendamentos'
@@ -300,9 +324,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   SlugRoute: typeof SlugRouteWithChildren
+  AgendarRoute: typeof AgendarRoute
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   AgendamentoTokenRoute: typeof AgendamentoTokenRoute
+  ProfissionalIdRoute: typeof ProfissionalIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -319,6 +345,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agendar': {
+      id: '/agendar'
+      path: '/agendar'
+      fullPath: '/agendar'
+      preLoaderRoute: typeof AgendarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -361,6 +394,13 @@ declare module '@tanstack/react-router' {
       path: '/agendamento/$token'
       fullPath: '/agendamento/$token'
       preLoaderRoute: typeof AgendamentoTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profissional/$id': {
+      id: '/profissional/$id'
+      path: '/profissional/$id'
+      fullPath: '/profissional/$id'
+      preLoaderRoute: typeof ProfissionalIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$slug/profissional/$id': {
@@ -527,9 +567,11 @@ const SlugRouteWithChildren = SlugRoute._addFileChildren(SlugRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   SlugRoute: SlugRouteWithChildren,
+  AgendarRoute: AgendarRoute,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   AgendamentoTokenRoute: AgendamentoTokenRoute,
+  ProfissionalIdRoute: ProfissionalIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
