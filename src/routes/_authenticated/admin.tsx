@@ -1,5 +1,5 @@
-import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { createFileRoute, Link, Navigate, Outlet, useNavigate } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   Bell,
@@ -24,13 +24,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { BrandName, Logo } from "@/components/site/brand";
 import { Button } from "@/components/ui/button";
 import { useStaff } from "@/lib/use-staff";
+import { CompanyProvider, loadBrand, PLATFORM_NAME } from "@/lib/brand";
+import { themeCss } from "@/lib/theme";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Painel — Studio Cleison Cortes" },
-      { name: "description", content: "Painel administrativo do Studio Cleison Cortes." },
-      { property: "og:title", content: "Painel — Studio Cleison Cortes" },
+      { title: `Painel — ${PLATFORM_NAME}` },
+      { name: "description", content: "Painel da sua empresa." },
+      { property: "og:title", content: `Painel — ${PLATFORM_NAME}` },
       { property: "og:description", content: "Painel administrativo." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -48,7 +50,7 @@ const ADMIN_NAV: NavItem[] = [
   { to: "/admin/bloqueios", label: "Folgas e bloqueios", icon: CalendarOff },
   { to: "/admin/clientes", label: "Clientes", icon: UserRound },
   { to: "/admin/financeiro", label: "Financeiro", icon: Wallet },
-  { to: "/admin/barbeiros", label: "Barbeiros", icon: Users },
+  { to: "/admin/barbeiros", label: "Profissionais", icon: Users },
   { to: "/admin/servicos", label: "Serviços", icon: Scissors },
   { to: "/admin/produtos", label: "Produtos", icon: Package },
   { to: "/admin/avaliacoes", label: "Avaliações", icon: Star },
@@ -71,6 +73,11 @@ function AdminLayout() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const brandQ = useQuery({
+    queryKey: ["admin", "brand", staff?.companyId],
+    enabled: !!staff?.companyId,
+    queryFn: () => loadBrand(staff!.companyId!),
+  });
 
   const signOut = async () => {
     await qc.cancelQueries();
@@ -79,7 +86,9 @@ function AdminLayout() {
     navigate({ to: "/auth", replace: true });
   };
 
-  if (isLoading) {
+  if (staff && !staff.companyId) return <Navigate to="/comecar" replace />;
+
+  if (isLoading || (staff?.companyId && !brandQ.data)) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Logo className="size-16 animate-glow-pulse" />
@@ -102,6 +111,8 @@ function AdminLayout() {
   }
 
   const nav = staff.isAdmin ? ADMIN_NAV : BARBER_NAV;
+  const company = { id: staff.companyId!, slug: staff.companySlug ?? "", brand: brandQ.data! };
+  const css = themeCss(company.brand.colors);
 
   const sidebar = (
     <div className="flex h-full flex-col">
@@ -111,7 +122,7 @@ function AdminLayout() {
           <p className="font-display text-xs font-semibold uppercase tracking-wider">
             <BrandName />
           </p>
-          <p className="text-[11px] text-muted-foreground">{staff.isAdmin ? "Administrador" : "Barbeiro"}</p>
+          <p className="text-[11px] text-muted-foreground">{staff.isAdmin ? "Administrador" : "Profissional"}</p>
         </div>
       </div>
       <nav className="flex-1 space-y-1 px-3">
@@ -129,7 +140,7 @@ function AdminLayout() {
         ))}
       </nav>
       <div className="space-y-1 border-t border-sidebar-border p-3">
-        <a href="/" target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent">
+        <a href={`/${company.slug}`} target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent">
           <ExternalLink className="size-4" /> Ver site
         </a>
         <button onClick={signOut} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent">
@@ -141,6 +152,8 @@ function AdminLayout() {
   );
 
   return (
+    <CompanyProvider company={company}>
+    {css && <style id="brand-theme" dangerouslySetInnerHTML={{ __html: css }} />}
     <div className="min-h-screen bg-background">
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-sidebar-border bg-sidebar lg:block">{sidebar}</aside>
       {open && (
@@ -166,5 +179,6 @@ function AdminLayout() {
         </div>
       </main>
     </div>
+    </CompanyProvider>
   );
 }
