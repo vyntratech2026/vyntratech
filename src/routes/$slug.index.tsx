@@ -78,11 +78,13 @@ function Index() {
               <Button asChild variant="hero" size="xl">
                 <Link to="/$slug/agendar" params={{ slug: slugCompany.slug }}>Agendar horário</Link>
               </Button>
-              <Button asChild variant="outline" size="xl">
-                <a href={whatsappLink(s?.whatsapp || SHOP_WHATSAPP)} target="_blank" rel="noreferrer">
-                  <MessageCircle /> WhatsApp
-                </a>
-              </Button>
+              {s?.whatsapp && (
+                <Button asChild variant="outline" size="xl">
+                  <a href={whatsappLink(s.whatsapp)} target="_blank" rel="noreferrer">
+                    <MessageCircle /> WhatsApp
+                  </a>
+                </Button>
+              )}
             </div>
           </div>
         </div>
