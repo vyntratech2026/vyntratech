@@ -7,6 +7,9 @@ export interface StaffInfo {
   isAdmin: boolean;
   isBarber: boolean;
   barberId: string | null;
+  /** Company the account belongs to; null until the owner creates it. */
+  companyId: string | null;
+  companySlug: string | null;
 }
 
 export function useStaff() {
@@ -17,18 +20,19 @@ export function useStaff() {
       const { data: auth } = await supabase.auth.getUser();
       const user = auth.user;
       if (!user) return null;
-      const [{ data: roles }, { data: profile }, { data: barber }] = await Promise.all([
-        supabase.from("user_roles").select("role").eq("user_id", user.id),
+      const [{ data: member }, { data: profile }, { data: barber }] = await Promise.all([
+        supabase.from("company_members").select("role, company_id, companies(slug)").eq("user_id", user.id).maybeSingle(),
         supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle(),
         supabase.from("barbers").select("id, name").eq("user_id", user.id).maybeSingle(),
       ]);
-      const list = roles?.map((r) => r.role) ?? [];
       return {
         userId: user.id,
         name: profile?.full_name || barber?.name || "Equipe",
-        isAdmin: list.includes("admin"),
-        isBarber: list.includes("barber"),
+        isAdmin: member?.role === "admin",
+        isBarber: member?.role === "barber",
         barberId: barber?.id ?? null,
+        companyId: member?.company_id ?? null,
+        companySlug: member?.companies?.slug ?? null,
       };
     },
   });
