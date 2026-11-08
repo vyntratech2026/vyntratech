@@ -1,3 +1,4 @@
+import { useCompany } from "@/lib/brand";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
@@ -45,6 +46,7 @@ function periodRange(p: Period, from: string, to: string): { start: string; end:
 }
 
 function FinancePage() {
+  const companyId = useCompany().id;
   const { data: staff } = useStaff();
   const qc = useQueryClient();
   const [period, setPeriod] = useState<Period>("month");
@@ -65,7 +67,7 @@ function FinancePage() {
           .gte("payment_date", start)
           .lt("payment_date", end)
           .order("payment_date", { ascending: false }),
-        supabase.from("barbers").select("id, name, commission_percent").order("name"),
+        supabase.from("barbers").select("id, name, commission_percent").eq("company_id", companyId).order("name"),
         supabase
           .from("appointments")
           .select("id, start_at, service_name, price, customers!appointments_customer_id_fkey(full_name), barbers!appointments_barber_id_fkey(name), payments!payments_appointment_id_fkey(id)")
@@ -294,6 +296,7 @@ function Breakdown({ title, rows }: { title: string; rows: [string, number][] })
 }
 
 function PaymentDialog({ appointmentId, onClose, onSaved }: { appointmentId?: string | undefined; onClose: () => void; onSaved: () => void }) {
+  const companyId = useCompany().id;
   const [kind, setKind] = useState<"service" | "product">("service");
   const [apptId, setApptId] = useState(appointmentId ?? "");
   const [productId, setProductId] = useState("");
@@ -313,7 +316,7 @@ function PaymentDialog({ appointmentId, onClose, onSaved }: { appointmentId?: st
           .eq("status", "completed")
           .gte("start_at", since)
           .order("start_at", { ascending: false }),
-        supabase.from("products").select("id, name, price").order("name"),
+        supabase.from("products").select("id, name, price").eq("company_id", companyId).order("name"),
       ]);
       return { appts: (a.data ?? []).filter((x) => !x.payments?.length), products: p.data ?? [] };
     },

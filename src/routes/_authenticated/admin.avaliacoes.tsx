@@ -1,3 +1,4 @@
+import { useCompany } from "@/lib/brand";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, EyeOff, Star, Trash2 } from "lucide-react";
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/_authenticated/admin/avaliacoes")({
 });
 
 function ReviewsPage() {
+  const companyId = useCompany().id;
   const { data: staff } = useStaff();
   const qc = useQueryClient();
   const list = useQuery({
@@ -21,6 +23,7 @@ function ReviewsPage() {
       const { data, error } = await supabase
         .from("reviews")
         .select("id, reviewer_name, rating, comment, is_approved, created_at, barbers!reviews_barber_id_fkey(name), appointments!reviews_appointment_id_fkey(service_name, start_at)")
+        .eq("company_id", companyId)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;

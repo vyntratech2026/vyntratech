@@ -1,3 +1,4 @@
+import { useCompany } from "@/lib/brand";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -24,12 +25,13 @@ type Settings = Database["public"]["Tables"]["settings"]["Row"];
 type Day = { on: boolean; open: string; close: string };
 
 function SettingsPage() {
+  const companyId = useCompany().id;
   const { data: staff } = useStaff();
   const qc = useQueryClient();
   const q = useQuery({
     queryKey: ["admin", "settings"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("settings").select("*").eq("id", 1).single();
+      const { data, error } = await supabase.from("settings").select("*").eq("company_id", companyId).single();
       if (error) throw error;
       return data;
     },
@@ -77,7 +79,7 @@ function SettingsPage() {
           cancellation_policy: f.cancellation_policy?.trim() || null,
           notification_email: f.notification_email?.trim() || null,
         })
-        .eq("id", 1);
+        .eq("company_id", companyId);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -110,7 +112,7 @@ function SettingsPage() {
             <Field label="Frase de apresentação">
               <Input value={f.tagline ?? ""} onChange={(e) => set("tagline", e.target.value)} maxLength={160} />
             </Field>
-            <Field label="Sobre a barbearia">
+            <Field label="Sobre a empresa">
               <Textarea value={f.description ?? ""} onChange={(e) => set("description", e.target.value)} rows={4} />
             </Field>
           </Section>

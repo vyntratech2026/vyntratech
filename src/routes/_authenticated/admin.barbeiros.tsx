@@ -1,3 +1,4 @@
+import { useCompany } from "@/lib/brand";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -56,6 +57,7 @@ const EMPTY = (): BarberForm => ({
 });
 
 function BarbersPage() {
+  const companyId = useCompany().id;
   const { data: staff } = useStaff();
   const qc = useQueryClient();
   const [form, setForm] = useState<BarberForm | null>(null);
@@ -64,9 +66,9 @@ function BarbersPage() {
     queryKey: ["admin", "barbers"],
     queryFn: async () => {
       const [b, s, l, h] = await Promise.all([
-        supabase.from("barbers").select("*").order("name"),
-        supabase.from("services").select("id, name, is_active").order("name"),
-        supabase.from("barber_services").select("barber_id, service_id"),
+        supabase.from("barbers").select("*").eq("company_id", companyId).order("name"),
+        supabase.from("services").select("id, name, is_active").eq("company_id", companyId).order("name"),
+        supabase.from("barber_services").select("barber_id, service_id").eq("company_id", companyId),
         supabase.from("working_hours").select("*"),
       ]);
       if (b.error) throw b.error;

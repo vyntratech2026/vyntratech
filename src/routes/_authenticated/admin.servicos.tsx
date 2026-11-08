@@ -1,3 +1,4 @@
+import { useCompany } from "@/lib/brand";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -33,6 +34,7 @@ interface ServiceForm {
 const EMPTY: ServiceForm = { name: "", description: "", photo_url: null, price: "", duration_minutes: "30", is_active: true };
 
 function ServicesPage() {
+  const companyId = useCompany().id;
   const { data: staff } = useStaff();
   const qc = useQueryClient();
   const [form, setForm] = useState<ServiceForm | null>(null);
@@ -40,7 +42,7 @@ function ServicesPage() {
   const list = useQuery({
     queryKey: ["admin", "services"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("services").select("*").order("name");
+      const { data, error } = await supabase.from("services").select("*").eq("company_id", companyId).order("name");
       if (error) throw error;
       return data;
     },

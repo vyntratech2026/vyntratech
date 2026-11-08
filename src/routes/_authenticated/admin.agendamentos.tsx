@@ -1,3 +1,4 @@
+import { useCompany } from "@/lib/brand";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -41,6 +42,7 @@ export const Route = createFileRoute("/_authenticated/admin/agendamentos")({
 });
 
 function AppointmentsPage() {
+  const companyId = useCompany().id;
   const { data: staff } = useStaff();
   const isAdmin = !!staff?.isAdmin;
   const qc = useQueryClient();
@@ -53,7 +55,7 @@ function AppointmentsPage() {
   const barbers = useQuery({
     queryKey: ["admin", "barbers-lite"],
     enabled: isAdmin,
-    queryFn: async () => (await supabase.from("barbers").select("id, name, is_active").order("name")).data ?? [],
+    queryFn: async () => (await supabase.from("barbers").select("id, name, is_active").eq("company_id", companyId).order("name")).data ?? [],
   });
 
   const list = useQuery({
@@ -119,8 +121,8 @@ function AppointmentsPage() {
           </Button>
         </div>
         {isAdmin && (
-          <NativeSelect value={barberFilter} onChange={(e) => setBarberFilter(e.target.value)} className="w-48" aria-label="Filtrar por barbeiro">
-            <option value="">Todos os barbeiros</option>
+          <NativeSelect value={barberFilter} onChange={(e) => setBarberFilter(e.target.value)} className="w-48" aria-label="Filtrar por brofissional">
+            <option value="">Todos os brofissionals</option>
             {barbers.data?.map((b) => (
               <option key={b.id} value={b.id}>
                 {b.name}
@@ -227,6 +229,7 @@ function AppointmentsPage() {
 }
 
 function ManualBookingDialog({ open, onOpenChange, defaultDay }: { open: boolean; onOpenChange: (o: boolean) => void; defaultDay: string }) {
+  const companyId = useCompany().id;
   const qc = useQueryClient();
   const [serviceId, setServiceId] = useState("");
   const [barberId, setBarberId] = useState("");
@@ -241,9 +244,9 @@ function ManualBookingDialog({ open, onOpenChange, defaultDay }: { open: boolean
     enabled: open,
     queryFn: async () => {
       const [s, b, l] = await Promise.all([
-        supabase.from("services").select("id, name, price, duration_minutes").eq("is_active", true).order("name"),
-        supabase.from("barbers").select("id, name").eq("is_active", true).order("name"),
-        supabase.from("barber_services").select("barber_id, service_id"),
+        supabase.from("services").select("id, name, price, duration_minutes").eq("company_id", companyId).eq("is_active", true).order("name"),
+        supabase.from("barbers").select("id, name").eq("company_id", companyId).eq("is_active", true).order("name"),
+        supabase.from("barber_services").select("barber_id, service_id").eq("company_id", companyId),
       ]);
       return { services: s.data ?? [], barbers: b.data ?? [], links: l.data ?? [] };
     },
@@ -301,7 +304,7 @@ function ManualBookingDialog({ open, onOpenChange, defaultDay }: { open: boolean
             </NativeSelect>
           </div>
           <div className="space-y-2">
-            <Label>Barbeiro</Label>
+            <Label>Brofissional</Label>
             <NativeSelect value={barberId} onChange={(e) => { setBarberId(e.target.value); setSlot(""); }} disabled={!serviceId}>
               <option value="">Selecione</option>
               {barbersForService.map((b) => (
