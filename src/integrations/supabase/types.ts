@@ -804,6 +804,7 @@ export type Database = {
           company_id: string
           cover_url: string | null
           description: string | null
+          google_review_url: string | null
           id: number
           instagram: string | null
           logo_url: string | null
@@ -829,6 +830,7 @@ export type Database = {
           company_id: string
           cover_url?: string | null
           description?: string | null
+          google_review_url?: string | null
           id?: number
           instagram?: string | null
           logo_url?: string | null
@@ -854,6 +856,7 @@ export type Database = {
           company_id?: string
           cover_url?: string | null
           description?: string | null
+          google_review_url?: string | null
           id?: number
           instagram?: string | null
           logo_url?: string | null

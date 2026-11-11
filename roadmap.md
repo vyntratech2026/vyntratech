@@ -14,6 +14,7 @@
 - [x] Agendamentos (lista do dia, filtros, ações de status, agendamento manual)
 - [x] Landing page, perfil do profissional, fluxo de agendamento + WhatsApp
 - [x] Página privada do agendamento (cancelar / avaliar)
+- [ ] Link de avaliação do Google por empresa, botão no site e após atendimento; verificar salvamento e exibição
 - [x] Vídeos na página inicial, gerenciados em Configurações
 - [x] Notificações por Pushcut a cada agendamento online
 - [x] Aparência: trocar logo, nome e cores do site e do painel
