@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PLATFORM_NAME } from "@/lib/brand";
 import { formatDate, errorMessage } from "@/lib/format";
-import { SUBSCRIPTION_PLANS, SUBSCRIPTION_STATUS, subscriptionState, type SubscriptionPlan } from "@/lib/subscriptions";
+import { COMMERCIAL_PLANS, SUBSCRIPTION_STATUS, commercialPlanLabel, subscriptionState, type CommercialPlan } from "@/lib/subscriptions";
 import { listPlatformCompanies, changeSubscription } from "@/lib/subscriptions.functions";
 import platformLogo from "@/assets/logo-vyntra-tech.png.asset.json";
 
@@ -32,7 +32,7 @@ function PlatformCompanies() {
   const [filter, setFilter] = useState("all");
   const qc = useQueryClient();
   const change = useServerFn(changeSubscription);
-  const [confirm, setConfirm] = useState<{ id: string; name: string; plan: SubscriptionPlan; suspend: boolean } | null>(null);
+  const [confirm, setConfirm] = useState<{ id: string; name: string; plan: CommercialPlan; suspend: boolean } | null>(null);
   const mutation = useMutation({
     mutationFn: async () => { if (!confirm) return; await change({ data: { companyId: confirm.id, plan: confirm.plan, suspend: confirm.suspend } }); },
     onSuccess: async () => { toast.success(confirm?.suspend ? "Acesso suspenso." : "Acesso liberado."); setConfirm(null); await qc.invalidateQueries({ queryKey: ["platform"] }); await qc.invalidateQueries({ queryKey: ["subscription"] }); },
