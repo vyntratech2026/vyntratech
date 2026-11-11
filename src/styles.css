@@ -90,13 +90,13 @@
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.65 0.22 25);
   --destructive-foreground: oklch(0.985 0 0);
-  --success: oklch(0.892 0.232 127.8);
+  --success: oklch(0.494 0.256 263.2);
   --warning: oklch(0.82 0.16 80);
   --info: oklch(0.75 0.12 230);
   --border: oklch(1 0 0 / 9%);
   --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.892 0.232 127.8);
-  --chart-1: oklch(0.892 0.232 127.8);
+  --ring: oklch(0.494 0.256 263.2);
+  --chart-1: oklch(0.494 0.256 263.2);
   --chart-2: oklch(0.75 0.12 230);
   --chart-3: oklch(0.82 0.16 80);
   --chart-4: oklch(0.7 0.18 330);
@@ -108,7 +108,7 @@
   --sidebar-accent: oklch(0.22 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: oklch(0.892 0.232 127.8);
+  --sidebar-ring: oklch(0.494 0.256 263.2);
 
   --gradient-hero: linear-gradient(180deg, oklch(0.134 0 0 / 30%) 0%, oklch(0.134 0 0 / 75%) 60%, oklch(0.134 0 0) 100%);
   --gradient-radial-glow: radial-gradient(60% 50% at 50% 0%, color-mix(in oklab, var(--primary) 18%, transparent) 0%, transparent 70%);
