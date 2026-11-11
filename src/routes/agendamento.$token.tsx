@@ -34,6 +34,8 @@ import {
 import { cn } from "@/lib/utils";
 import { GoogleReviewButton } from "@/components/site/google-review-button";
 import { bookingGoogleReviewUrl } from "@/lib/google-review";
+import { type BookingProduct } from "@/lib/booking-products";
+import { BookingProductSummary } from "@/components/site/booking-product-summary";
 
 export const Route = createFileRoute("/agendamento/$token")({
   head: () => ({
@@ -57,6 +59,7 @@ interface Booking {
   start_at: string;
   duration_minutes: number;
   price: number;
+  product_items: BookingProduct[];
   status: AppointmentStatus;
   has_review: boolean;
   can_cancel: boolean;
@@ -146,6 +149,7 @@ function ManageBooking() {
                 <span className="text-muted-foreground">Valor</span>
                 <span className="font-display text-xl font-bold text-primary">{formatPrice(b.price)}</span>
               </div>
+              <BookingProductSummary items={b.product_items} servicePrice={b.price} />
             </div>
 
             {b.can_cancel && (

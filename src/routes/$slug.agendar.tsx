@@ -3,14 +3,16 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
-import { ArrowLeft, Calendar, Check, Clock, Loader2, MessageCircle, Scissors, User } from "lucide-react";
+import { ArrowLeft, Calendar, Check, Clock, Loader2, MessageCircle, Minus, Plus, Scissors, User } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo, MediaImage } from "@/components/site/brand";
-import { barberServicesQuery, barbersQuery, servicesQuery, settingsQuery } from "@/lib/public-data";
+import { barberServicesQuery, barbersQuery, productsQuery, servicesQuery, settingsQuery } from "@/lib/public-data";
+import { type BookingProduct } from "@/lib/booking-products";
+import { BookingProductSummary } from "@/components/site/booking-product-summary";
 import {
   addDaysKey,
   bookingWhatsappMessage,
@@ -59,6 +61,7 @@ interface BookingResult {
   price: number;
   duration_minutes: number;
   customer_name: string;
+  product_items: BookingProduct[];
 }
 
 function BookingPage() {
@@ -68,6 +71,11 @@ function BookingPage() {
   const { data: services, isLoading: loadingServices } = useQuery(servicesQuery(slugCompany.id));
   const { data: barbers } = useQuery(barbersQuery(slugCompany.id));
   const { data: links } = useQuery(barberServicesQuery(slugCompany.id));
+  const products = useQuery(productsQuery(slugCompany.id));
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const selectedProducts: BookingProduct[] = (products.data ?? []).filter((p) => p.is_available && quantities[p.id] > 0).map((p) => ({
+    product_id: p.id, name: p.name, unit_price: Number(p.price), quantity: quantities[p.id],
+  }));
 
   const [step, setStep] = useState(0);
   const [serviceId, setServiceId] = useState<string | undefined>(search.servico);
@@ -114,10 +122,11 @@ function BookingPage() {
     queryKey: ["slots", serviceId, barberId, dateKey],
     enabled: !!serviceId && !!barberId && !!dateKey,
     queryFn: async () => {
+      if (!serviceId || !dateKey || !barberId) throw new Error("Selecione serviço, profissional e dia.");
       const { data, error } = await supabase.rpc("get_available_slots", {
-        p_service_id: serviceId!,
-        p_date: dateKey!,
-        p_barber_id: barberId!,
+        p_service_id: serviceId,
+        p_date: dateKey,
+        p_barber_id: barberId,
       });
       if (error) throw error;
       return data;
@@ -126,12 +135,14 @@ function BookingPage() {
 
   const book = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.rpc("create_booking", {
-        p_service_id: serviceId!,
-        p_barber_id: barberId!,
-        p_start_at: slot!,
+      if (!serviceId || !barberId || !slot) throw new Error("Selecione serviço, profissional e horário.");
+      const { data, error } = await supabase.rpc("create_booking_with_products", {
+        p_service_id: serviceId,
+        p_barber_id: barberId,
+        p_start_at: slot,
         p_full_name: name.trim(),
         p_phone: phone,
+        p_products: selectedProducts.map((p) => ({ product_id: p.product_id, quantity: p.quantity })),
       });
       if (error) throw error;
       return data as unknown as BookingResult;
@@ -143,6 +154,7 @@ function BookingPage() {
     },
     onError: (err) => {
       toast.error(errorMessage(err));
+      if (/produto/i.test(errorMessage(err))) products.refetch();
       if (/ocupado|disponível/i.test(errorMessage(err))) {
         setSlot(undefined);
         setStep(2);
@@ -358,6 +370,25 @@ function BookingPage() {
         {step === 4 && service && barber && slot && (
           <section className="animate-fade-up space-y-6">
             <h1 className="text-2xl font-bold sm:text-3xl">Revise seu agendamento</h1>
+            {products.isLoading ? <p className="text-sm text-muted-foreground">Carregando produtos…</p> : products.isError ? (
+              <Button variant="outline" onClick={() => products.refetch()}>Tentar carregar produtos</Button>
+            ) : products.data?.some((p) => p.is_available) ? (
+              <section className="space-y-3">
+                <h2 className="font-semibold">Adicionar produtos <span className="text-sm font-normal text-muted-foreground">(opcional)</span></h2>
+                {products.data.filter((p) => p.is_available).map((p) => {
+                  const quantity = quantities[p.id] ?? 0;
+                  return <div key={p.id} className="surface-card flex flex-wrap items-center gap-3 p-3">
+                    <MediaImage path={p.photo_url} alt={p.name} className="size-14 shrink-0 rounded-md" />
+                    <div className="min-w-0 flex-1"><p className="break-words font-medium">{p.name}</p><p className="text-sm text-primary">{formatPrice(p.price)}</p></div>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <Button variant="outline" size="icon" aria-label={`Remover ${p.name}`} disabled={!quantity || book.isPending} onClick={() => setQuantities((q) => ({ ...q, [p.id]: Math.max(0, quantity - 1) }))}><Minus /></Button>
+                      <span className="w-6 text-center tabular-nums">{quantity}</span>
+                      <Button variant="outline" size="icon" aria-label={`Adicionar ${p.name}`} disabled={quantity >= 99 || book.isPending} onClick={() => setQuantities((q) => ({ ...q, [p.id]: quantity + 1 }))}><Plus /></Button>
+                    </div>
+                  </div>;
+                })}
+              </section>
+            ) : null}
             <div className="surface-card divide-y divide-border">
               <Row icon={<Scissors />} label="Serviço" value={service.name} />
               <Row icon={<User />} label="Profissional" value={barber.name} />
@@ -368,6 +399,7 @@ function BookingPage() {
                 <span className="text-muted-foreground">Valor</span>
                 <span className="font-display text-2xl font-bold text-primary">{formatPrice(service.price)}</span>
               </div>
+              <BookingProductSummary items={selectedProducts} servicePrice={service.price} />
             </div>
             {settings?.cancellation_min_hours != null && (
               <p className="text-xs text-muted-foreground">
@@ -418,6 +450,7 @@ function BookingDone({ result, whatsapp }: { result: BookingResult; whatsapp: st
     startAt: result.start_at,
     price: result.price,
     businessName: brand.name,
+    productItems: result.product_items,
   });
   const manageUrl = typeof window !== "undefined" ? `${window.location.origin}/agendamento/${result.token}` : "";
   return (
@@ -434,6 +467,7 @@ function BookingDone({ result, whatsapp }: { result: BookingResult; whatsapp: st
           <span className="capitalize text-foreground">{formatLongDate(result.start_at)}</span> às{" "}
           <span className="text-foreground">{formatTime(result.start_at)}</span> · {formatPrice(result.price)}
         </p>
+        <BookingProductSummary items={result.product_items} servicePrice={result.price} />
 
         <div className="mt-8 space-y-3">
           <Button asChild variant="hero" size="xl" className="w-full">

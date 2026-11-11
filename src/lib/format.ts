@@ -1,3 +1,5 @@
+import { type BookingProduct, productsTotal } from "./booking-products";
+
 export const TIMEZONE = "America/Maceio";
 
 export const STATUS_LABELS = {
@@ -117,6 +119,7 @@ export interface BookingMessageInput {
   startAt: string;
   price: number | string;
   businessName?: string;
+  productItems?: BookingProduct[];
 }
 
 export function bookingWhatsappMessage(b: BookingMessageInput): string {
@@ -129,6 +132,11 @@ export function bookingWhatsappMessage(b: BookingMessageInput): string {
     `Data: ${formatDate(b.startAt)}`,
     `Horário: ${formatTime(b.startAt)}`,
     `Valor: ${formatPrice(b.price)}`,
+    ...(b.productItems?.length ? [
+      "Produtos:",
+      ...b.productItems.map((p) => `${p.quantity}× ${p.name} — ${formatPrice(p.quantity * p.unit_price)}`),
+      `Total com produtos: ${formatPrice(Number(b.price) + productsTotal(b.productItems))}`,
+    ] : []),
   ].join("\n");
 }
 

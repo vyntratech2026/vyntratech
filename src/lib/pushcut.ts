@@ -1,4 +1,5 @@
 import { formatLongDate, formatPhone, formatPrice, formatTime } from "./format";
+import { type BookingProduct, productsTotal } from "./booking-products";
 
 /** Only real Pushcut notification webhooks are accepted (prevents sending data to arbitrary hosts). */
 export function isPushcutUrl(value: string | null | undefined): boolean {
@@ -18,6 +19,7 @@ export interface BookingNotificationInput {
   barberName: string;
   startAt: string;
   price: number | string;
+  productItems?: BookingProduct[];
 }
 
 export interface PushcutPayload {
@@ -33,5 +35,9 @@ export function buildBookingNotification(b: BookingNotificationInput): Pick<Push
     `Com ${b.barberName} • ${formatPrice(b.price)}`,
   ];
   if (b.customerPhone) lines.push(`Tel: ${formatPhone(b.customerPhone)}`);
+  if (b.productItems?.length) {
+    lines.push(...b.productItems.map((p) => `${p.quantity}× ${p.name} • ${formatPrice(p.quantity * p.unit_price)}`));
+    lines.push(`Total com produtos: ${formatPrice(Number(b.price) + productsTotal(b.productItems))}`);
+  }
   return { title: "Novo agendamento", text: lines.join("\n") };
 }
