@@ -342,6 +342,44 @@ export type Database = {
           },
         ]
       }
+      company_subscriptions: {
+        Row: {
+          company_id: string
+          expires_at: string | null
+          plan: string | null
+          starts_at: string | null
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          company_id: string
+          expires_at?: string | null
+          plan?: string | null
+          starts_at?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          company_id?: string
+          expires_at?: string | null
+          plan?: string | null
+          starts_at?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_subscriptions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customers: {
         Row: {
           company_id: string
@@ -520,6 +558,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      platform_admin_authorizations: {
+        Row: {
+          email: string
+        }
+        Insert: {
+          email: string
+        }
+        Update: {
+          email?: string
+        }
+        Relationships: []
+      }
+      platform_admins: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       products: {
         Row: {
@@ -851,6 +916,47 @@ export type Database = {
           },
         ]
       }
+      subscription_events: {
+        Row: {
+          action: string
+          actor_id: string
+          company_id: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          plan: string | null
+          starts_at: string | null
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          company_id: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          plan?: string | null
+          starts_at?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          company_id?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          plan?: string | null
+          starts_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -948,6 +1054,11 @@ export type Database = {
         Returns: boolean
       }
       cancel_booking: { Args: { p_token: string }; Returns: boolean }
+      claim_platform_admin: { Args: never; Returns: boolean }
+      company_access_active: {
+        Args: { p_company_id: string }
+        Returns: boolean
+      }
       create_booking: {
         Args: {
           p_barber_id: string
@@ -981,8 +1092,13 @@ export type Database = {
       }
       is_company_admin: { Args: { _cid: string }; Returns: boolean }
       is_company_member: { Args: { _cid: string }; Returns: boolean }
+      is_platform_admin: { Args: never; Returns: boolean }
       is_staff: { Args: never; Returns: boolean }
       normalize_phone: { Args: { p: string }; Returns: string }
+      set_company_subscription: {
+        Args: { p_company_id: string; p_plan: string; p_suspend?: boolean }
+        Returns: undefined
+      }
       slug_problem: { Args: { p_slug: string }; Returns: string }
       storage_company: { Args: { _name: string }; Returns: string }
       submit_review: {
