@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarCheck, Palette, Users, Wallet, Bell, Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PLATFORM_NAME } from "@/lib/brand";
+import platformLogo from "@/assets/logo-vyntra-tech.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,9 +31,7 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background">
       <header className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <span className="font-display text-sm font-bold uppercase tracking-wider">
-          {PLATFORM_NAME.split(" ")[0]} <span className="text-primary">{PLATFORM_NAME.split(" ").slice(1).join(" ")}</span>
-        </span>
+        <img src={platformLogo.url} alt={PLATFORM_NAME} className="h-8 w-auto" />
         <div className="flex gap-2">
           <Button asChild variant="ghost" size="sm"><Link to="/auth">Entrar</Link></Button>
           <Button asChild size="sm"><Link to="/auth" search={{ modo: "cadastro" }}>Criar conta</Link></Button>
