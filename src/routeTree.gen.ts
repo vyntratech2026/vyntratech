@@ -19,7 +19,9 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SlugIndexRouteImport } from './routes/$slug.index'
 import { Route as SlugAgendarRouteImport } from './routes/$slug.agendar'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAssinaturaRouteImport } from './routes/_authenticated/assinatura'
 import { Route as AuthenticatedComecarRouteImport } from './routes/_authenticated/comecar'
+import { Route as AuthenticatedEmpresasRouteImport } from './routes/_authenticated/empresas'
 import { Route as AgendamentoTokenRouteImport } from './routes/agendamento.$token'
 import { Route as ProfissionalIdRouteImport } from './routes/profissional.$id'
 import { Route as SlugProfissionalIdRouteImport } from './routes/$slug.profissional.$id'
@@ -86,9 +88,19 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAssinaturaRoute = AuthenticatedAssinaturaRouteImport.update({
+  id: '/assinatura',
+  path: '/assinatura',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedComecarRoute = AuthenticatedComecarRouteImport.update({
   id: '/comecar',
   path: '/comecar',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedEmpresasRoute = AuthenticatedEmpresasRouteImport.update({
+  id: '/empresas',
+  path: '/empresas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AgendamentoTokenRoute = AgendamentoTokenRouteImport.update({
@@ -192,7 +204,9 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/$slug/agendar': typeof SlugAgendarRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/assinatura': typeof AuthenticatedAssinaturaRoute
   '/comecar': typeof AuthenticatedComecarRoute
+  '/empresas': typeof AuthenticatedEmpresasRoute
   '/agendamento/$token': typeof AgendamentoTokenRoute
   '/profissional/$id': typeof ProfissionalIdRoute
   '/$slug/': typeof SlugIndexRoute
@@ -218,7 +232,9 @@ export interface FileRoutesByTo {
   '/cadastro': typeof CadastroRoute
   '/reset-password': typeof ResetPasswordRoute
   '/$slug/agendar': typeof SlugAgendarRoute
+  '/assinatura': typeof AuthenticatedAssinaturaRoute
   '/comecar': typeof AuthenticatedComecarRoute
+  '/empresas': typeof AuthenticatedEmpresasRoute
   '/agendamento/$token': typeof AgendamentoTokenRoute
   '/profissional/$id': typeof ProfissionalIdRoute
   '/$slug': typeof SlugIndexRoute
@@ -248,7 +264,9 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/$slug/agendar': typeof SlugAgendarRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/assinatura': typeof AuthenticatedAssinaturaRoute
   '/_authenticated/comecar': typeof AuthenticatedComecarRoute
+  '/_authenticated/empresas': typeof AuthenticatedEmpresasRoute
   '/agendamento/$token': typeof AgendamentoTokenRoute
   '/profissional/$id': typeof ProfissionalIdRoute
   '/$slug/': typeof SlugIndexRoute
@@ -278,7 +296,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/$slug/agendar'
     | '/admin'
+    | '/assinatura'
     | '/comecar'
+    | '/empresas'
     | '/agendamento/$token'
     | '/profissional/$id'
     | '/$slug/'
@@ -304,7 +324,9 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/reset-password'
     | '/$slug/agendar'
+    | '/assinatura'
     | '/comecar'
+    | '/empresas'
     | '/agendamento/$token'
     | '/profissional/$id'
     | '/$slug'
@@ -333,7 +355,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/$slug/agendar'
     | '/_authenticated/admin'
+    | '/_authenticated/assinatura'
     | '/_authenticated/comecar'
+    | '/_authenticated/empresas'
     | '/agendamento/$token'
     | '/profissional/$id'
     | '/$slug/'
@@ -437,11 +461,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/assinatura': {
+      id: '/_authenticated/assinatura'
+      path: '/assinatura'
+      fullPath: '/assinatura'
+      preLoaderRoute: typeof AuthenticatedAssinaturaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/comecar': {
       id: '/_authenticated/comecar'
       path: '/comecar'
       fullPath: '/comecar'
       preLoaderRoute: typeof AuthenticatedComecarRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/empresas': {
+      id: '/_authenticated/empresas'
+      path: '/empresas'
+      fullPath: '/empresas'
+      preLoaderRoute: typeof AuthenticatedEmpresasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/agendamento/$token': {
@@ -596,12 +634,16 @@ const AuthenticatedAdminRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedAssinaturaRoute: typeof AuthenticatedAssinaturaRoute
   AuthenticatedComecarRoute: typeof AuthenticatedComecarRoute
+  AuthenticatedEmpresasRoute: typeof AuthenticatedEmpresasRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedAssinaturaRoute: AuthenticatedAssinaturaRoute,
   AuthenticatedComecarRoute: AuthenticatedComecarRoute,
+  AuthenticatedEmpresasRoute: AuthenticatedEmpresasRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
