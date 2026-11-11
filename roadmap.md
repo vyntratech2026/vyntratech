@@ -22,6 +22,7 @@
 - [x] Clientes (busca, histórico), Avaliações (moderação), Financeiro (pagamentos, comissão, gráfico diário)
 
 ## Próximos
+- [ ] Incluir produtos no agendamento, detalhes, painel e avisos
 - [ ] Agenda visual semanal/mensal
 - [ ] Gráficos extras no dashboard (serviços mais pedidos, desempenho por barbeiro)
 - [ ] E-mail ao admin a cada agendamento — aguardando o dono configurar um domínio de e-mail próprio
