@@ -55,7 +55,7 @@ function Landing() {
           </div>
         </div>
       </section>
-      <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6"><h2 className="mb-8 text-center text-2xl font-semibold tracking-normal">Planos e assinaturas — {PLATFORM_NAME}</h2><SubscriptionPlans /></section>
+      <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6"><h2 className="mb-8 text-center text-2xl font-semibold tracking-normal">Planos e assinaturas  Vyntra Tech</h2><SubscriptionPlans /></section>
       <section className="mx-auto grid max-w-6xl gap-4 px-4 pb-24 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
         {FEATURES.map((f) => (
           <div key={f.title} className="surface-card p-6">
