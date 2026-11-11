@@ -64,7 +64,7 @@ function StartPage() {
       if (error) throw error;
     },
     onSuccess: async () => {
-      toast.success("Empresa criada! Agora cadastre serviços, profissionais e horários.");
+      toast.success("Empresa cadastrada! Solicite a liberação da sua assinatura.");
       await qc.invalidateQueries({ queryKey: ["staff"] });
       navigate({ to: "/admin", replace: true });
     },
@@ -90,7 +90,7 @@ function StartPage() {
           <Store className="mx-auto size-10 text-primary" />
           <h1 className="mt-4 text-center text-xl font-bold">Cadastre sua empresa</h1>
           <p className="mt-1 text-center text-sm text-muted-foreground">
-            Você recebe na hora um site de agendamento e um painel só seus.
+            Seu acesso será liberado após contratar sua assinatura pelo WhatsApp.
           </p>
           <form
             className="mt-6 space-y-5"

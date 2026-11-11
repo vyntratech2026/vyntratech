@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { useStaff } from "@/lib/use-staff";
 import { CompanyProvider, loadBrand, PLATFORM_NAME } from "@/lib/brand";
 import { themeCss } from "@/lib/theme";
+import { subscriptionState } from "@/lib/subscriptions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -58,6 +59,7 @@ const ADMIN_NAV: NavItem[] = [
   { to: "/admin/aparencia", label: "Aparência", icon: Palette },
   { to: "/admin/configuracoes", label: "Configurações", icon: Settings },
   { to: "/admin/conta", label: "Minha conta", icon: CircleUser },
+  { to: "/assinatura", label: "Assinatura", icon: CalendarClock },
 ];
 
 const BARBER_NAV: NavItem[] = [
@@ -76,7 +78,16 @@ function AdminLayout() {
   const brandQ = useQuery({
     queryKey: ["admin", "brand", staff?.companyId],
     enabled: !!staff?.companyId,
-    queryFn: () => loadBrand(staff!.companyId!),
+    queryFn: () => { if (!staff?.companyId) throw new Error("Empresa não encontrada."); return loadBrand(staff.companyId); },
+  });
+  const subscriptionQ = useQuery({
+    queryKey: ["subscription", staff?.companyId], enabled: !!staff?.companyId, refetchInterval: 30000,
+    queryFn: async () => {
+      if (!staff?.companyId) return null;
+      const { data, error } = await supabase.from("company_subscriptions").select("status, plan, expires_at").eq("company_id", staff.companyId).maybeSingle();
+      if (error) throw error;
+      return data;
+    },
   });
 
   const signOut = async () => {
@@ -86,9 +97,9 @@ function AdminLayout() {
     navigate({ to: "/auth", replace: true });
   };
 
-  if (staff && !staff.companyId) return <Navigate to="/comecar" replace />;
+  if (staff && !staff.companyId) return staff.isPlatformAdmin ? <Navigate to="/empresas" replace /> : <Navigate to="/comecar" replace />;
 
-  if (isLoading || (staff?.companyId && !brandQ.data)) {
+  if (isLoading || (staff?.companyId && (!brandQ.data || subscriptionQ.isLoading))) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Logo className="size-16 animate-glow-pulse" />
@@ -110,8 +121,10 @@ function AdminLayout() {
     );
   }
 
-  const nav = staff.isAdmin ? ADMIN_NAV : BARBER_NAV;
-  const company = { id: staff.companyId!, slug: staff.companySlug ?? "", brand: brandQ.data! };
+  if (subscriptionQ.isError || subscriptionState(subscriptionQ.data) !== "active") return <Navigate to="/assinatura" replace />;
+  if (!staff.companyId || !brandQ.data) return null;
+  const nav: NavItem[] = [...(staff.isAdmin ? ADMIN_NAV : BARBER_NAV), ...(staff.isPlatformAdmin ? [{ to: "/empresas", label: "Liberação de empresas", icon: Users }] : [])];
+  const company = { id: staff.companyId, slug: staff.companySlug ?? "", brand: brandQ.data };
   const css = themeCss(company.brand.colors);
 
   const sidebar = (

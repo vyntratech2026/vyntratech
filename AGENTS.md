@@ -18,3 +18,6 @@
 - All dates/times are computed and displayed in America/Maceio (fixed UTC-3) via `src/lib/format.ts`.
 - Brand (name, logo path, 3 hex colors) lives in `settings` is per company and provided by `CompanyProvider` from the `$slug` layout and the admin layout (`src/lib/brand.ts`); colors re-theme the site by overriding CSS variables via `src/lib/theme.ts` — never hardcode the business name or brand colors in components.
 - New-booking push notices go through the server function `notifyNewBooking` (keyed by manage_token, once per appointment via `notified_at`); Pushcut URLs are restricted to api.pushcut.io and stored in admin-only `notification_settings`.
+- Platform roles live in protected platform_admins; only verified accounts authorized by platform_admin_authorizations can claim them, and every platform mutation checks the role in Postgres to prevent tenant-owner privilege escalation.
+- Subscription expiry is enforced by restrictive tenant RLS, appointment triggers and availability RPCs; new companies start pending, existing companies retain access, and token-based cancellation remains available so customer recovery is not blocked.
+- Subscription terms are calendar months in America/Maceio; early renewals add to the remaining expiry, with an audit event for each activation or suspension.

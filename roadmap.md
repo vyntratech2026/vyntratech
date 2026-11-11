@@ -27,5 +27,5 @@
 - [ ] Revisão final de segurança e responsividade
 
 - [x] Plataforma multiempresa: criação de conta, empresa com link próprio, dados isolados
-- [ ] Painel do dono da plataforma (futuro)
-- [ ] Cobrança/mensalidade (futuro)
+- [x] Painel exclusivo do dono: liberar e suspender empresas
+- [x] Assinaturas manuais: mensal, trimestral, semestral, anual e definitiva; contato pelo WhatsApp

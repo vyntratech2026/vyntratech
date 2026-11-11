@@ -20,9 +20,9 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: `Entrar ou criar conta — ${PLATFORM_NAME}` },
-      { name: "description", content: "Entre no painel da sua empresa ou crie uma conta grátis." },
+      { name: "description", content: "Entre no painel da sua empresa ou cadastre sua conta." },
       { property: "og:title", content: `Entrar ou criar conta — ${PLATFORM_NAME}` },
-      { property: "og:description", content: "Entre no painel da sua empresa ou crie uma conta grátis." },
+      { property: "og:description", content: "Entre no painel da sua empresa ou cadastre sua conta." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -134,9 +134,9 @@ function AuthPage() {
     navigate({ to: "/admin", replace: true });
   };
 
-  const title = isSetup ? "Criar conta grátis" : mode === "forgot" ? "Recuperar senha" : "Entrar";
+  const title = isSetup ? "Criar conta" : mode === "forgot" ? "Recuperar senha" : "Entrar";
   const subtitle = isSetup
-    ? "Em seguida você cadastra sua empresa e já ganha seu site de agendamento."
+    ? "Cadastre sua empresa. O acesso será liberado após contratar sua assinatura."
     : mode === "forgot"
       ? "Enviaremos um link para você criar uma senha nova."
       : "Entre com seu e-mail e senha.";
@@ -258,7 +258,7 @@ function AuthPage() {
               <p className="mt-5 text-center text-sm text-muted-foreground">
                 {isSetup ? "Já tem conta? " : "Ainda não tem conta? "}
                 <button type="button" className="font-semibold text-primary hover:underline" onClick={() => setMode(isSetup ? "login" : "signup")}>
-                  {isSetup ? "Entrar" : "Criar conta grátis"}
+                  {isSetup ? "Entrar" : "Criar conta"}
                 </button>
               </p>
             </>

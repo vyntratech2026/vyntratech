@@ -1,15 +1,19 @@
 import { createFileRoute, notFound, Outlet } from "@tanstack/react-router";
 import { CompanyProvider, loadCompanyBySlug } from "@/lib/brand";
 import { themeCss } from "@/lib/theme";
+import { supabase } from "@/integrations/supabase/client";
 
 /** Public site of one company: loads it by its link and applies its logo, name and colors. */
 export const Route = createFileRoute("/$slug")({
   loader: async ({ params }) => {
     const company = await loadCompanyBySlug(params.slug);
     if (!company) throw notFound();
+    const { data: active, error } = await supabase.rpc("company_access_active", { p_company_id: company.id });
+    if (error) throw error;
+    if (!active) throw notFound();
     return { company };
   },
-  staleTime: 5 * 60 * 1000,
+  staleTime: 0,
   component: CompanyLayout,
 });
 
