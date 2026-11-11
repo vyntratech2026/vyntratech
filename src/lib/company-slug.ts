@@ -6,7 +6,7 @@ export const RESERVED_SLUGS = [
   "admin", "auth", "agendar", "agendamento", "cadastro", "comecar", "api", "lovable", "reset-password",
   "profissional", "entrar", "login", "logout", "sair", "conta", "painel", "app", "www", "static", "assets",
   "robots", "sitemap", "favicon", "sobre", "ajuda", "suporte", "termos", "privacidade", "planos", "precos",
-  "contato", "blog", "empresa", "empresas",
+  "contato", "blog", "empresa", "empresas", "assinatura",
 ];
 
 /** Turns a business name into a suggested link: "Barbearia do João" -> "barbearia-do-joao". */

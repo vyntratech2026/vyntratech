@@ -123,7 +123,7 @@ function AdminLayout() {
 
   if (subscriptionQ.isError || subscriptionState(subscriptionQ.data) !== "active") return <Navigate to="/assinatura" replace />;
   if (!staff.companyId || !brandQ.data) return null;
-  const nav = [...(staff.isAdmin ? ADMIN_NAV : BARBER_NAV), ...(staff.isPlatformAdmin ? [{ to: "/empresas", label: "Liberação de empresas", icon: Users }] : [])];
+  const nav: NavItem[] = [...(staff.isAdmin ? ADMIN_NAV : BARBER_NAV), ...(staff.isPlatformAdmin ? [{ to: "/empresas", label: "Liberação de empresas", icon: Users }] : [])];
   const company = { id: staff.companyId, slug: staff.companySlug ?? "", brand: brandQ.data };
   const css = themeCss(company.brand.colors);
 
