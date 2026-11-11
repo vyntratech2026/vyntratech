@@ -10,10 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
-import { Logo } from "@/components/site/brand";
 import { errorMessage } from "@/lib/format";
 import { isRealEmail, loginEmail } from "@/lib/staff-auth";
 import { PLATFORM_NAME } from "@/lib/brand";
+import platformLogo from "@/assets/logo-vyntra-tech.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: z.object({ modo: z.enum(["cadastro"]).optional().catch(undefined) }),
@@ -149,7 +149,7 @@ function AuthPage() {
           <ArrowLeft className="size-4" /> Início
         </Link>
         <div className="surface-card p-7">
-          <Logo className="mx-auto size-20" />
+          <img src={platformLogo.url} alt={PLATFORM_NAME} className="mx-auto h-10 w-auto" />
           <h1 className="mt-5 text-center text-xl font-bold">{title}</h1>
           <p className="mt-1 text-center text-sm text-muted-foreground">{subtitle}</p>
 
