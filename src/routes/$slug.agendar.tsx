@@ -73,8 +73,8 @@ function BookingPage() {
   const { data: links } = useQuery(barberServicesQuery(slugCompany.id));
   const products = useQuery(productsQuery(slugCompany.id));
   const [quantities, setQuantities] = useState<Record<string, number>>({});
-  const selectedProducts: BookingProduct[] = (products.data ?? []).filter((p) => p.is_available && quantities[p.id] > 0).map((p) => ({
-    product_id: p.id, name: p.name, unit_price: Number(p.price), quantity: quantities[p.id],
+  const selectedProducts: BookingProduct[] = (products.data ?? []).filter((p) => p.is_available && (quantities[p.id] ?? 0) > 0).map((p) => ({
+    product_id: p.id, name: p.name, unit_price: Number(p.price), quantity: quantities[p.id] ?? 0,
   }));
 
   const [step, setStep] = useState(0);
