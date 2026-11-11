@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useStaff } from "@/lib/use-staff";
 import { errorMessage } from "@/lib/format";
-import { DEFAULT_BUSINESS_NAME } from "@/lib/brand";
+import { useCompany as useCompanyBrand } from "@/lib/brand";
 import { contrastRatio, DEFAULT_BRAND, isHexColor, themeVars, type BrandColors } from "@/lib/theme";
 
 export const Route = createFileRoute("/_authenticated/admin/aparencia")({
@@ -35,6 +35,7 @@ const COLOR_FIELDS: { key: keyof BrandColors; label: string; hint: string }[] = 
 
 function AppearancePage() {
   const companyId = useCompany().id;
+  const companyBrandName = useCompanyBrand().brand.name;
   const { data: staff } = useStaff();
   const qc = useQueryClient();
   const router = useRouter();
@@ -108,7 +109,7 @@ function AppearancePage() {
     onError: (e) => toast.error(errorMessage(e)),
   });
 
-  const previewName = name.trim() || DEFAULT_BUSINESS_NAME;
+  const previewName = name.trim() || companyBrandName;
 
   return (
     <AdminOnly isAdmin={!!staff?.isAdmin}>
@@ -135,7 +136,7 @@ function AppearancePage() {
             <section className="surface-card space-y-4 p-5 sm:p-6">
               <h2 className="text-base font-semibold">Nome</h2>
               <div className="space-y-2">
-                <Label htmlFor="brand-name">Nome da barbearia</Label>
+                <Label htmlFor="brand-name">Nome da empresa</Label>
                 <Input id="brand-name" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} />
                 <p className="text-xs text-muted-foreground">A última palavra aparece na cor de destaque.</p>
               </div>
@@ -211,11 +212,11 @@ function AppearancePage() {
                 </span>
               </div>
               <div className="space-y-4 bg-radial-glow p-5">
-                <p className="eyebrow">Barbearia</p>
+                <p className="eyebrow">Bem-vindo</p>
                 <h3 className="font-display text-2xl font-bold leading-tight">
                   <BrandName name={previewName} accentClassName="text-glow" />
                 </h3>
-                <p className="text-sm text-muted-foreground">Escolha o serviço, o barbeiro e o horário.</p>
+                <p className="text-sm text-muted-foreground">Escolha o serviço, o profissional e o horário.</p>
                 <div className="flex gap-2">
                   <span className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-glow">Agendar</span>
                   <span className="rounded-lg border border-input px-4 py-2 text-sm">WhatsApp</span>

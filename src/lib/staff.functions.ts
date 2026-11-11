@@ -29,51 +29,14 @@ function friendlyAuthError(message: string): string {
   return message;
 }
 
-/** Creates the very first administrator. Refuses once any admin exists. */
-export const setupFirstAdmin = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) =>
-    z
-      .object({
-        name: z.string().trim().min(2, "Informe seu nome.").max(120),
-        email: emailSchema,
-        password: passwordSchema,
-      })
-      .parse(input),
-  )
-  .handler(async ({ data }) => {
-    const admin = await getAdminClient();
-    const { count, error: countError } = await admin
-      .from("user_roles")
-      .select("id", { count: "exact", head: true })
-      .eq("role", "admin");
-    if (countError) throw new Error("Não foi possível verificar o sistema.");
-    if ((count ?? 0) > 0) throw new Error("O administrador já foi criado. Faça login.");
-
-    const { data: created, error } = await admin.auth.admin.createUser({
-      email: data.email,
-      password: data.password,
-      email_confirm: true,
-      user_metadata: { full_name: data.name },
-    });
-    if (error || !created.user) throw new Error(friendlyAuthError(error?.message ?? "Erro ao criar acesso."));
-
-    const { error: roleError } = await admin
-      .from("user_roles")
-      .insert({ user_id: created.user.id, role: "admin" });
-    if (roleError) {
-      await admin.auth.admin.deleteUser(created.user.id);
-      throw new Error("Não foi possível concluir o cadastro do administrador.");
-    }
-    await admin.from("profiles").update({ full_name: data.name }).eq("id", created.user.id);
-    return { ok: true };
-  });
-
-async function assertAdmin(context: { supabase: any; userId: string }) {
-  const { data: isAdmin, error } = await context.supabase.rpc("has_role", {
-    _user_id: context.userId,
-    _role: "admin",
-  });
-  if (error || !isAdmin) throw new Error("Apenas o administrador pode fazer isso.");
+/** The caller must be an administrator of the company that owns this barber. */
+async function assertBarberAdmin(context: { supabase: any }, barberId: string) {
+  const admin = await getAdminClient();
+  const { data: barber } = await admin.from("barbers").select("id, name, user_id, company_id").eq("id", barberId).single();
+  if (!barber) throw new Error("Profissional não encontrado.");
+  const { data: ok, error } = await context.supabase.rpc("is_company_admin", { _cid: barber.company_id });
+  if (error || !ok) throw new Error("Apenas o administrador pode fazer isso.");
+  return { admin, barber };
 }
 
 /** Admin creates (or replaces) the login of a barber: e-mail + password. */
@@ -83,16 +46,8 @@ export const createBarberAccess = createServerFn({ method: "POST" })
     z.object({ barberId: z.string().uuid(), email: emailSchema, password: passwordSchema }).parse(input),
   )
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
-    const admin = await getAdminClient();
-
-    const { data: barber, error: bErr } = await admin
-      .from("barbers")
-      .select("id, name, user_id")
-      .eq("id", data.barberId)
-      .single();
-    if (bErr || !barber) throw new Error("Barbeiro não encontrado.");
-    if (barber.user_id) throw new Error("Este barbeiro já tem acesso. Use 'Trocar senha'.");
+    const { admin, barber } = await assertBarberAdmin(context, data.barberId);
+    if (barber.user_id) throw new Error("Este profissional já tem acesso. Use 'Trocar senha'.");
 
     const { data: created, error } = await admin.auth.admin.createUser({
       email: data.email,
@@ -103,11 +58,11 @@ export const createBarberAccess = createServerFn({ method: "POST" })
     if (error || !created.user) throw new Error(friendlyAuthError(error?.message ?? "Erro ao criar acesso."));
 
     const uid = created.user.id;
-    const { error: roleErr } = await admin.from("user_roles").insert({ user_id: uid, role: "barber" });
+    const { error: roleErr } = await admin.from("company_members").insert({ user_id: uid, role: "barber", company_id: barber.company_id });
     const { error: linkErr } = await admin.from("barbers").update({ user_id: uid }).eq("id", barber.id);
     if (roleErr || linkErr) {
       await admin.auth.admin.deleteUser(uid);
-      throw new Error("Não foi possível vincular o acesso ao barbeiro.");
+      throw new Error("Não foi possível vincular o acesso ao profissional.");
     }
     await admin.from("profiles").update({ full_name: barber.name, barber_id: barber.id }).eq("id", uid);
     return { ok: true };
@@ -120,10 +75,8 @@ export const resetBarberPassword = createServerFn({ method: "POST" })
     z.object({ barberId: z.string().uuid(), password: passwordSchema }).parse(input),
   )
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
-    const admin = await getAdminClient();
-    const { data: barber } = await admin.from("barbers").select("user_id").eq("id", data.barberId).single();
-    if (!barber?.user_id) throw new Error("Este barbeiro ainda não tem acesso.");
+    const { admin, barber } = await assertBarberAdmin(context, data.barberId);
+    if (!barber?.user_id) throw new Error("Este profissional ainda não tem acesso.");
     const { error } = await admin.auth.admin.updateUserById(barber.user_id, { password: data.password });
     if (error) throw new Error(friendlyAuthError(error.message));
     return { ok: true };
@@ -134,11 +87,10 @@ export const revokeBarberAccess = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ barberId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
-    const admin = await getAdminClient();
-    const { data: barber } = await admin.from("barbers").select("user_id").eq("id", data.barberId).single();
+    const { admin, barber } = await assertBarberAdmin(context, data.barberId);
     if (!barber?.user_id) return { ok: true };
     await admin.from("barbers").update({ user_id: null }).eq("id", data.barberId);
+    await admin.from("company_members").delete().eq("user_id", barber.user_id);
     await admin.auth.admin.deleteUser(barber.user_id);
     return { ok: true };
   });

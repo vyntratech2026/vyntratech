@@ -163,7 +163,7 @@ function FinancePage() {
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             <StatCard label="Faturamento" value={formatPrice(stats.total)} accent />
             <StatCard label="Serviços" value={formatPrice(stats.services)} />
-            <StatCard label="Produtos" value={formatPrice(stats.products)} hint="100% da barbearia" />
+            <StatCard label="Produtos" value={formatPrice(stats.products)} hint="100% da empresa" />
             <StatCard label="Pagamentos" value={stats.count} />
           </div>
 
@@ -187,12 +187,12 @@ function FinancePage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-lg font-semibold">Barbeiros</h2>
+            <h2 className="mb-3 text-lg font-semibold">Profissionais</h2>
             <div className="surface-card overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="text-left text-xs uppercase text-muted-foreground">
                   <tr className="border-b border-border">
-                    <th className="p-3">Barbeiro</th>
+                    <th className="p-3">Profissional</th>
                     <th className="p-3 text-right">Cortes pagos</th>
                     <th className="p-3 text-right">Comissão %</th>
                     <th className="p-3 text-right">A pagar</th>

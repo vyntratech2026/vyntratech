@@ -25,3 +25,7 @@
 - [ ] Gráficos extras no dashboard (serviços mais pedidos, desempenho por barbeiro)
 - [ ] E-mail ao admin a cada agendamento — aguardando o dono configurar um domínio de e-mail próprio
 - [ ] Revisão final de segurança e responsividade
+
+- [x] Plataforma multiempresa: criação de conta, empresa com link próprio, dados isolados
+- [ ] Painel do dono da plataforma (futuro)
+- [ ] Cobrança/mensalidade (futuro)
