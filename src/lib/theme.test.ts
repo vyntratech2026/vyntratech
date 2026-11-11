@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { readableOn, themeCss, themeVars } from "./theme";
+import { DEFAULT_BRAND, readableOn, themeCss, themeVars } from "./theme";
 import { splitBrandName } from "./brand";
 
 describe("brand colors", () => {
-  it("keeps the original look (black, lime, white) without overrides", () => {
-    expect(themeCss({ primary: "#aff608", background: "#080808", text: "#ffffff" })).toBe("");
+  it("keeps the original look (black, blue, white) without overrides", () => {
+    expect(themeCss({ primary: "#0047ef", background: "#080808", text: "#ffffff" })).toBe("");
+  });
+
+  it("starts every new company with the blue highlight", () => {
+    expect(DEFAULT_BRAND.primary).toBe("#0047ef");
   });
 
   it("applies the owner's chosen highlight color across the site", () => {
@@ -20,7 +24,7 @@ describe("brand colors", () => {
   });
 
   it("ignores invalid colors so nothing unsafe reaches the page", () => {
-    expect(themeVars({ primary: "red;}body{display:none", background: "#080808", text: "#ffffff" })["--primary"]).toBe("#aff608");
+    expect(themeVars({ primary: "red;}body{display:none", background: "#080808", text: "#ffffff" })["--primary"]).toBe("#0047ef");
   });
 });
 
