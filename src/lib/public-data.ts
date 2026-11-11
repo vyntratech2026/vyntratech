@@ -14,6 +14,7 @@ export interface PublicSettings {
   whatsapp: string | null;
   instagram: string | null;
   maps_url: string | null;
+  google_review_url: string | null;
   opening_hours: OpeningHours;
   max_advance_days: number;
   cancellation_min_hours: number;
@@ -27,7 +28,7 @@ export const settingsQuery = (companyId: string) =>
       const { data, error } = await supabase
         .from("settings")
         .select(
-          "business_name, tagline, description, logo_url, cover_url, address, phone, whatsapp, instagram, maps_url, opening_hours, max_advance_days, cancellation_min_hours, cancellation_policy",
+          "business_name, tagline, description, logo_url, cover_url, address, phone, whatsapp, instagram, maps_url, google_review_url, opening_hours, max_advance_days, cancellation_min_hours, cancellation_policy",
         )
         .eq("company_id", companyId)
         .single();

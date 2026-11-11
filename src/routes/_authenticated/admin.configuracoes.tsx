@@ -16,8 +16,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { useStaff } from "@/lib/use-staff";
 import { DAY_NAMES, errorMessage } from "@/lib/format";
 import type { Database } from "@/integrations/supabase/types";
+import { googleReviewUrl } from "@/lib/google-review";
 
 export const Route = createFileRoute("/_authenticated/admin/configuracoes")({
+  head: () => ({ meta: [
+    { title: "Configurações da empresa — Vyntra Tech" },
+    { name: "description", content: "Gerencie contato, avaliações do Google e horários da sua empresa." },
+    { property: "og:title", content: "Configurações da empresa — Vyntra Tech" },
+    { property: "og:description", content: "Gerencie as configurações da sua empresa." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ] }),
   component: SettingsPage,
 });
 
@@ -29,7 +39,7 @@ function SettingsPage() {
   const { data: staff } = useStaff();
   const qc = useQueryClient();
   const q = useQuery({
-    queryKey: ["admin", "settings"],
+    queryKey: ["admin", "settings", companyId],
     queryFn: async () => {
       const { data, error } = await supabase.from("settings").select("*").eq("company_id", companyId).single();
       if (error) throw error;
@@ -54,6 +64,8 @@ function SettingsPage() {
   const save = useMutation({
     mutationFn: async () => {
       if (!f) return;
+      const reviewUrl = googleReviewUrl(f.google_review_url);
+      if (f.google_review_url?.trim() && !reviewUrl) throw new Error("Use um link HTTPS de avaliação do Google, como g.page/r/…/review.");
       for (const [i, d] of Object.entries(days)) {
         if (d.on && d.close <= d.open) throw new Error(`${DAY_NAMES[Number(i)]}: o fechamento precisa ser depois da abertura.`);
       }
@@ -71,6 +83,7 @@ function SettingsPage() {
           whatsapp: f.whatsapp?.replace(/\D/g, "") || null,
           instagram: f.instagram?.trim() || null,
           maps_url: f.maps_url?.trim() || null,
+          google_review_url: reviewUrl,
           opening_hours,
           slot_interval_minutes: Number(f.slot_interval_minutes),
           min_advance_minutes: Number(f.min_advance_minutes),
@@ -128,6 +141,7 @@ function SettingsPage() {
               <Field label="WhatsApp (com 55 + DDD)"><Input value={f.whatsapp ?? ""} onChange={(e) => set("whatsapp", e.target.value)} /></Field>
               <Field label="Instagram (link)"><Input value={f.instagram ?? ""} onChange={(e) => set("instagram", e.target.value)} /></Field>
               <Field label="Link do Google Maps"><Input value={f.maps_url ?? ""} onChange={(e) => set("maps_url", e.target.value)} /></Field>
+              <Field label="Link de avaliação do Google"><Input type="url" value={f.google_review_url ?? ""} onChange={(e) => set("google_review_url", e.target.value)} placeholder="https://g.page/r/…/review" maxLength={2048} /></Field>
               <Field label="E-mail para avisos de agendamento"><Input type="email" value={f.notification_email ?? ""} onChange={(e) => set("notification_email", e.target.value)} /></Field>
             </div>
           </Section>
