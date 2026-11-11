@@ -5,6 +5,8 @@ export const COMMERCIAL_PLANS = [
   { value: "pro", name: "Vyntra Pro", monthlyPriceCents: 6990, professionalLimit: 6 },
   { value: "business", name: "Vyntra Business", monthlyPriceCents: 11990, professionalLimit: null },
 ] as const;
+export type CommercialPlan = typeof COMMERCIAL_PLANS[number]["value"];
+export const commercialPlanLabel = (value: string | null | undefined) => COMMERCIAL_PLANS.find((p) => p.value === value)?.name;
 export const PLAN_FEATURES = [
   "Dashboard completo",
   "Relatórios de agendamentos",

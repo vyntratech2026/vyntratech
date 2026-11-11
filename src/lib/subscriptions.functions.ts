@@ -26,7 +26,7 @@ export const listPlatformCompanies = createServerFn({ method: "POST" })
 
 export const changeSubscription = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ companyId: z.string().uuid(), plan: z.enum(["monthly", "quarterly", "semiannual", "annual", "lifetime"]), suspend: z.boolean().default(false) }).parse(input))
+  .inputValidator((input: unknown) => z.object({ companyId: z.string().uuid(), plan: z.enum(["start", "pro", "business"]), suspend: z.boolean().default(false) }).parse(input))
   .handler(async ({ context, data }) => {
     const { error } = await context.supabase.rpc("set_company_subscription", { p_company_id: data.companyId, p_plan: data.plan, p_suspend: data.suspend });
     if (error) throw error;
