@@ -17,7 +17,7 @@ import {
   settingsQuery,
 } from "@/lib/public-data";
 import { useSignedUrl } from "@/lib/media";
-import { formatDate, formatDuration, formatPrice, whatsappLink } from "@/lib/format";
+import { formatDate, formatDuration, formatPrice, instagramHandle, whatsappLink } from "@/lib/format";
 
 export const Route = createFileRoute("/$slug/")({
   head: () => ({
@@ -118,8 +118,8 @@ function Index() {
                 <Instagram className="mt-0.5 size-5 shrink-0 text-primary" />
                 <div>
                   <p className="text-sm text-muted-foreground">Instagram</p>
-                  <a href={s.instagram} target="_blank" rel="noreferrer" className="font-medium hover:text-primary">
-                    @studiocleisoncortes
+                  <a href={s.instagram} target="_blank" rel="noreferrer" className="break-all font-medium hover:text-primary">
+                    {instagramHandle(s.instagram) ?? "Instagram"}
                   </a>
                 </div>
               </div>

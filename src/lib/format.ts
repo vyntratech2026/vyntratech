@@ -112,6 +112,24 @@ export function whatsappLink(phone: string, message?: string): string {
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 
+/** Extract only the profile configured by the current company, without a default account. */
+export function instagramHandle(value: string | null | undefined): string | null {
+  const input = value?.trim();
+  if (!input) return null;
+  const direct = input.replace(/^@/, "");
+  if (/^[\w.]+$/.test(direct) && !direct.includes("instagram.com")) return `@${direct}`;
+  try {
+    const url = new URL(/^https?:\/\//i.test(input) ? input : `https://${input}`);
+    if (!/^(www\.|m\.)?instagram\.com$/i.test(url.hostname)) return null;
+    const profile = url.pathname.split("/").filter(Boolean)[0];
+    return profile && /^[\w.]+$/.test(profile) && !["p", "reel", "reels", "stories", "explore"].includes(profile.toLowerCase())
+      ? `@${profile}`
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 export interface BookingMessageInput {
   customerName: string;
   serviceName: string;
