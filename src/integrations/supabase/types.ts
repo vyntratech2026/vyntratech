@@ -27,6 +27,7 @@ export type Database = {
           notes: string | null
           notified_at: string | null
           price: number
+          product_items: Json
           service_id: string
           service_name: string
           source: string
@@ -46,6 +47,7 @@ export type Database = {
           notes?: string | null
           notified_at?: string | null
           price: number
+          product_items?: Json
           service_id: string
           service_name: string
           source?: string
@@ -65,6 +67,7 @@ export type Database = {
           notes?: string | null
           notified_at?: string | null
           price?: number
+          product_items?: Json
           service_id?: string
           service_name?: string
           source?: string
@@ -1067,6 +1070,17 @@ export type Database = {
           p_barber_id: string
           p_full_name: string
           p_phone: string
+          p_service_id: string
+          p_start_at: string
+        }
+        Returns: Json
+      }
+      create_booking_with_products: {
+        Args: {
+          p_barber_id: string
+          p_full_name: string
+          p_phone: string
+          p_products?: Json
           p_service_id: string
           p_start_at: string
         }
