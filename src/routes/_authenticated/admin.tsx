@@ -125,7 +125,7 @@ function AdminLayout() {
           <p className="text-[11px] text-muted-foreground">{staff.isAdmin ? "Administrador" : "Profissional"}</p>
         </div>
       </div>
-      <nav className="flex-1 space-y-1 px-3">
+      <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto px-3 [scrollbar-width:thin]">
         {nav.map((item) => (
           <Link
             key={item.to}

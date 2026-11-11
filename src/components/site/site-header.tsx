@@ -53,7 +53,7 @@ export function SiteHeader() {
         </div>
       </div>
       {open && (
-        <nav className="border-t border-border/60 bg-background px-4 pb-5 pt-2 md:hidden">
+        <nav className="max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-border/60 bg-background px-4 pb-5 pt-2 [scrollbar-width:thin] md:hidden">
           {NAV.map((n) => (
             <a
               key={n.href}
