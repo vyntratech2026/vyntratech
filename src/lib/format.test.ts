@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   bookingWhatsappMessage,
   formatTime,
+  instagramHandle,
   isValidPhone,
   normalizePhone,
   toShopDateKey,
@@ -17,6 +18,25 @@ describe("phone normalization", () => {
   it("rejects numbers without DDD", () => {
     expect(isValidPhone("99689-1622")).toBe(false);
     expect(isValidPhone("(79) 99689-1622")).toBe(true);
+  });
+});
+
+describe("company Instagram profile", () => {
+  it("uses each company's configured profile instead of a fixed account", () => {
+    expect(instagramHandle("https://www.instagram.com/barbearia.adrian/?igsh=abc")).toBe("@barbearia.adrian");
+    expect(instagramHandle("https://instagram.com/outra_barbearia/")).toBe("@outra_barbearia");
+  });
+
+  it("accepts a configured handle or a link without its protocol", () => {
+    expect(instagramHandle(" @barbearia.adrian ")).toBe("@barbearia.adrian");
+    expect(instagramHandle("instagram.com/outra_barbearia/")).toBe("@outra_barbearia");
+  });
+
+  it("does not substitute any account for missing or non-profile settings", () => {
+    expect(instagramHandle(null)).toBeNull();
+    expect(instagramHandle("https://www.instagram.com/")).toBeNull();
+    expect(instagramHandle("https://example.com/barbearia/")).toBeNull();
+    expect(instagramHandle("https://instagram.com/p/abc/")).toBeNull();
   });
 });
 
