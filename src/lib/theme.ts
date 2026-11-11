@@ -5,7 +5,7 @@ export interface BrandColors {
   text: string;
 }
 
-export const DEFAULT_BRAND: BrandColors = { primary: "#aff608", background: "#080808", text: "#ffffff" };
+export const DEFAULT_BRAND: BrandColors = { primary: "#0047ef", background: "#080808", text: "#ffffff" };
 
 export function isHexColor(v: string | null | undefined): v is string {
   return !!v && /^#[0-9a-fA-F]{6}$/.test(v);

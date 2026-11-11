@@ -6,7 +6,7 @@
 
 /*
  * Studio Cleison Cortes — design system.
- * Dark only. Black base, lime-neon accent (#aff608), white text.
+ * Dark only. Black base, blue accent (#0047ef), white text.
  */
 
 @theme inline {
@@ -79,36 +79,36 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.19 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.892 0.232 127.8);
-  --primary-foreground: oklch(0.134 0 0);
-  --primary-glow: oklch(0.93 0.2 125);
+  --primary: oklch(0.494 0.256 263.2);
+  --primary-foreground: oklch(0.985 0 0);
+  --primary-glow: oklch(0.66 0.2 263);
   --secondary: oklch(0.235 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.22 0 0);
   --muted-foreground: oklch(0.7 0 0);
-  --accent: oklch(0.25 0.03 128);
+  --accent: oklch(0.25 0.05 263);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.65 0.22 25);
   --destructive-foreground: oklch(0.985 0 0);
-  --success: oklch(0.892 0.232 127.8);
+  --success: oklch(0.494 0.256 263.2);
   --warning: oklch(0.82 0.16 80);
   --info: oklch(0.75 0.12 230);
   --border: oklch(1 0 0 / 9%);
   --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.892 0.232 127.8);
-  --chart-1: oklch(0.892 0.232 127.8);
+  --ring: oklch(0.494 0.256 263.2);
+  --chart-1: oklch(0.494 0.256 263.2);
   --chart-2: oklch(0.75 0.12 230);
   --chart-3: oklch(0.82 0.16 80);
   --chart-4: oklch(0.7 0.18 330);
   --chart-5: oklch(0.65 0.22 25);
   --sidebar: oklch(0.155 0 0);
   --sidebar-foreground: oklch(0.92 0 0);
-  --sidebar-primary: oklch(0.892 0.232 127.8);
-  --sidebar-primary-foreground: oklch(0.134 0 0);
+  --sidebar-primary: oklch(0.494 0.256 263.2);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.22 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: oklch(0.892 0.232 127.8);
+  --sidebar-ring: oklch(0.494 0.256 263.2);
 
   --gradient-hero: linear-gradient(180deg, oklch(0.134 0 0 / 30%) 0%, oklch(0.134 0 0 / 75%) 60%, oklch(0.134 0 0) 100%);
   --gradient-radial-glow: radial-gradient(60% 50% at 50% 0%, color-mix(in oklab, var(--primary) 18%, transparent) 0%, transparent 70%);
