@@ -23,6 +23,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useStaff } from "@/lib/use-staff";
+import { BookingProductSummary } from "@/components/site/booking-product-summary";
 import {
   addDaysKey,
   errorMessage,
@@ -38,6 +39,14 @@ import {
 } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/admin/agendamentos")({
+  head: () => ({ meta: [
+    { title: "Agendamentos — Vyntra Tech" },
+    { name: "description", content: "Gerencie horários e produtos solicitados pelos clientes." },
+    { property: "og:title", content: "Agendamentos — Vyntra Tech" },
+    { property: "og:description", content: "Gerencie horários e produtos solicitados pelos clientes." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: AppointmentsPage,
 });
 
@@ -63,7 +72,8 @@ function AppointmentsPage() {
     queryFn: async () => {
       let q = supabase
         .from("appointments")
-        .select("id, start_at, duration_minutes, service_name, price, status, source, notes, manage_token, barber_id, barbers!appointments_barber_id_fkey(name), customers!appointments_customer_id_fkey(full_name, phone)")
+        .select("id, start_at, duration_minutes, service_name, price, product_items, status, source, notes, manage_token, barber_id, barbers!appointments_barber_id_fkey(name), customers!appointments_customer_id_fkey(full_name, phone)")
+        .eq("company_id", companyId)
         .gte("start_at", shopDayStartIso(day))
         .lt("start_at", shopDayStartIso(addDaysKey(day, 1)))
         .order("start_at");
@@ -169,6 +179,7 @@ function AppointmentsPage() {
                   </div>
                   <StatusBadge status={a.status} />
                 </div>
+                <BookingProductSummary items={a.product_items} servicePrice={a.price} />
                 <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-3">
                   {a.status === "pending" && (
                     <Button size="sm" variant="secondary" onClick={() => setStatus.mutate({ id: a.id, status: "confirmed" })}>

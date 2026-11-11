@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { buildBookingNotification, isPushcutUrl } from "./pushcut";
 import { requestOrigin, sendPushcut } from "./pushcut.server";
+import { bookingProducts } from "./booking-products";
 
 function adminLink(): { url: string } | undefined {
   const origin = requestOrigin();
@@ -26,7 +27,7 @@ export const notifyNewBooking = createServerFn({ method: "POST" })
         .eq("source", "online")
         .is("notified_at", null)
         .gte("created_at", since)
-        .select("id, company_id, start_at, service_name, price, barbers!appointments_barber_id_fkey(name), customers!appointments_customer_id_fkey(full_name, phone)")
+        .select("id, company_id, start_at, service_name, price, product_items, barbers!appointments_barber_id_fkey(name), customers!appointments_customer_id_fkey(full_name, phone)")
         .maybeSingle();
       if (error || !appt) return { sent: false };
 
@@ -44,6 +45,7 @@ export const notifyNewBooking = createServerFn({ method: "POST" })
         barberName: appt.barbers?.name ?? "Profissional",
         startAt: appt.start_at,
         price: appt.price,
+        productItems: bookingProducts(appt.product_items),
       });
       const link = adminLink();
       const res = await sendPushcut(cfg.pushcut_url, link ? { ...msg, defaultAction: link } : msg);
