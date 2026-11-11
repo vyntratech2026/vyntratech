@@ -141,7 +141,7 @@ function BarbersPage() {
       return id;
     },
     onSuccess: () => {
-      toast.success("Barbeiro salvo");
+      toast.success("Profissional salvo");
       setForm(null);
       qc.invalidateQueries({ queryKey: ["admin"] });
       qc.invalidateQueries({ queryKey: ["public"] });
@@ -152,18 +152,18 @@ function BarbersPage() {
   return (
     <AdminOnly isAdmin={!!staff?.isAdmin}>
       <PageHeader
-        title="Barbeiros"
+        title="Profissionais"
         subtitle="Cadastro, serviços, horários de trabalho, comissão e acesso ao painel."
         actions={
           <Button onClick={() => openEdit()}>
-            <Plus /> Novo barbeiro
+            <Plus /> Novo profissional
           </Button>
         }
       />
       {data.isLoading ? (
         <div className="h-40 animate-pulse rounded-xl bg-surface" />
       ) : !data.data?.barbers.length ? (
-        <EmptyState text="Nenhum barbeiro cadastrado ainda." action={<Button onClick={() => openEdit()}>Cadastrar primeiro barbeiro</Button>} />
+        <EmptyState text="Nenhum profissional cadastrado ainda." action={<Button onClick={() => openEdit()}>Cadastrar primeiro profissional</Button>} />
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2">
           {data.data.barbers.map((b) => {
@@ -199,7 +199,7 @@ function BarbersPage() {
       <Dialog open={!!form} onOpenChange={(o) => !o && setForm(null)}>
         <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle>{form?.id ? `Editar ${form.name}` : "Novo barbeiro"}</DialogTitle>
+            <DialogTitle>{form?.id ? `Editar ${form.name}` : "Novo profissional"}</DialogTitle>
           </DialogHeader>
           {form && (
             <Tabs defaultValue="perfil">
@@ -259,7 +259,7 @@ function BarbersPage() {
               </TabsContent>
 
               <TabsContent value="horarios" className="space-y-2 pt-4">
-                <p className="text-xs text-muted-foreground">Os horários também respeitam o funcionamento da barbearia (Configurações).</p>
+                <p className="text-xs text-muted-foreground">Os horários também respeitam o funcionamento da empresa (Configurações).</p>
                 {[1, 2, 3, 4, 5, 6, 0].map((d) => {
                   const h = form.hours[d] ?? { on: false, start: "09:00", end: "18:00" };
                   const set = (patch: Partial<Hours[number]>) =>
@@ -288,7 +288,7 @@ function BarbersPage() {
               </TabsContent>
 
               <Button className="mt-6 w-full" disabled={save.isPending} onClick={() => save.mutate(form)}>
-                {save.isPending && <Loader2 className="animate-spin" />} Salvar barbeiro
+                {save.isPending && <Loader2 className="animate-spin" />} Salvar profissional
               </Button>
             </Tabs>
           )}
@@ -314,7 +314,7 @@ function AccessPanel({ barberId, hasAccess, onChanged }: { barberId: string; has
       return action;
     },
     onSuccess: (action) => {
-      toast.success(action === "create" ? "Acesso criado. Envie o e-mail e a senha ao barbeiro." : action === "reset" ? "Senha trocada" : "Acesso removido");
+      toast.success(action === "create" ? "Acesso criado. Envie o e-mail e a senha ao profissional." : action === "reset" ? "Senha trocada" : "Acesso removido");
       setPassword("");
       onChanged(action !== "revoke");
       qc.invalidateQueries({ queryKey: ["admin", "barbers"] });
@@ -325,10 +325,10 @@ function AccessPanel({ barberId, hasAccess, onChanged }: { barberId: string; has
   if (!hasAccess) {
     return (
       <div className="space-y-4">
-        <p className="text-sm text-muted-foreground">Crie o login do barbeiro. Ele entra na Área da equipe com o e-mail e a senha. Se for um Gmail, também pode usar "Entrar com Google".</p>
+        <p className="text-sm text-muted-foreground">Crie o login do profissional. Ele entra na Área da equipe com o e-mail e a senha. Se for um Gmail, também pode usar "Entrar com Google".</p>
         <div className="space-y-2">
           <Label>E-mail de login</Label>
-          <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="barbeiro@gmail.com" />
+          <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="profissional@gmail.com" />
         </div>
         <div className="space-y-2">
           <Label>Senha inicial (mín. 8 caracteres)</Label>
@@ -342,7 +342,7 @@ function AccessPanel({ barberId, hasAccess, onChanged }: { barberId: string; has
   }
   return (
     <div className="space-y-5">
-      <p className="flex items-center gap-2 text-sm text-primary"><ShieldCheck className="size-4" /> Este barbeiro já tem acesso ao painel.</p>
+      <p className="flex items-center gap-2 text-sm text-primary"><ShieldCheck className="size-4" /> Este profissional já tem acesso ao painel.</p>
       <div className="space-y-2">
         <Label>Nova senha</Label>
         <div className="flex gap-2">
@@ -352,7 +352,7 @@ function AccessPanel({ barberId, hasAccess, onChanged }: { barberId: string; has
           </Button>
         </div>
       </div>
-      <Button variant="outline" disabled={run.isPending} onClick={() => confirm("Remover o acesso deste barbeiro ao painel?") && run.mutate("revoke")}>
+      <Button variant="outline" disabled={run.isPending} onClick={() => confirm("Remover o acesso deste profissional ao painel?") && run.mutate("revoke")}>
         <UserMinus /> Remover acesso
       </Button>
     </div>

@@ -55,8 +55,8 @@ function BlocksPage() {
 
   const add = useMutation({
     mutationFn: async () => {
-      if (isAdmin && !target) throw new Error("Escolha o barbeiro ou a barbearia toda.");
-      if (!isAdmin && !staff?.barberId) throw new Error("Seu acesso não está vinculado a um barbeiro.");
+      if (isAdmin && !target) throw new Error("Escolha o profissional ou a empresa toda.");
+      if (!isAdmin && !staff?.barberId) throw new Error("Seu acesso não está vinculado a um profissional.");
       const start = wholeDay ? shopDayStartIso(day) : new Date(`${day}T${from}:00-03:00`).toISOString();
       const end = wholeDay ? shopDayStartIso(addDaysKey(day, 1)) : new Date(`${day}T${to}:00-03:00`).toISOString();
       if (new Date(end) <= new Date(start)) throw new Error("O horário final precisa ser depois do inicial.");
@@ -117,7 +117,7 @@ function BlocksPage() {
               <Label>Para quem</Label>
               <NativeSelect value={target} onChange={(e) => setTarget(e.target.value)}>
                 <option value="">Selecione</option>
-                <option value={SHOP}>Barbearia toda (feriado, reforma…)</option>
+                <option value={SHOP}>Empresa toda (feriado, reforma…)</option>
                 {barbers.data?.map((b) => (
                   <option key={b.id} value={b.id}>
                     {b.name}
@@ -177,7 +177,7 @@ function BlocksPage() {
                     {formatDate(b.start_at)} · {fullDay ? "Dia inteiro" : `${formatTime(b.start_at)} – ${formatTime(b.end_at)}`}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {b.barber_id ? b.barbers?.name : "Barbearia toda"}
+                    {b.barber_id ? b.barbers?.name : "Empresa toda"}
                     {b.reason && ` · ${b.reason}`}
                   </p>
                 </div>

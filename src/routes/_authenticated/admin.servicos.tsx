@@ -186,7 +186,7 @@ function ServicesPage() {
               <label className="flex items-center gap-3 text-sm">
                 <Switch checked={form.is_active} onCheckedChange={(v) => setForm({ ...form, is_active: v })} /> Ativo (aparece no site)
               </label>
-              <p className="text-xs text-muted-foreground">Depois de salvar, marque quais barbeiros fazem este serviço na página Barbeiros.</p>
+              <p className="text-xs text-muted-foreground">Depois de salvar, marque quais profissionais fazem este serviço na página Barbeiros.</p>
               <Button type="submit" className="w-full" disabled={save.isPending}>
                 {save.isPending && <Loader2 className="animate-spin" />} Salvar
               </Button>
