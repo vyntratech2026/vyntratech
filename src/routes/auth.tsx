@@ -93,6 +93,7 @@ function AuthPage() {
       }
       const { error } = await supabase.auth.signInWithPassword({ email: loginEmail(email), password });
       if (error) throw new Error(/invalid/i.test(error.message) ? "E-mail ou senha incorretos." : error.message);
+      return null;
     },
     onSuccess: (pendingConfirm) => {
       if (typeof pendingConfirm === "string") setConfirmSentTo(pendingConfirm);

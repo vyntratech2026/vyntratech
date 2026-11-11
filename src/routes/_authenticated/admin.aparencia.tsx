@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useStaff } from "@/lib/use-staff";
 import { errorMessage } from "@/lib/format";
-import { DEFAULT_BUSINESS_NAME } from "@/lib/brand";
+import { useCompany as useCompanyBrand } from "@/lib/brand";
 import { contrastRatio, DEFAULT_BRAND, isHexColor, themeVars, type BrandColors } from "@/lib/theme";
 
 export const Route = createFileRoute("/_authenticated/admin/aparencia")({
@@ -35,6 +35,7 @@ const COLOR_FIELDS: { key: keyof BrandColors; label: string; hint: string }[] = 
 
 function AppearancePage() {
   const companyId = useCompany().id;
+  const companyBrandName = useCompanyBrand().brand.name;
   const { data: staff } = useStaff();
   const qc = useQueryClient();
   const router = useRouter();
@@ -108,7 +109,7 @@ function AppearancePage() {
     onError: (e) => toast.error(errorMessage(e)),
   });
 
-  const previewName = name.trim() || DEFAULT_BUSINESS_NAME;
+  const previewName = name.trim() || companyBrandName;
 
   return (
     <AdminOnly isAdmin={!!staff?.isAdmin}>
