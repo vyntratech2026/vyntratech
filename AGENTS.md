@@ -21,5 +21,6 @@
 - Platform roles live in protected platform_admins; only verified accounts authorized by platform_admin_authorizations can claim them, and every platform mutation checks the role in Postgres to prevent tenant-owner privilege escalation.
 - Subscription expiry is enforced by restrictive tenant RLS, appointment triggers and availability RPCs; new companies start pending, existing companies retain access, and token-based cancellation remains available so customer recovery is not blocked.
 - Subscription terms are calendar months in America/Maceio; early renewals add to the remaining expiry, with an audit event for each activation or suspension.
+- Commercial plan data is shared through subscriptions.ts and SubscriptionPlans; it is presentation-only and distinct from database access durations, avoiding changes to existing manual releases.
 - Google review destinations are optional per-company settings, HTTPS Google links validated in the database and UI; token booking reads return that company's link and only completed bookings offer it, independently of site rating or moderation.
 - Booking product requests are atomic via create_booking_with_products, validated against available products in the service's company, with quantity/name/price snapshots in appointments.product_items; keep service price and payments separate to preserve commission accounting.

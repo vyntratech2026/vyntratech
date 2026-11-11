@@ -3,15 +3,16 @@ import { CalendarCheck, Palette, Users, Wallet, Bell, Link2 } from "lucide-react
 import { Button } from "@/components/ui/button";
 import { PLATFORM_NAME } from "@/lib/brand";
 import platformLogo from "@/assets/logo-vyntra-tech.png.asset.json";
-import { SUBSCRIPTION_PLANS, SUBSCRIPTION_WHATSAPP } from "@/lib/subscriptions";
+import { SUBSCRIPTION_WHATSAPP } from "@/lib/subscriptions";
+import { SubscriptionPlans } from "@/components/subscription-plans";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: `${PLATFORM_NAME} — Agenda online e painel para o seu negócio` },
-      { name: "description", content: "Site de agendamento da sua barbearia, salão, estética ou estúdio. Assinaturas e liberação pelo WhatsApp." },
+      { name: "description", content: "Conheça os planos Vyntra Start, Pro e Business a partir de R$ 39,90 por mês. Agenda, equipe e financeiro com assinatura pelo WhatsApp." },
       { property: "og:title", content: `${PLATFORM_NAME} — Agenda online para o seu negócio` },
-      { property: "og:description", content: "Site de agendamento próprio, equipe e financeiro. Assine pelo WhatsApp." },
+      { property: "og:description", content: "Vyntra Start, Pro e Business: planos a partir de R$ 39,90 por mês, com todas as funcionalidades. Assine pelo WhatsApp." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -54,7 +55,7 @@ function Landing() {
           </div>
         </div>
       </section>
-      <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6"><h2 className="mb-6 text-center text-2xl font-semibold">Assinaturas</h2><div className="grid grid-cols-2 gap-3 sm:grid-cols-5">{SUBSCRIPTION_PLANS.map((plan) => <div key={plan.value} className="surface-card p-5"><h3 className="font-semibold">{plan.label}</h3><Button asChild variant="outline" className="mt-4 w-full"><a href={SUBSCRIPTION_WHATSAPP} target="_blank" rel="noreferrer">Assinar</a></Button></div>)}</div></section>
+      <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6"><h2 className="mb-8 text-center text-2xl font-semibold tracking-normal">Planos e assinaturas — {PLATFORM_NAME}</h2><SubscriptionPlans /></section>
       <section className="mx-auto grid max-w-6xl gap-4 px-4 pb-24 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
         {FEATURES.map((f) => (
           <div key={f.title} className="surface-card p-6">

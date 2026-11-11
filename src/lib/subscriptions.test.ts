@@ -1,5 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { SUBSCRIPTION_PLANS, SUBSCRIPTION_WHATSAPP, subscriptionState } from "./subscriptions";
+import { COMMERCIAL_PLANS, SUBSCRIPTION_PLANS, SUBSCRIPTION_WHATSAPP, subscriptionState } from "./subscriptions";
+describe("Planos comerciais", () => {
+  it.each([["start", 3990], ["pro", 6990], ["business", 11990]])("preço mensal de %s é %s centavos", (tier, price) => {
+    expect(COMMERCIAL_PLANS.find((plan) => plan.value === tier)?.monthlyPriceCents).toBe(price);
+  });
+  it.each([["start", 3], ["pro", 6], ["business", null]])("capacidade de %s é %s", (tier, limit) => {
+    expect(COMMERCIAL_PLANS.find((plan) => plan.value === tier)?.professionalLimit).toBe(limit);
+  });
+});
 describe("Assinaturas manuais", () => {
   it.each([["monthly", 1], ["quarterly", 3], ["semiannual", 6], ["annual", 12], ["lifetime", null]])("prazo %s corresponde a %s meses", (plan, months) => {
     expect(SUBSCRIPTION_PLANS.find((p) => p.value === plan)?.months).toBe(months);
