@@ -1,6 +1,7 @@
 # Roadmap — Studio Cleison Cortes
 
 ## Feito
+- [x] Exibir Start, Pro e Business com preços mensais, capacidades e funcionalidades no site e em Minha assinatura; contratação pelo WhatsApp, sem alterar liberações existentes
 - [x] Banco de dados, permissões (admin/barbeiro), regras de agenda no servidor
 - [x] Design system (preto/verde-limão, logo)
 - [x] Login da equipe com celular + senha; criação do primeiro admin

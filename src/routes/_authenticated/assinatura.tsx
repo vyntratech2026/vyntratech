@@ -7,6 +7,7 @@ import { useStaff } from "@/lib/use-staff";
 import { PLATFORM_NAME } from "@/lib/brand";
 import { formatDate } from "@/lib/format";
 import { SUBSCRIPTION_PLANS, SUBSCRIPTION_WHATSAPP, SUBSCRIPTION_STATUS, subscriptionState } from "@/lib/subscriptions";
+import { SubscriptionPlans } from "@/components/subscription-plans";
 
 export const Route = createFileRoute("/_authenticated/assinatura")({
   head: () => ({ meta: [ { title: `Minha assinatura — ${PLATFORM_NAME}` }, { name: "description", content: "Status e renovação da assinatura da sua empresa." }, { property: "og:title", content: `Minha assinatura — ${PLATFORM_NAME}` }, { property: "og:description", content: "Status e renovação da assinatura da sua empresa." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" } ] }),
@@ -22,9 +23,9 @@ function SubscriptionPage() {
   }});
   if(isLoading || subscription.isLoading) return <Loader2 className="mx-auto mt-20 size-8 animate-spin text-primary" />;
   const state = subscriptionState(subscription.data);
-  return <main className="mx-auto max-w-3xl px-4 py-16 sm:px-8"><ShieldCheck className="size-10 text-primary" /><h1 className="mt-5 text-3xl font-bold">Minha assinatura</h1>
+  return <main className="mx-auto max-w-6xl px-4 py-16 sm:px-8"><ShieldCheck className="size-10 text-primary" /><h1 className="mt-5 text-3xl font-bold">Minha assinatura</h1>
     <div className="my-8 border-y border-border py-6"><h2 className="text-xl font-semibold">{subscription.isError ? "Não foi possível consultar a assinatura" : SUBSCRIPTION_STATUS[state]}</h2><p className="mt-2 text-muted-foreground">{SUBSCRIPTION_PLANS.find((p) => p.value === subscription.data?.plan)?.label ?? "Seu cadastro aguarda aprovação."}</p>{subscription.data?.expires_at && <p className="mt-2 text-muted-foreground">Vencimento: {formatDate(subscription.data.expires_at)}</p>}<div className="mt-5 flex flex-wrap gap-3"><Button asChild><a href={SUBSCRIPTION_WHATSAPP} target="_blank" rel="noreferrer"><MessageCircle />{state === "active" ? "Renovar pelo WhatsApp" : "Assinar pelo WhatsApp"}</a></Button><Button variant="outline" onClick={() => qc.invalidateQueries({queryKey:["subscription"]})}><RefreshCw />Conferir liberação</Button></div></div>
-    <div className="grid gap-3 sm:grid-cols-5">{SUBSCRIPTION_PLANS.map((plan) => <div className="surface-card p-4" key={plan.value}><p className="font-semibold">{plan.label}</p><p className="mt-2 text-xs text-muted-foreground">{plan.months ? `${plan.months} ${plan.months === 1 ? "mês" : "meses"}` : "Sem vencimento"}</p></div>)}</div>
+    <h2 className="mb-6 text-2xl font-semibold tracking-normal">Planos Vyntra Tech</h2><SubscriptionPlans />
     <div className="mt-8 flex flex-wrap gap-3">{state === "active" && <Button asChild variant="outline"><Link to="/admin">Voltar ao painel</Link></Button>}{staff?.isPlatformAdmin && <Button asChild variant="outline"><Link to="/empresas">Liberação de empresas</Link></Button>}<Button variant="ghost" onClick={async () => {await qc.cancelQueries();qc.clear();await supabase.auth.signOut();}}>Sair</Button></div>
   </main>;
 }
