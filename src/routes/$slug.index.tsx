@@ -7,6 +7,8 @@ import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { BrandName, Logo, MediaImage } from "@/components/site/brand";
 import { VideosSection } from "@/components/site/videos-section";
+import { GoogleReviewButton } from "@/components/site/google-review-button";
+import { googleReviewUrl } from "@/lib/google-review";
 import {
   barbersQuery,
   productsQuery,
@@ -20,9 +22,9 @@ import { formatDate, formatDuration, formatPrice, whatsappLink } from "@/lib/for
 export const Route = createFileRoute("/$slug/")({
   head: () => ({
     meta: [
-      { title: "Agende seu horário online" },
+      { title: "Serviços e avaliações — Agendamento Vyntra Tech" },
       { name: "description", content: "Veja serviços, profissionais e agende seu horário online." },
-      { property: "og:title", content: "Agende seu horário online" },
+      { property: "og:title", content: "Serviços e avaliações — Agendamento Vyntra Tech" },
       { property: "og:description", content: "Veja serviços, profissionais e agende seu horário online." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -234,11 +236,11 @@ function Index() {
       )}
 
       {/* AVALIAÇÕES */}
-      {!!reviews?.length && (
+      {(!!reviews?.length || !!googleReviewUrl(s?.google_review_url)) && (
         <section id="avaliacoes" className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
           <SectionTitle eyebrow="Quem já veio" title="Avaliações" />
           <div className="grid gap-5 md:grid-cols-3">
-            {reviews.map((r) => (
+            {reviews?.map((r) => (
               <figure key={r.id} className="surface-card space-y-4 p-6">
                 <div className="flex gap-0.5" aria-label={`${r.rating} de 5 estrelas`}>
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -253,6 +255,7 @@ function Index() {
               </figure>
             ))}
           </div>
+          <GoogleReviewButton url={s?.google_review_url} className="mt-6" />
         </section>
       )}
 

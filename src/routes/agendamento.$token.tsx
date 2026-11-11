@@ -32,13 +32,15 @@ import {
   type AppointmentStatus,
 } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { GoogleReviewButton } from "@/components/site/google-review-button";
+import { bookingGoogleReviewUrl } from "@/lib/google-review";
 
 export const Route = createFileRoute("/agendamento/$token")({
   head: () => ({
     meta: [
-      { title: "Meu agendamento — Studio Cleison Cortes" },
-      { name: "description", content: "Detalhes do seu agendamento no Studio Cleison Cortes." },
-      { property: "og:title", content: "Meu agendamento — Studio Cleison Cortes" },
+      { title: "Meu agendamento — Vyntra Tech" },
+      { name: "description", content: "Veja, cancele ou avalie seu atendimento na Vyntra Tech." },
+      { property: "og:title", content: "Meu agendamento — Vyntra Tech" },
       { property: "og:description", content: "Veja, cancele ou avalie seu atendimento." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -67,6 +69,7 @@ interface Booking {
   brand_primary: string;
   brand_background: string;
   brand_text: string;
+  google_review_url: string | null;
 }
 
 function ManageBooking() {
@@ -177,6 +180,7 @@ function ManageBooking() {
 
             {b.can_review && <ReviewForm token={token} onDone={() => qc.invalidateQueries({ queryKey: ["booking", token] })} />}
             {b.has_review && <p className="text-center text-sm text-primary">Obrigado pela sua avaliação!</p>}
+            <GoogleReviewButton url={bookingGoogleReviewUrl(b.status, b.google_review_url)} className="w-full" />
 
             <Button asChild variant="hero" size="lg" className="w-full">
               <Link to="/$slug/agendar" params={{ slug: b.company_slug }}>Fazer novo agendamento</Link>
