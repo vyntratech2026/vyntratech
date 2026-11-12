@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { KeyRound, Loader2, Pencil, Plus, ShieldCheck, UserMinus } from "lucide-react";
+import { KeyRound, Loader2, MessageCircle, Pencil, Plus, ShieldCheck, UserMinus } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminOnly, EmptyState, PageHeader } from "@/components/admin/page-header";
@@ -20,8 +20,18 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useStaff } from "@/lib/use-staff";
 import { DAY_NAMES, errorMessage, formatPhone } from "@/lib/format";
 import { createBarberAccess, resetBarberPassword, revokeBarberAccess } from "@/lib/staff.functions";
+import { SUBSCRIPTION_WHATSAPP, commercialPlanLabel, professionalCapacity } from "@/lib/subscriptions";
 
 export const Route = createFileRoute("/_authenticated/admin/barbeiros")({
+  head: () => ({ meta: [
+    { title: "Profissionais e capacidade do plano — Vyntra Tech" },
+    { name: "description", content: "Gerencie os profissionais da sua empresa e a capacidade da assinatura." },
+    { property: "og:title", content: "Profissionais e capacidade do plano — Vyntra Tech" },
+    { property: "og:description", content: "Cadastro e gestão dos profissionais da sua empresa." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ] }),
   component: BarbersPage,
 });
 
@@ -61,9 +71,18 @@ function BarbersPage() {
   const { data: staff } = useStaff();
   const qc = useQueryClient();
   const [form, setForm] = useState<BarberForm | null>(null);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const subscription = useQuery({
+    queryKey: ["subscription", companyId],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("company_subscriptions").select("plan").eq("company_id", companyId).maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const data = useQuery({
-    queryKey: ["admin", "barbers"],
+    queryKey: ["admin", "barbers", companyId],
     queryFn: async () => {
       const [b, s, l, h] = await Promise.all([
         supabase.from("barbers").select("*").eq("company_id", companyId).order("name"),
@@ -76,8 +95,15 @@ function BarbersPage() {
     },
   });
 
+  const capacity = professionalCapacity(subscription.data?.plan, data.data?.barbers.length ?? 0);
+  const capacityReady = data.isSuccess && subscription.isSuccess;
+
   const openEdit = (id?: string) => {
-    if (!id) return setForm(EMPTY());
+    if (!id) {
+      if (!capacityReady) return;
+      if (capacity.reached) return setUpgradeOpen(true);
+      return setForm(EMPTY());
+    }
     const b = data.data?.barbers.find((x) => x.id === id);
     if (!b) return;
     const hours = defaultHours();
@@ -101,6 +127,7 @@ function BarbersPage() {
 
   const save = useMutation({
     mutationFn: async (f: BarberForm) => {
+      if (!f.id && (!capacityReady || capacity.reached)) throw new Error("Limite de profissionais do plano atingido. Solicite um plano superior.");
       const commission = Number(f.commission_percent.replace(",", "."));
       if (f.name.trim().length < 2) throw new Error("Informe o nome.");
       if (!Number.isFinite(commission) || commission < 0 || commission > 100) throw new Error("Comissão deve ser entre 0 e 100%.");
@@ -121,19 +148,21 @@ function BarbersPage() {
         const { error } = await supabase.from("barbers").update(row).eq("id", id);
         if (error) throw error;
       } else {
-        const { data: created, error } = await supabase.from("barbers").insert(row).select("id").single();
+        const { data: created, error } = await supabase.from("barbers").insert({ ...row, company_id: companyId }).select("id").single();
         if (error) throw error;
         id = created.id;
       }
-      await supabase.from("barber_services").delete().eq("barber_id", id);
+      if (!id) throw new Error("Não foi possível salvar o profissional.");
+      const barberId = id;
+      await supabase.from("barber_services").delete().eq("barber_id", barberId);
       if (f.services.length) {
-        const { error } = await supabase.from("barber_services").insert(f.services.map((service_id) => ({ barber_id: id!, service_id })));
+        const { error } = await supabase.from("barber_services").insert(f.services.map((service_id) => ({ barber_id: barberId, service_id })));
         if (error) throw error;
       }
       await supabase.from("working_hours").delete().eq("barber_id", id);
       const hours = Object.entries(f.hours)
         .filter(([, h]) => h.on)
-        .map(([d, h]) => ({ barber_id: id!, day_of_week: Number(d), start_time: h.start, end_time: h.end, is_active: true }));
+        .map(([d, h]) => ({ barber_id: barberId, day_of_week: Number(d), start_time: h.start, end_time: h.end, is_active: true }));
       if (hours.length) {
         const { error } = await supabase.from("working_hours").insert(hours);
         if (error) throw error;
@@ -146,7 +175,15 @@ function BarbersPage() {
       qc.invalidateQueries({ queryKey: ["admin"] });
       qc.invalidateQueries({ queryKey: ["public"] });
     },
-    onError: (e) => toast.error(errorMessage(e)),
+    onError: (e) => {
+      const message = errorMessage(e);
+      if (message.includes("Limite de profissionais")) {
+        setUpgradeOpen(true);
+        qc.invalidateQueries({ queryKey: ["admin", "barbers"] });
+        qc.invalidateQueries({ queryKey: ["subscription", companyId] });
+      }
+      toast.error(message);
+    },
   });
 
   return (
@@ -155,20 +192,29 @@ function BarbersPage() {
         title="Profissionais"
         subtitle="Cadastro, serviços, horários de trabalho, comissão e acesso ao painel."
         actions={
-          <Button onClick={() => openEdit()}>
+          <Button onClick={() => openEdit()} disabled={!capacityReady}>
             <Plus /> Novo profissional
           </Button>
         }
       />
+      {capacityReady && capacity.limit !== null && (
+        <section className="mb-6 flex flex-wrap items-center justify-between gap-3 border-y border-border py-4">
+          <div>
+            <p className="font-medium">{commercialPlanLabel(subscription.data?.plan)} · {data.data?.barbers.length ?? 0}/{capacity.limit} profissionais</p>
+            <p className="text-sm text-muted-foreground">{capacity.reached ? "Limite atingido. Mude de plano para cadastrar mais profissionais." : "Profissionais inativos também contam no limite."}</p>
+          </div>
+          {capacity.reached && <Button variant="outline" onClick={() => setUpgradeOpen(true)}><Plus /> Aumentar limite</Button>}
+        </section>
+      )}
       {data.isLoading ? (
         <div className="h-40 animate-pulse rounded-xl bg-surface" />
       ) : !data.data?.barbers.length ? (
-        <EmptyState text="Nenhum profissional cadastrado ainda." action={<Button onClick={() => openEdit()}>Cadastrar primeiro profissional</Button>} />
+        <EmptyState text="Nenhum profissional cadastrado ainda." action={<Button disabled={!capacityReady} onClick={() => openEdit()}>Cadastrar primeiro profissional</Button>} />
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2">
           {data.data.barbers.map((b) => {
-            const nServices = data.data!.links.filter((l) => l.barber_id === b.id).length;
-            const nDays = data.data!.hours.filter((h) => h.barber_id === b.id && h.is_active).length;
+            const nServices = data.data?.links.filter((l) => l.barber_id === b.id).length ?? 0;
+            const nDays = data.data?.hours.filter((h) => h.barber_id === b.id && h.is_active).length ?? 0;
             return (
               <li key={b.id} className="surface-card flex items-center gap-4 p-4">
                 <MediaImage path={b.photo_url} alt={b.name} className="size-16 shrink-0 rounded-full" />
@@ -196,6 +242,18 @@ function BarbersPage() {
         </ul>
       )}
 
+      <Dialog open={upgradeOpen} onOpenChange={setUpgradeOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Mais profissionais para sua empresa</DialogTitle></DialogHeader>
+          <p className="text-sm text-muted-foreground">O limite do seu plano foi atingido. Os profissionais já cadastrados continuam disponíveis para edição.</p>
+          {capacity.nextPlan && <div className="space-y-2 border-y border-border py-4">
+            <p className="text-lg font-semibold">{capacity.nextPlan.name}</p>
+            <p>{capacity.nextPlan.professionalLimit === null ? "Profissionais ilimitados" : `Até ${capacity.nextPlan.professionalLimit} profissionais`} · {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(capacity.nextPlan.monthlyPriceCents / 100)}/mês</p>
+          </div>}
+          <Button asChild><a href={SUBSCRIPTION_WHATSAPP} target="_blank" rel="noreferrer"><MessageCircle /> Solicitar upgrade pelo WhatsApp</a></Button>
+          <p className="text-xs text-muted-foreground">O novo limite vale após a liberação do plano pela Vyntra.</p>
+        </DialogContent>
+      </Dialog>
       <Dialog open={!!form} onOpenChange={(o) => !o && setForm(null)}>
         <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-xl">
           <DialogHeader>

@@ -1,5 +1,27 @@
 import { describe, it, expect } from "vitest";
-import { COMMERCIAL_PLANS, SUBSCRIPTION_PLANS, SUBSCRIPTION_WHATSAPP, commercialPlanLabel, subscriptionState } from "./subscriptions";
+import { COMMERCIAL_PLANS, SUBSCRIPTION_PLANS, SUBSCRIPTION_WHATSAPP, commercialPlanLabel, professionalCapacity, subscriptionState } from "./subscriptions";
+describe("Limites de cadastro de profissionais", () => {
+  it("Start permite 3 profissionais e oferece Pro ao atingir o limite", () => {
+    expect(professionalCapacity("start", 2).reached).toBe(false);
+    expect(professionalCapacity("start", 3).reached).toBe(true);
+    expect(professionalCapacity("start", 4).reached).toBe(true);
+    expect(professionalCapacity("start", 3).nextPlan?.value).toBe("pro");
+  });
+  it("Pro permite 6 profissionais e oferece Business ao atingir o limite", () => {
+    expect(professionalCapacity("pro", 5).reached).toBe(false);
+    expect(professionalCapacity("pro", 6).reached).toBe(true);
+    expect(professionalCapacity("pro", 7).reached).toBe(true);
+    expect(professionalCapacity("pro", 6).nextPlan?.value).toBe("business");
+  });
+  it("Business não limita o cadastro", () => {
+    expect(professionalCapacity("business", 100000).reached).toBe(false);
+    expect(professionalCapacity("business", 100000).nextPlan).toBeNull();
+  });
+  it("preserva a capacidade de liberações antigas sem plano comercial", () => {
+    expect(professionalCapacity("lifetime", 10).reached).toBe(false);
+    expect(professionalCapacity("monthly", 10).reached).toBe(false);
+  });
+});
 describe("Planos comerciais", () => {
   it.each([["start", 3990], ["pro", 6990], ["business", 11990]])("preço mensal de %s é %s centavos", (tier, price) => {
     expect(COMMERCIAL_PLANS.find((plan) => plan.value === tier)?.monthlyPriceCents).toBe(price);

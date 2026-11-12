@@ -92,6 +92,13 @@
       "when": 1794413334896,
       "tag": "0012_commercial_plan_tiers",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1794453903530,
+      "tag": "0013_enforce_professional_plan_capacity",
+      "breakpoints": true
     }
   ]
 }
