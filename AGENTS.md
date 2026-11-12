@@ -24,3 +24,4 @@
 - Commercial plan data is shared through subscriptions.ts and SubscriptionPlans; it is presentation-only and distinct from database access durations, avoiding changes to existing manual releases.
 - Google review destinations are optional per-company settings, HTTPS Google links validated in the database and UI; token booking reads return that company's link and only completed bookings offer it, independently of site rating or moderation.
 - Booking product requests are atomic via create_booking_with_products, validated against available products in the service's company, with quantity/name/price snapshots in appointments.product_items; keep service price and payments separate to preserve commission accounting.
+- WhatsApp reminder timing is a pure planning module; sending must remain disabled until tenant-specific Meta authorization, durable delivery tracking and authenticated scheduling are implemented, to avoid implying delivery from timing calculations alone.
