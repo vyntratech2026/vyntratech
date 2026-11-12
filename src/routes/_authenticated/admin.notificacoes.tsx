@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
-import { BellRing, Loader2, Save, Send } from "lucide-react";
+import { BellRing, Clock, Loader2, MessageCircle, Save, Send } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminOnly, PageHeader } from "@/components/admin/page-header";
@@ -15,8 +15,18 @@ import { useStaff } from "@/lib/use-staff";
 import { errorMessage } from "@/lib/format";
 import { isPushcutUrl } from "@/lib/pushcut";
 import { sendPushcutTest } from "@/lib/notifications.functions";
+import { WHATSAPP_REMINDER_TIMES } from "@/lib/whatsapp-reminders";
 
 export const Route = createFileRoute("/_authenticated/admin/notificacoes")({
+  head: () => ({ meta: [
+    { title: "Notificações e lembretes — Vyntra Tech" },
+    { name: "description", content: "Gerencie avisos de agendamento e acompanhe a configuração dos lembretes da sua empresa." },
+    { property: "og:title", content: "Notificações e lembretes — Vyntra Tech" },
+    { property: "og:description", content: "Avisos e lembretes de agendamento da sua empresa." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ] }),
   component: NotificationsPage,
 });
 
@@ -26,7 +36,7 @@ function NotificationsPage() {
   const qc = useQueryClient();
   const testFn = useServerFn(sendPushcutTest);
   const q = useQuery({
-    queryKey: ["admin", "notification-settings"],
+    queryKey: ["admin", "notification-settings", companyId],
     enabled: !!staff?.isAdmin,
     queryFn: async () => {
       const { data, error } = await supabase
@@ -83,6 +93,23 @@ function NotificationsPage() {
           </Button>
         }
       />
+      <section className="mb-8 space-y-4 border-b border-border pb-6">
+        <div className="flex items-start gap-3">
+          <MessageCircle className="mt-1 size-5 shrink-0 text-primary" />
+          <div className="space-y-1">
+            <h2 className="text-base font-semibold">Lembretes pelo WhatsApp</h2>
+            <p className="text-sm text-muted-foreground">Não ativado · aguardando configuração da Meta</p>
+          </div>
+        </div>
+        <ul className="space-y-2 text-sm">
+          {WHATSAPP_REMINDER_TIMES.map((reminder) => (
+            <li key={reminder.kind} className="flex items-center gap-2">
+              <Clock className="size-4 text-muted-foreground" /> {reminder.label}
+            </li>
+          ))}
+        </ul>
+        <p className="text-xs text-muted-foreground">Horário de Maceió · WhatsApp próprio da barbearia · nenhum lembrete está sendo enviado.</p>
+      </section>
       {q.isLoading ? (
         <div className="h-48 animate-pulse rounded-xl bg-surface" />
       ) : (
