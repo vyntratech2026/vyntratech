@@ -23,7 +23,7 @@
 - [x] Clientes (busca, histórico), Avaliações (moderação), Financeiro (pagamentos, comissão, gráfico diário)
 
 ## Próximos
-- [ ] Lembretes automáticos pelo WhatsApp: 00:00 no dia, 2h antes e 1h antes (America/Maceio) — definir número remetente e conectar WhatsApp Business antes de ativar
+- [ ] Lembretes automáticos pelo WhatsApp próprio de cada barbearia: 00:00 no dia, 2h antes e 1h antes (America/Maceio) — bloqueado pela escolha e configuração de integração individual com WhatsApp Business; conexão individual pronta indisponível
 - [x] Incluir produtos no agendamento, detalhes, painel e avisos; confirmação, WhatsApp e reabertura do link verificados
 - [ ] Agenda visual semanal/mensal
 - [ ] Gráficos extras no dashboard (serviços mais pedidos, desempenho por barbeiro)
