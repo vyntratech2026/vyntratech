@@ -7,6 +7,15 @@ export const COMMERCIAL_PLANS = [
 ] as const;
 export type CommercialPlan = typeof COMMERCIAL_PLANS[number]["value"];
 export const commercialPlanLabel = (value: string | null | undefined) => COMMERCIAL_PLANS.find((p) => p.value === value)?.name;
+export function professionalCapacity(plan: string | null | undefined, count: number) {
+  const current = COMMERCIAL_PLANS.find((p) => p.value === plan);
+  const limit = current?.professionalLimit ?? null;
+  return {
+    limit,
+    reached: limit !== null && count >= limit,
+    nextPlan: plan === "start" ? COMMERCIAL_PLANS[1] : plan === "pro" ? COMMERCIAL_PLANS[2] : null,
+  };
+}
 export const PLAN_FEATURES = [
   "Dashboard completo",
   "Relatórios de agendamentos",
