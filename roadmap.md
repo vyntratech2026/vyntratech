@@ -23,7 +23,7 @@
 - [x] Clientes (busca, histórico), Avaliações (moderação), Financeiro (pagamentos, comissão, gráfico diário)
 
 ## Próximos
-- [ ] Aplicar limite de profissionais cadastrados por plano no banco e oferecer upgrade ao atingir Start/Pro
+- [x] Aplicar limites Start/Pro no banco e oferecer upgrade; quarto cadastro bloqueado no Start, edição preservada e oferta Pro verificadas com conta autenticada
 - [ ] Lembretes automáticos pelo WhatsApp próprio de cada barbearia: 00:00 no dia, 2h antes e 1h antes (America/Maceio) — cálculos testados e estado desativado exibido; integração própria Meta autorizada, aguarda aplicativo Vyntra, configuração e aprovações Meta (WHATSAPP_SETUP.md); envio e agendador ainda não implementados
 - [x] Incluir produtos no agendamento, detalhes, painel e avisos; confirmação, WhatsApp e reabertura do link verificados
 - [ ] Agenda visual semanal/mensal
