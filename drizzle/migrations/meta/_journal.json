@@ -99,6 +99,13 @@
       "when": 1794453903530,
       "tag": "0013_enforce_professional_plan_capacity",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1794538800807,
+      "tag": "0014_professional_removal_and_subscription_dates",
+      "breakpoints": true
     }
   ]
 }

@@ -189,6 +189,7 @@ export type Database = {
           commission_percent: number
           company_id: string
           created_at: string
+          deleted_at: string | null
           description: string | null
           id: string
           is_active: boolean
@@ -202,6 +203,7 @@ export type Database = {
           commission_percent?: number
           company_id?: string
           created_at?: string
+          deleted_at?: string | null
           description?: string | null
           id?: string
           is_active?: boolean
@@ -215,6 +217,7 @@ export type Database = {
           commission_percent?: number
           company_id?: string
           created_at?: string
+          deleted_at?: string | null
           description?: string | null
           id?: string
           is_active?: boolean
@@ -1112,8 +1115,18 @@ export type Database = {
       is_platform_admin: { Args: never; Returns: boolean }
       is_staff: { Args: never; Returns: boolean }
       normalize_phone: { Args: { p: string }; Returns: string }
+      remove_professional: { Args: { p_barber_id: string }; Returns: undefined }
       set_company_subscription: {
         Args: { p_company_id: string; p_plan: string; p_suspend?: boolean }
+        Returns: undefined
+      }
+      set_company_subscription_dates: {
+        Args: {
+          p_company_id: string
+          p_end_date: string
+          p_plan: string
+          p_start_date: string
+        }
         Returns: undefined
       }
       slug_problem: { Args: { p_slug: string }; Returns: string }
