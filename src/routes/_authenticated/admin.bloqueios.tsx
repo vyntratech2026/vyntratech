@@ -15,6 +15,13 @@ import { useStaff } from "@/lib/use-staff";
 import { addDaysKey, errorMessage, formatDate, formatTime, shopDayStartIso, todayInShop } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/admin/bloqueios")({
+  head: () => ({ meta: [
+    { title: "Folgas e bloqueios — Vyntra Tech" },
+    { name: "description", content: "Gerencie folgas e bloqueios da agenda da sua empresa." },
+    { property: "og:title", content: "Folgas e bloqueios — Vyntra Tech" },
+    { property: "og:description", content: "Gerencie períodos indisponíveis dos profissionais." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+  ] }),
   component: BlocksPage,
 });
 
@@ -35,7 +42,7 @@ function BlocksPage() {
   const barbers = useQuery({
     queryKey: ["admin", "barbers-lite"],
     enabled: isAdmin,
-    queryFn: async () => (await supabase.from("barbers").select("id, name, is_active").eq("company_id", companyId).order("name")).data ?? [],
+    queryFn: async () => (await supabase.from("barbers").select("id, name, is_active").eq("company_id", companyId).is("deleted_at", null).order("name")).data ?? [],
   });
 
   const blocks = useQuery({

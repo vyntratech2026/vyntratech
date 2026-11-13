@@ -1,5 +1,19 @@
 import { describe, it, expect } from "vitest";
-import { COMMERCIAL_PLANS, SUBSCRIPTION_PLANS, SUBSCRIPTION_WHATSAPP, commercialPlanLabel, professionalCapacity, subscriptionState } from "./subscriptions";
+import { COMMERCIAL_PLANS, SUBSCRIPTION_PLANS, SUBSCRIPTION_WHATSAPP, commercialPlanLabel, professionalCapacity, subscriptionState, subscriptionDateRange, subscriptionEndDate } from "./subscriptions";
+describe("Datas escolhidas na liberação", () => {
+  it("usa o início escolhido em America/Maceio e inclui todo o dia do vencimento", () => {
+    expect(subscriptionDateRange("2026-11-13", "2026-12-13")).toEqual({ starts_at: "2026-11-13T03:00:00.000Z", expires_at: "2026-12-14T03:00:00.000Z" });
+    expect(subscriptionEndDate("2026-12-14T03:00:00.000Z")).toBe("2026-12-13");
+  });
+  it("rejeita vencimento anterior ao início e datas inválidas", () => {
+    expect(() => subscriptionDateRange("2026-11-13", "2026-11-12")).toThrow();
+    expect(() => subscriptionDateRange("2026-02-30", "2026-12-13")).toThrow();
+  });
+  it("não libera antes da data de início", () => {
+    expect(subscriptionState({ status: "active", plan: "start", ...subscriptionDateRange("2026-11-13", "2026-12-13") }, Date.parse("2026-11-13T02:59:59Z"))).toBe("pending");
+    expect(subscriptionState({ status: "active", plan: "start", ...subscriptionDateRange("2026-11-13", "2026-12-13") }, Date.parse("2026-11-13T03:00:00Z"))).toBe("active");
+  });
+});
 describe("Limites de cadastro de profissionais", () => {
   it("Start permite 3 profissionais e oferece Pro ao atingir o limite", () => {
     expect(professionalCapacity("start", 2).reached).toBe(false);
