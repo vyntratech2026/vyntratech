@@ -37,11 +37,20 @@ export const SUBSCRIPTION_PLANS = [
   { value: "lifetime", label: "Definitiva", months: null },
 ] as const;
 export type SubscriptionPlan = typeof SUBSCRIPTION_PLANS[number]["value"];
-export type Subscription = { status: string; plan: string | null; expires_at: string | null };
+import { addDaysKey, shopDayStartIso, toShopDateKey } from "./format";
+
+export function subscriptionDateRange(start: string, end: string) {
+  const valid = (date: string) => /^\d{4}-\d{2}-\d{2}$/.test(date) && Number.isFinite(Date.parse(`${date}T00:00:00Z`)) && new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10) === date;
+  if (!valid(start) || !valid(end) || end < start) throw new Error("Informe início e vencimento válidos. O vencimento não pode ser anterior ao início.");
+  return { starts_at: shopDayStartIso(start), expires_at: shopDayStartIso(addDaysKey(end, 1)) };
+}
+export const subscriptionEndDate = (expiresAt: string) => toShopDateKey(new Date(Date.parse(expiresAt) - 1));
+export type Subscription = { status: string; plan: string | null; starts_at?: string | null; expires_at: string | null };
 export function subscriptionState(value: Subscription | null | undefined, now = Date.now()) {
   if (!value || value.status === "pending") return "pending";
   if (value.status === "suspended") return "suspended";
   if (value.status !== "active") return "pending";
+  if (value.starts_at && new Date(value.starts_at).getTime() > now) return "pending";
   if (value.plan === "lifetime") return "active";
   return value.expires_at && new Date(value.expires_at).getTime() > now ? "active" : "expired";
 }

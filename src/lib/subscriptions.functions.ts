@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { subscriptionDateRange } from "./subscriptions";
 
 export const listPlatformCompanies = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -26,9 +27,15 @@ export const listPlatformCompanies = createServerFn({ method: "POST" })
 
 export const changeSubscription = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ companyId: z.string().uuid(), plan: z.enum(["start", "pro", "business"]), suspend: z.boolean().default(false) }).parse(input))
+  .inputValidator((input: unknown) => {
+    const data = z.object({ companyId: z.string().uuid(), plan: z.enum(["start", "pro", "business"]), suspend: z.boolean().default(false), startDate: z.string().optional(), endDate: z.string().optional() }).parse(input);
+    if (!data.suspend) subscriptionDateRange(data.startDate ?? "", data.endDate ?? "");
+    return data;
+  })
   .handler(async ({ context, data }) => {
-    const { error } = await context.supabase.rpc("set_company_subscription", { p_company_id: data.companyId, p_plan: data.plan, p_suspend: data.suspend });
+    const { error } = data.suspend
+      ? await context.supabase.rpc("set_company_subscription", { p_company_id: data.companyId, p_plan: data.plan, p_suspend: true })
+      : await context.supabase.rpc("set_company_subscription_dates", { p_company_id: data.companyId, p_plan: data.plan, p_start_date: data.startDate ?? "", p_end_date: data.endDate ?? "" });
     if (error) throw error;
     return { ok: true };
   });

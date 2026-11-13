@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { KeyRound, Loader2, MessageCircle, Pencil, Plus, ShieldCheck, UserMinus } from "lucide-react";
+import { KeyRound, Loader2, MessageCircle, Pencil, Plus, ShieldCheck, UserMinus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminOnly, EmptyState, PageHeader } from "@/components/admin/page-header";
@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useStaff } from "@/lib/use-staff";
 import { DAY_NAMES, errorMessage, formatPhone } from "@/lib/format";
 import { createBarberAccess, resetBarberPassword, revokeBarberAccess } from "@/lib/staff.functions";
@@ -72,6 +72,7 @@ function BarbersPage() {
   const qc = useQueryClient();
   const [form, setForm] = useState<BarberForm | null>(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [removing, setRemoving] = useState<{ id: string; name: string } | null>(null);
   const subscription = useQuery({
     queryKey: ["subscription", companyId],
     queryFn: async () => {
@@ -85,7 +86,7 @@ function BarbersPage() {
     queryKey: ["admin", "barbers", companyId],
     queryFn: async () => {
       const [b, s, l, h] = await Promise.all([
-        supabase.from("barbers").select("*").eq("company_id", companyId).order("name"),
+        supabase.from("barbers").select("*").eq("company_id", companyId).is("deleted_at", null).order("name"),
         supabase.from("services").select("id, name, is_active").eq("company_id", companyId).order("name"),
         supabase.from("barber_services").select("barber_id, service_id").eq("company_id", companyId),
         supabase.from("working_hours").select("*"),
@@ -97,6 +98,20 @@ function BarbersPage() {
 
   const capacity = professionalCapacity(subscription.data?.plan, data.data?.barbers.length ?? 0);
   const capacityReady = data.isSuccess && subscription.isSuccess;
+  const remove = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.rpc("remove_professional", { p_barber_id: id });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Profissional removido. Histórico preservado.");
+      setRemoving(null);
+      qc.invalidateQueries({ queryKey: ["admin"] });
+      qc.invalidateQueries({ queryKey: ["public"] });
+      qc.invalidateQueries({ queryKey: ["staff"] });
+    },
+    onError: (e) => toast.error(errorMessage(e)),
+  });
 
   const openEdit = (id?: string) => {
     if (!id) {
@@ -236,12 +251,19 @@ function BarbersPage() {
                 <Button variant="ghost" size="icon" aria-label="Editar" onClick={() => openEdit(b.id)}>
                   <Pencil />
                 </Button>
+                <Button variant="ghost" size="icon" className="shrink-0 text-destructive" aria-label={`Remover ${b.name}`} title="Remover profissional" onClick={() => setRemoving({ id: b.id, name: b.name })}><Trash2 /></Button>
               </li>
             );
           })}
         </ul>
       )}
 
+      <Dialog open={!!removing} onOpenChange={(open) => !open && !remove.isPending && setRemoving(null)}>
+        <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-md">
+          <DialogHeader><DialogTitle>Remover profissional?</DialogTitle><DialogDescription>{removing?.name} será removido da equipe e perderá o acesso ao painel. O histórico de atendimentos e financeiro será preservado. Agendamentos pendentes devem ser resolvidos antes da remoção.</DialogDescription></DialogHeader>
+          <div className="flex justify-end gap-3"><Button variant="outline" disabled={remove.isPending} onClick={() => setRemoving(null)}>Cancelar</Button><Button variant="destructive" disabled={remove.isPending} onClick={() => removing && remove.mutate(removing.id)}>{remove.isPending ? <Loader2 className="animate-spin" /> : <Trash2 />}Remover profissional</Button></div>
+        </DialogContent>
+      </Dialog>
       <Dialog open={upgradeOpen} onOpenChange={setUpgradeOpen}>
         <DialogContent>
           <DialogHeader><DialogTitle>Mais profissionais para sua empresa</DialogTitle></DialogHeader>
