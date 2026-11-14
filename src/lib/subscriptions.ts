@@ -6,6 +6,7 @@ export const COMMERCIAL_PLANS = [
   { value: "business", name: "Vyntra Business", monthlyPriceCents: 11990, professionalLimit: null },
 ] as const;
 export type CommercialPlan = typeof COMMERCIAL_PLANS[number]["value"];
+export const savedCommercialPlan = (value: string | null | undefined): CommercialPlan => COMMERCIAL_PLANS.find((p) => p.value === value)?.value ?? "start";
 export const commercialPlanLabel = (value: string | null | undefined) => COMMERCIAL_PLANS.find((p) => p.value === value)?.name;
 export function professionalCapacity(plan: string | null | undefined, count: number) {
   const current = COMMERCIAL_PLANS.find((p) => p.value === plan);

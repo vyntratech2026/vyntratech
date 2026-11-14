@@ -13,6 +13,7 @@ import { Logo, MediaImage } from "@/components/site/brand";
 import { barberServicesQuery, barbersQuery, productsQuery, servicesQuery, settingsQuery } from "@/lib/public-data";
 import { type BookingProduct } from "@/lib/booking-products";
 import { BookingProductSummary } from "@/components/site/booking-product-summary";
+import { bookingProfessionals } from "@/lib/booking-professionals";
 import {
   addDaysKey,
   bookingWhatsappMessage,
@@ -40,9 +41,9 @@ export const Route = createFileRoute("/$slug/agendar")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "Agendar horário online" },
+      { title: "Agendar horário online — Vyntra Tech" },
       { name: "description", content: "Escolha serviço, profissional, dia e horário em poucos passos." },
-      { property: "og:title", content: "Agendar horário online" },
+      { property: "og:title", content: "Agendar horário online — Vyntra Tech" },
       { property: "og:description", content: "Agende seu horário online em poucos passos." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -69,8 +70,10 @@ function BookingPage() {
   const search = Route.useSearch();
   const { data: settings } = useQuery(settingsQuery(slugCompany.id));
   const { data: services, isLoading: loadingServices } = useQuery(servicesQuery(slugCompany.id));
-  const { data: barbers } = useQuery(barbersQuery(slugCompany.id));
-  const { data: links } = useQuery(barberServicesQuery(slugCompany.id));
+  const professionalsQuery = useQuery(barbersQuery(slugCompany.id));
+  const { data: barbers } = professionalsQuery;
+  const servicesLinksQuery = useQuery(barberServicesQuery(slugCompany.id));
+  const { data: links } = servicesLinksQuery;
   const products = useQuery(productsQuery(slugCompany.id));
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const selectedProducts: BookingProduct[] = (products.data ?? []).filter((p) => p.is_available && (quantities[p.id] ?? 0) > 0).map((p) => ({
@@ -101,8 +104,8 @@ function BookingPage() {
   }, [services, links, search.barbeiro]);
 
   const serviceBarbers = useMemo(
-    () => barbers?.filter((b) => links?.some((l) => l.barber_id === b.id && l.service_id === serviceId)) ?? [],
-    [barbers, links, serviceId],
+    () => bookingProfessionals(barbers),
+    [barbers],
   );
 
   const days = useMemo(() => {
@@ -208,7 +211,6 @@ function BookingPage() {
                     key={s.id}
                     onClick={() => {
                       setServiceId(s.id);
-                      if (barberId && !links?.some((l) => l.barber_id === barberId && l.service_id === s.id)) setBarberId(undefined);
                       setSlot(undefined);
                       setStep(1);
                     }}
@@ -236,8 +238,10 @@ function BookingPage() {
         {step === 1 && (
           <section className="animate-fade-up space-y-5">
             <h1 className="text-2xl font-bold sm:text-3xl">Escolha o profissional</h1>
-            {serviceBarbers.length === 0 ? (
-              <Empty text="Nenhum profissional faz este serviço no momento." />
+            {professionalsQuery.isPending ? <LoadingList /> : professionalsQuery.isError ? (
+              <Button variant="outline" onClick={() => professionalsQuery.refetch()}>Tentar carregar profissionais novamente</Button>
+            ) : serviceBarbers.length === 0 ? (
+              <Empty text="Nenhum profissional ativo disponível no momento." />
             ) : (
               <div className="grid gap-3 sm:grid-cols-2">
                 {serviceBarbers.map((b) => (
@@ -307,7 +311,7 @@ function BookingPage() {
                 ) : slotsQuery.isError ? (
                   <Empty text="Não foi possível carregar os horários. Tente novamente." />
                 ) : !slotsQuery.data?.length ? (
-                  <Empty text={`${barber?.name ?? "O profissional"} não tem horários livres neste dia. Escolha outro dia.`} />
+                  <Empty text={links && !links.some((l) => l.barber_id === barberId && l.service_id === serviceId) ? `${barber?.name ?? "O profissional"} não tem este serviço habilitado. Escolha outro profissional ou serviço.` : `${barber?.name ?? "O profissional"} não tem horários livres neste dia. Escolha outro dia.`} />
                 ) : (
                   <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
                     {slotsQuery.data.map((s) => (

@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { PLATFORM_NAME } from "@/lib/brand";
 import { addDaysKey, formatDate, errorMessage, shopDayStartIso, todayInShop } from "@/lib/format";
-import { COMMERCIAL_PLANS, SUBSCRIPTION_STATUS, commercialPlanLabel, subscriptionState, subscriptionEndDate, type CommercialPlan } from "@/lib/subscriptions";
+import { COMMERCIAL_PLANS, SUBSCRIPTION_STATUS, commercialPlanLabel, subscriptionState, subscriptionEndDate, savedCommercialPlan, type CommercialPlan } from "@/lib/subscriptions";
 import { listPlatformCompanies, changeSubscription } from "@/lib/subscriptions.functions";
 import platformLogo from "@/assets/logo-vyntra-tech.png.asset.json";
 
@@ -47,7 +47,7 @@ function PlatformCompanies() {
       <p className="eyebrow">Administração da plataforma</p><h1 className="mt-3 flex items-center gap-3 text-3xl font-bold"><Building2 className="size-8 text-primary" /> Empresas</h1>
       <div className="mt-8 grid grid-cols-2 gap-4 border-y border-border py-6 sm:grid-cols-4">{Object.entries(SUBSCRIPTION_STATUS).map(([key, label]) => <div key={key}><p className="text-3xl font-bold">{companies.filter((c) => subscriptionState(c.subscription) === key).length}</p><p className="mt-1 text-sm text-muted-foreground">{label}</p></div>)}</div>
       <div className="my-6 flex flex-wrap gap-3"><div className="relative min-w-0 flex-1"><Search className="absolute left-3 top-3 size-4 text-muted-foreground" /><Input aria-label="Buscar empresa" placeholder="Nome, e-mail ou link" className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} /></div><select aria-label="Filtrar por situação" className="h-10 max-w-full rounded-md border border-input bg-background px-3 text-sm" value={filter} onChange={(e) => setFilter(e.target.value)}><option value="all">Todas as situações</option>{Object.entries(SUBSCRIPTION_STATUS).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></div>
-      <div className="space-y-4">{filtered.map((company) => <CompanyRow key={company.id} company={company} onAction={(plan, suspend) => {
+      <div className="space-y-4">{filtered.map((company) => <CompanyRow key={`${company.id}:${company.subscription?.plan ?? "pending"}`} company={company} onAction={(plan, suspend) => {
         const startDate = todayInShop();
         const base = company.subscription?.expires_at && subscriptionState(company.subscription) === "active" ? company.subscription.expires_at : shopDayStartIso(startDate);
         const date = new Date(base);
@@ -77,7 +77,7 @@ function PlatformCompanies() {
 
 type Company = Awaited<ReturnType<typeof listPlatformCompanies>>[number];
 function CompanyRow({ company, onAction }: { company: Company; onAction: (plan: CommercialPlan, suspend: boolean) => void }) {
-  const [plan, setPlan] = useState<CommercialPlan>("start");
+  const [plan, setPlan] = useState<CommercialPlan>(() => savedCommercialPlan(company.subscription?.plan));
   const state = subscriptionState(company.subscription);
   return <article className="surface-card flex flex-col gap-6 p-5 lg:flex-row lg:items-center lg:justify-between">
     <div className="min-w-0"><h2 className="break-words text-lg font-semibold">{company.name}</h2><p className="mt-1 break-all text-sm text-muted-foreground">{company.ownerEmail ?? "E-mail não disponível"}</p><a href={`/${company.slug}`} target="_blank" rel="noreferrer" className="mt-2 inline-flex max-w-full items-center gap-2 text-sm text-primary"><span className="truncate">/{company.slug}</span><ExternalLink className="size-3 shrink-0" /></a></div>

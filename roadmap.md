@@ -23,6 +23,8 @@
 - [x] Clientes (busca, histórico), Avaliações (moderação), Financeiro (pagamentos, comissão, gráfico diário)
 
 ## Próximos
+- [x] Corrigir plano selecionado após salvar e atualizar; Pro e Business salvos e relidos, plano original restaurado
+- [x] Mostrar todos os profissionais ativos na escolha pública e manual; Lucas e Matheus verificados para Corte Social, regras de disponibilidade preservadas
 - [x] Remover profissionais com confirmação, preservando histórico e liberando capacidade; criação e remoção de cadastro temporário verificadas com conta autenticada
 - [x] Escolher início e vencimento da assinatura na liberação de empresas; datas salvas e relidas no painel, formulário móvel verificado
 - [x] Aplicar limites Start/Pro no banco e oferecer upgrade; quarto cadastro bloqueado no Start, edição preservada e oferta Pro verificadas com conta autenticada

@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { COMMERCIAL_PLANS, SUBSCRIPTION_PLANS, SUBSCRIPTION_WHATSAPP, commercialPlanLabel, professionalCapacity, subscriptionState, subscriptionDateRange, subscriptionEndDate } from "./subscriptions";
+import { COMMERCIAL_PLANS, SUBSCRIPTION_PLANS, SUBSCRIPTION_WHATSAPP, commercialPlanLabel, professionalCapacity, subscriptionState, subscriptionDateRange, subscriptionEndDate, savedCommercialPlan } from "./subscriptions";
+describe("Plano salvo", () => {
+  it.each(["start", "pro", "business"])("mantém %s ao recarregar", (plan) => expect(savedCommercialPlan(plan)).toBe(plan));
+});
 describe("Datas escolhidas na liberação", () => {
   it("usa o início escolhido em America/Maceio e inclui todo o dia do vencimento", () => {
     expect(subscriptionDateRange("2026-11-13", "2026-12-13")).toEqual({ starts_at: "2026-11-13T03:00:00.000Z", expires_at: "2026-12-14T03:00:00.000Z" });
