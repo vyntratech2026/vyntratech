@@ -84,7 +84,7 @@ function AdminLayout() {
     queryKey: ["subscription", staff?.companyId], enabled: !!staff?.companyId, refetchInterval: 30000,
     queryFn: async () => {
       if (!staff?.companyId) return null;
-      const { data, error } = await supabase.from("company_subscriptions").select("status, plan, expires_at").eq("company_id", staff.companyId).maybeSingle();
+      const { data, error } = await supabase.from("company_subscriptions").select("status, plan, starts_at, expires_at").eq("company_id", staff.companyId).maybeSingle();
       if (error) throw error;
       return data;
     },
