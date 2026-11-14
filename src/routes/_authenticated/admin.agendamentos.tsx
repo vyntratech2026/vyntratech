@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useStaff } from "@/lib/use-staff";
 import { BookingProductSummary } from "@/components/site/booking-product-summary";
+import { bookingProfessionals } from "@/lib/booking-professionals";
 import {
   addDaysKey,
   errorMessage,
@@ -262,7 +263,7 @@ function ManualBookingDialog({ open, onOpenChange, defaultDay }: { open: boolean
       return { services: s.data ?? [], barbers: b.data ?? [], links: l.data ?? [] };
     },
   });
-  const barbersForService = data.data?.barbers.filter((b) => data.data?.links.some((l) => l.barber_id === b.id && l.service_id === serviceId)) ?? [];
+  const barbersForService = bookingProfessionals(data.data?.barbers);
 
   const slots = useQuery({
     queryKey: ["slots", serviceId, barberId, day, "admin"],
@@ -315,7 +316,7 @@ function ManualBookingDialog({ open, onOpenChange, defaultDay }: { open: boolean
             </NativeSelect>
           </div>
           <div className="space-y-2">
-            <Label>Brofissional</Label>
+            <Label>Profissional</Label>
             <NativeSelect value={barberId} onChange={(e) => { setBarberId(e.target.value); setSlot(""); }} disabled={!serviceId}>
               <option value="">Selecione</option>
               {barbersForService.map((b) => (
