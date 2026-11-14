@@ -23,6 +23,8 @@
 - [x] Clientes (busca, histórico), Avaliações (moderação), Financeiro (pagamentos, comissão, gráfico diário)
 
 ## Próximos
+- [ ] Corrigir plano selecionado após salvar e atualizar a página
+- [ ] Mostrar todos os profissionais ativos na escolha do agendamento, sem ocultar agendas cheias
 - [x] Remover profissionais com confirmação, preservando histórico e liberando capacidade; criação e remoção de cadastro temporário verificadas com conta autenticada
 - [x] Escolher início e vencimento da assinatura na liberação de empresas; datas salvas e relidas no painel, formulário móvel verificado
 - [x] Aplicar limites Start/Pro no banco e oferecer upgrade; quarto cadastro bloqueado no Start, edição preservada e oferta Pro verificadas com conta autenticada
