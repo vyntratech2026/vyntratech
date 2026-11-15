@@ -23,6 +23,8 @@
 - [x] Clientes (busca, histórico), Avaliações (moderação), Financeiro (pagamentos, comissão, gráfico diário)
 
 ## Próximos
+- [x] Cadastrar e publicar pacotes de assinatura de clientes com contratação pelo WhatsApp, sem cobrança automática; cadastro, publicação e remoção temporários verificados
+- [x] Cadastrar promoções de serviços com preço e prazo; valor público e seleção no agendamento verificados, aplicação no banco por gatilho (sem criar atendimento de teste), históricos preservados
 - [x] Corrigir plano selecionado após salvar e atualizar; Pro e Business salvos e relidos, plano original restaurado
 - [x] Mostrar todos os profissionais ativos na escolha pública e manual; Lucas e Matheus verificados para Corte Social, regras de disponibilidade preservadas
 - [x] Remover profissionais com confirmação, preservando histórico e liberando capacidade; criação e remoção de cadastro temporário verificadas com conta autenticada

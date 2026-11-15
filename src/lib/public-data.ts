@@ -1,5 +1,8 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchOffers } from "./offers-data";
+import { promotionalPrice } from "./offers";
+import { todayInShop } from "./format";
 
 export type OpeningHours = Record<string, { open: string; close: string; closed?: boolean } | null>;
 
@@ -48,7 +51,8 @@ export const servicesQuery = (companyId: string) =>
         .eq("is_active", true)
         .order("name");
       if (error) throw error;
-      return data;
+      const offers = await fetchOffers(companyId);
+      return data?.map((s) => ({ ...s, original_price: Number(s.price), price: promotionalPrice(s.id, Number(s.price), offers, todayInShop()) })) ?? [];
     },
   });
 

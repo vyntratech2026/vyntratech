@@ -7,6 +7,7 @@ import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { BrandName, Logo, MediaImage } from "@/components/site/brand";
 import { VideosSection } from "@/components/site/videos-section";
+import { OffersSection } from "@/components/site/offers-section";
 import { GoogleReviewButton } from "@/components/site/google-review-button";
 import { googleReviewUrl } from "@/lib/google-review";
 import {
@@ -136,6 +137,7 @@ function Index() {
       </section>
 
       <VideosSection />
+      <OffersSection />
 
       {/* SERVIÇOS */}
       {!!services?.length && (

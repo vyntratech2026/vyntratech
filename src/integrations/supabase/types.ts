@@ -386,6 +386,69 @@ export type Database = {
           },
         ]
       }
+      customer_offers: {
+        Row: {
+          benefits: string
+          company_id: string
+          created_at: string
+          description: string
+          end_date: string | null
+          id: string
+          is_active: boolean
+          kind: string
+          name: string
+          period_months: number
+          price: number
+          service_id: string | null
+          start_date: string | null
+        }
+        Insert: {
+          benefits?: string
+          company_id?: string
+          created_at?: string
+          description?: string
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          kind: string
+          name: string
+          period_months?: number
+          price: number
+          service_id?: string | null
+          start_date?: string | null
+        }
+        Update: {
+          benefits?: string
+          company_id?: string
+          created_at?: string
+          description?: string
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          kind?: string
+          name?: string
+          period_months?: number
+          price?: number
+          service_id?: string | null
+          start_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_offers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_offers_service_id_company_id_fkey"
+            columns: ["service_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id", "company_id"]
+          },
+        ]
+      }
       customers: {
         Row: {
           company_id: string
@@ -1095,6 +1158,7 @@ export type Database = {
       }
       current_barber_id: { Args: never; Returns: string }
       current_company_id: { Args: never; Returns: string }
+      effective_service_price: { Args: { p_service: string }; Returns: number }
       get_available_slots: {
         Args: { p_barber_id?: string; p_date: string; p_service_id: string }
         Returns: {
