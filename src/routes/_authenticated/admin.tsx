@@ -53,6 +53,7 @@ const ADMIN_NAV: NavItem[] = [
   { to: "/admin/financeiro", label: "Financeiro", icon: Wallet },
   { to: "/admin/barbeiros", label: "Profissionais", icon: Users },
   { to: "/admin/servicos", label: "Serviços", icon: Scissors },
+  { to: "/admin/ofertas", label: "Pacotes e promoções", icon: Package },
   { to: "/admin/produtos", label: "Produtos", icon: Package },
   { to: "/admin/avaliacoes", label: "Avaliações", icon: Star },
   { to: "/admin/notificacoes", label: "Notificações", icon: Bell },
