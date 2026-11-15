@@ -29,14 +29,14 @@ export const settingsQuery = (companyId: string) =>
     queryKey: ["public", "settings", companyId],
     queryFn: async (): Promise<PublicSettings> => {
       const { data, error } = await supabase
-        .from("settings")
+        .from("public_company_settings")
         .select(
           "business_name, tagline, description, logo_url, cover_url, address, phone, whatsapp, instagram, maps_url, google_review_url, opening_hours, max_advance_days, cancellation_min_hours, cancellation_policy",
         )
         .eq("company_id", companyId)
         .single();
       if (error) throw error;
-      return { ...data, opening_hours: (data.opening_hours ?? {}) as OpeningHours };
+      return { ...data, business_name: data.business_name ?? "", max_advance_days: data.max_advance_days ?? 30, cancellation_min_hours: data.cancellation_min_hours ?? 1, opening_hours: (data.opening_hours ?? {}) as OpeningHours };
     },
   });
 

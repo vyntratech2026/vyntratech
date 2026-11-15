@@ -1,5 +1,7 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { getPublishedFileUrls } from "./public-storage.functions";
 
 export const VIDEO_BUCKET = "videos";
 export const VIDEO_MAX_BYTES = 50 * 1024 * 1024;
@@ -23,15 +25,17 @@ export const publicVideosQuery = (companyId: string) =>
 
 /** Videos live in a private bucket; play them through short-lived signed links. */
 export function useVideoUrls(paths: string[]) {
+  const publicUrls = useServerFn(getPublishedFileUrls);
   const clean = [...new Set(paths)].sort();
   return useQuery({
     queryKey: ["video-urls", clean],
     enabled: clean.length > 0,
     staleTime: 50 * 60 * 1000,
     queryFn: async () => {
-      const { data, error } = await supabase.storage.from(VIDEO_BUCKET).createSignedUrls(clean, 3600);
-      if (error) throw error;
-      const map: Record<string, string> = {};
+      const map = await publicUrls({ data: { bucket: VIDEO_BUCKET, paths: clean } });
+      const privatePaths = clean.filter((path) => !map[path]);
+      if (!privatePaths.length) return map;
+      const { data } = await supabase.storage.from(VIDEO_BUCKET).createSignedUrls(privatePaths, 3600);
       data?.forEach((d) => {
         if (d.path && d.signedUrl) map[d.path] = d.signedUrl;
       });
