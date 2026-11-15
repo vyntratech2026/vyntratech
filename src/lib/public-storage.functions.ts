@@ -35,7 +35,7 @@ export const getPublishedFileUrls = createServerFn({ method: "POST" })
     for (const file of signed ?? []) {
       if (file.path && file.signedUrl) {
         const url = new URL(file.signedUrl);
-        const browserOrigin = new URL(import.meta.env.VITE_SUPABASE_URL);
+        const browserOrigin = new URL(import.meta.env["VITE_SUPABASE_URL"]);
         url.protocol = browserOrigin.protocol;
         url.host = browserOrigin.host;
         result[file.path] = url.toString();
