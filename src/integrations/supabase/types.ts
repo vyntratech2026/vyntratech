@@ -98,6 +98,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "appointments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_directory"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "appointments_customer_company_fkey"
             columns: ["customer_id", "company_id"]
             isOneToOne: false
@@ -169,6 +176,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "barber_services_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_directory"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "barber_services_service_company_fkey"
             columns: ["service_id", "company_id"]
             isOneToOne: false
@@ -235,6 +249,13 @@ export type Database = {
             referencedRelation: "companies"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "barbers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_directory"
+            referencedColumns: ["id"]
+          },
         ]
       }
       blocked_times: {
@@ -285,6 +306,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blocked_times_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_directory"
             referencedColumns: ["id"]
           },
         ]
@@ -346,6 +374,13 @@ export type Database = {
             referencedRelation: "companies"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "company_members_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_directory"
+            referencedColumns: ["id"]
+          },
         ]
       }
       company_subscriptions: {
@@ -382,6 +417,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: true
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_subscriptions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "public_company_directory"
             referencedColumns: ["id"]
           },
         ]
@@ -441,6 +483,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "customer_offers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_directory"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "customer_offers_service_id_company_id_fkey"
             columns: ["service_id", "company_id"]
             isOneToOne: false
@@ -482,6 +531,13 @@ export type Database = {
             referencedRelation: "companies"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "customers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_directory"
+            referencedColumns: ["id"]
+          },
         ]
       }
       notification_settings: {
@@ -512,6 +568,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: true
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "public_company_directory"
             referencedColumns: ["id"]
           },
         ]
@@ -596,6 +659,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_directory"
             referencedColumns: ["id"]
           },
           {
@@ -692,6 +762,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_directory"
             referencedColumns: ["id"]
           },
         ]
@@ -802,6 +879,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "reviews_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_directory"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "reviews_customer_company_fkey"
             columns: ["customer_id", "company_id"]
             isOneToOne: false
@@ -857,6 +941,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "services_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_directory"
             referencedColumns: ["id"]
           },
         ]
@@ -948,6 +1039,13 @@ export type Database = {
             referencedRelation: "companies"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "public_company_directory"
+            referencedColumns: ["id"]
+          },
         ]
       }
       site_videos: {
@@ -984,6 +1082,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_videos_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_directory"
             referencedColumns: ["id"]
           },
         ]
@@ -1025,6 +1130,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscription_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_directory"
             referencedColumns: ["id"]
           },
         ]
@@ -1097,11 +1209,122 @@ export type Database = {
             referencedRelation: "companies"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "working_hours_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_directory"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
     Views: {
-      [_ in never]: never
+      public_company_directory: {
+        Row: {
+          id: string | null
+          name: string | null
+          slug: string | null
+        }
+        Insert: {
+          id?: string | null
+          name?: string | null
+          slug?: string | null
+        }
+        Update: {
+          id?: string | null
+          name?: string | null
+          slug?: string | null
+        }
+        Relationships: []
+      }
+      public_company_settings: {
+        Row: {
+          address: string | null
+          brand_background: string | null
+          brand_primary: string | null
+          brand_text: string | null
+          business_name: string | null
+          cancellation_min_hours: number | null
+          cancellation_policy: string | null
+          company_id: string | null
+          cover_url: string | null
+          description: string | null
+          google_review_url: string | null
+          instagram: string | null
+          logo_url: string | null
+          maps_url: string | null
+          max_advance_days: number | null
+          min_advance_minutes: number | null
+          opening_hours: Json | null
+          phone: string | null
+          slot_interval_minutes: number | null
+          tagline: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          address?: string | null
+          brand_background?: string | null
+          brand_primary?: string | null
+          brand_text?: string | null
+          business_name?: string | null
+          cancellation_min_hours?: number | null
+          cancellation_policy?: string | null
+          company_id?: string | null
+          cover_url?: string | null
+          description?: string | null
+          google_review_url?: string | null
+          instagram?: string | null
+          logo_url?: string | null
+          maps_url?: string | null
+          max_advance_days?: number | null
+          min_advance_minutes?: number | null
+          opening_hours?: Json | null
+          phone?: string | null
+          slot_interval_minutes?: number | null
+          tagline?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          address?: string | null
+          brand_background?: string | null
+          brand_primary?: string | null
+          brand_text?: string | null
+          business_name?: string | null
+          cancellation_min_hours?: number | null
+          cancellation_policy?: string | null
+          company_id?: string | null
+          cover_url?: string | null
+          description?: string | null
+          google_review_url?: string | null
+          instagram?: string | null
+          logo_url?: string | null
+          maps_url?: string | null
+          max_advance_days?: number | null
+          min_advance_minutes?: number | null
+          opening_hours?: Json | null
+          phone?: string | null
+          slot_interval_minutes?: number | null
+          tagline?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "public_company_directory"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       admin_create_booking: {
@@ -1177,6 +1400,10 @@ export type Database = {
       is_company_admin: { Args: { _cid: string }; Returns: boolean }
       is_company_member: { Args: { _cid: string }; Returns: boolean }
       is_platform_admin: { Args: never; Returns: boolean }
+      is_published_site_file: {
+        Args: { p_bucket: string; p_path: string }
+        Returns: boolean
+      }
       is_staff: { Args: never; Returns: boolean }
       normalize_phone: { Args: { p: string }; Returns: string }
       remove_professional: { Args: { p_barber_id: string }; Returns: undefined }
