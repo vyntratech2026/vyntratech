@@ -42,14 +42,15 @@ export function useBrand(): Brand {
 
 /** Loads a company's public brand by its link (slug). Null when it does not exist. */
 export async function loadCompanyBySlug(slug: string): Promise<CompanyInfo | null> {
-  const { data: company } = await supabase.from("companies").select("id, slug, name").eq("slug", slug.toLowerCase()).maybeSingle();
+  const { data: company } = await supabase.from("public_company_directory").select("id, slug, name").eq("slug", slug.toLowerCase()).maybeSingle();
   if (!company) return null;
-  return { id: company.id, slug: company.slug, brand: await loadBrand(company.id, company.name) };
+  if (!company.id || !company.slug) return null;
+  return { id: company.id, slug: company.slug, brand: await loadBrand(company.id, company.name ?? "") };
 }
 
 export async function loadBrand(companyId: string, fallbackName = ""): Promise<Brand> {
   const { data } = await supabase
-    .from("settings")
+    .from("public_company_settings")
     .select("business_name, logo_url, brand_primary, brand_background, brand_text")
     .eq("company_id", companyId)
     .maybeSingle();
@@ -57,7 +58,7 @@ export async function loadBrand(companyId: string, fallbackName = ""): Promise<B
   return {
     name: data.business_name?.trim() || fallbackName,
     logoPath: data.logo_url,
-    colors: { primary: data.brand_primary, background: data.brand_background, text: data.brand_text },
+    colors: { primary: data.brand_primary ?? DEFAULT_BRAND.primary, background: data.brand_background ?? DEFAULT_BRAND.background, text: data.brand_text ?? DEFAULT_BRAND.text },
   };
 }
 

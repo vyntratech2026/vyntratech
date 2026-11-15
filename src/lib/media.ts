@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { getPublishedFileUrls } from "./public-storage.functions";
 
 const BUCKET = "media";
 const ALLOWED = ["image/jpeg", "image/png", "image/webp"];
@@ -7,6 +9,7 @@ const MAX_BYTES = 5 * 1024 * 1024;
 
 /** Photos live in a private bucket; the app shows them through short-lived signed links. */
 export function useSignedUrls(paths: (string | null | undefined)[]) {
+  const publicUrls = useServerFn(getPublishedFileUrls);
   const clean = Array.from(new Set(paths.filter((p): p is string => !!p))).sort();
   return useQuery({
     queryKey: ["signed-urls", clean],
@@ -19,8 +22,10 @@ export function useSignedUrls(paths: (string | null | undefined)[]) {
       const map: Record<string, string> = {};
       external.forEach((p) => (map[p] = p));
       if (stored.length) {
-        const { data, error } = await supabase.storage.from(BUCKET).createSignedUrls(stored, 3600);
-        if (error) throw error;
+        Object.assign(map, await publicUrls({ data: { bucket: BUCKET, paths: stored } }));
+        const privatePaths = stored.filter((path) => !map[path]);
+        if (!privatePaths.length) return map;
+        const { data } = await supabase.storage.from(BUCKET).createSignedUrls(privatePaths, 3600);
         data?.forEach((d) => {
           if (d.path && d.signedUrl) map[d.path] = d.signedUrl;
         });
