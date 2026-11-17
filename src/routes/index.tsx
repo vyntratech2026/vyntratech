@@ -3,16 +3,15 @@ import { CalendarCheck, Palette, Users, Wallet, Bell, Link2 } from "lucide-react
 import { Button } from "@/components/ui/button";
 import { PLATFORM_NAME } from "@/lib/brand";
 import platformLogo from "@/assets/logo-vyntra-tech.png.asset.json";
-import { SUBSCRIPTION_WHATSAPP } from "@/lib/subscriptions";
 import { SubscriptionPlans } from "@/components/subscription-plans";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: `${PLATFORM_NAME} — Agenda online e painel para o seu negócio` },
-      { name: "description", content: "Conheça os planos Vyntra Start, Pro e Business a partir de R$ 39,90 por mês. Agenda, equipe e financeiro com assinatura pelo WhatsApp." },
+      { name: "description", content: "Teste grátis por 7 dias. Planos Vyntra Start, Pro e Business a partir de R$ 29,90 por mês, com agenda, equipe e financeiro." },
       { property: "og:title", content: `${PLATFORM_NAME} — Agenda online para o seu negócio` },
-      { property: "og:description", content: "Vyntra Start, Pro e Business: planos a partir de R$ 39,90 por mês, com todas as funcionalidades. Assine pelo WhatsApp." },
+      { property: "og:description", content: "Teste grátis por 7 dias. Vyntra Start, Pro e Business a partir de R$ 29,90 por mês, com todas as funcionalidades." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -47,10 +46,10 @@ function Landing() {
             Sua agenda online <span className="text-primary text-glow">pronta em minutos</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            Barbearia, salão, estética, manicure, tatuagem ou consultório: cadastre sua empresa e escolha sua assinatura pelo WhatsApp.
+            Barbearia, salão, estética, manicure, tatuagem ou consultório: teste grátis por 7 dias. Sem cobrança automática.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
-            <Button asChild size="xl" variant="hero"><a href={SUBSCRIPTION_WHATSAPP} target="_blank" rel="noreferrer">Assinar pelo WhatsApp</a></Button>
+            <Button asChild size="xl" variant="hero"><Link to="/auth" search={{ modo: "cadastro" }}>Testar grátis por 7 dias</Link></Button>
             <Button asChild size="xl" variant="outline"><Link to="/auth">Já tenho conta</Link></Button>
           </div>
         </div>

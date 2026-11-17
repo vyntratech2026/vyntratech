@@ -136,7 +136,7 @@ function AuthPage() {
 
   const title = isSetup ? "Criar conta" : mode === "forgot" ? "Recuperar senha" : "Entrar";
   const subtitle = isSetup
-    ? "Cadastre sua empresa. O acesso será liberado após contratar sua assinatura."
+    ? "Cadastre sua empresa e teste grátis por 7 dias. Sem cobrança automática."
     : mode === "forgot"
       ? "Enviaremos um link para você criar uma senha nova."
       : "Entre com seu e-mail e senha.";

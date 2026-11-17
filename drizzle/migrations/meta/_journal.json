@@ -120,6 +120,13 @@
       "when": 1794785914381,
       "tag": "0016_selected_public_read_and_storage_security",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1794885488344,
+      "tag": "0017_new_company_seven_day_trial",
+      "breakpoints": true
     }
   ]
 }
