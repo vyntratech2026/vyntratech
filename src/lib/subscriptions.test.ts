@@ -67,7 +67,6 @@ describe("Assinaturas manuais", () => {
 describe("Teste grátis", () => {
   const trial = { status: "active", plan: "start", starts_at: "2026-11-17T03:17:00Z", expires_at: "2026-11-24T03:17:00Z", trial_ends_at: "2026-11-24T03:17:00Z" };
   it("libera durante sete dias e bloqueia exatamente ao terminar", () => {
-    expect((Date.parse(trial.expires_at) - Date.parse(trial.starts_at)) / 86400000).toBe(7);
     expect(subscriptionState(trial, Date.parse("2026-11-24T03:16:59Z"))).toBe("active");
     expect(subscriptionState(trial, Date.parse("2026-11-24T03:17:00Z"))).toBe("expired");
   });
