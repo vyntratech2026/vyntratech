@@ -10,7 +10,7 @@ export const listPlatformCompanies = createServerFn({ method: "POST" })
     if (error || !allowed) throw new Error("Acesso exclusivo do administrador da plataforma.");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: companies, error: readError } = await supabaseAdmin.from("companies")
-      .select("id, name, slug, created_by, created_at, company_subscriptions(status, plan, starts_at, expires_at), company_members(user_id, role)")
+      .select("id, name, slug, created_by, created_at, company_subscriptions(status, plan, starts_at, expires_at, trial_ends_at), company_members(user_id, role)")
       .order("created_at", { ascending: false });
     if (readError) throw readError;
     return Promise.all((companies ?? []).map(async (company) => {

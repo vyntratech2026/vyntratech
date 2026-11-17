@@ -1,7 +1,7 @@
 export const SUBSCRIPTION_WHATSAPP = "https://wa.me/message/FX6QFQ52JMXBB1";
 // Commercial tiers are distinct from the manual access durations below.
 export const COMMERCIAL_PLANS = [
-  { value: "start", name: "Vyntra Start", monthlyPriceCents: 3990, professionalLimit: 3 },
+  { value: "start", name: "Vyntra Start", monthlyPriceCents: 2990, professionalLimit: 3 },
   { value: "pro", name: "Vyntra Pro", monthlyPriceCents: 6990, professionalLimit: 6 },
   { value: "business", name: "Vyntra Business", monthlyPriceCents: 11990, professionalLimit: null },
 ] as const;
@@ -46,7 +46,10 @@ export function subscriptionDateRange(start: string, end: string) {
   return { starts_at: shopDayStartIso(start), expires_at: shopDayStartIso(addDaysKey(end, 1)) };
 }
 export const subscriptionEndDate = (expiresAt: string) => toShopDateKey(new Date(Date.parse(expiresAt) - 1));
-export type Subscription = { status: string; plan: string | null; starts_at?: string | null; expires_at: string | null };
+export type Subscription = { status: string; plan: string | null; starts_at?: string | null; expires_at: string | null; trial_ends_at?: string | null };
+export function isTrialSubscription(value: Subscription | null | undefined) {
+  return !!value?.trial_ends_at && !!value.expires_at && Date.parse(value.trial_ends_at) === Date.parse(value.expires_at);
+}
 export function subscriptionState(value: Subscription | null | undefined, now = Date.now()) {
   if (!value || value.status === "pending") return "pending";
   if (value.status === "suspended") return "suspended";

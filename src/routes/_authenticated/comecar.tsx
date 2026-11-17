@@ -64,7 +64,7 @@ function StartPage() {
       if (error) throw error;
     },
     onSuccess: async () => {
-      toast.success("Empresa cadastrada! Solicite a liberação da sua assinatura.");
+      toast.success("Empresa cadastrada! Seu teste grátis de 7 dias começou.");
       await qc.invalidateQueries({ queryKey: ["staff"] });
       navigate({ to: "/admin", replace: true });
     },
@@ -90,7 +90,7 @@ function StartPage() {
           <Store className="mx-auto size-10 text-primary" />
           <h1 className="mt-4 text-center text-xl font-bold">Cadastre sua empresa</h1>
           <p className="mt-1 text-center text-sm text-muted-foreground">
-            Seu acesso será liberado após contratar sua assinatura pelo WhatsApp.
+            Comece seu teste grátis de 7 dias no plano Start, com até 3 profissionais. Depois, assine pelo WhatsApp.
           </p>
           <form
             className="mt-6 space-y-5"

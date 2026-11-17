@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { COMMERCIAL_PLANS, SUBSCRIPTION_PLANS, SUBSCRIPTION_WHATSAPP, commercialPlanLabel, professionalCapacity, subscriptionState, subscriptionDateRange, subscriptionEndDate, savedCommercialPlan } from "./subscriptions";
+import { COMMERCIAL_PLANS, SUBSCRIPTION_PLANS, SUBSCRIPTION_WHATSAPP, commercialPlanLabel, professionalCapacity, subscriptionState, subscriptionDateRange, subscriptionEndDate, savedCommercialPlan, isTrialSubscription } from "./subscriptions";
 describe("Plano salvo", () => {
   it.each(["start", "pro", "business"])("mantém %s ao recarregar", (plan) => expect(savedCommercialPlan(plan)).toBe(plan));
 });
@@ -40,7 +40,7 @@ describe("Limites de cadastro de profissionais", () => {
   });
 });
 describe("Planos comerciais", () => {
-  it.each([["start", 3990], ["pro", 6990], ["business", 11990]])("preço mensal de %s é %s centavos", (tier, price) => {
+  it.each([["start", 2990], ["pro", 6990], ["business", 11990]])("preço mensal de %s é %s centavos", (tier, price) => {
     expect(COMMERCIAL_PLANS.find((plan) => plan.value === tier)?.monthlyPriceCents).toBe(price);
   });
   it.each([["start", 3], ["pro", 6], ["business", null]])("capacidade de %s é %s", (tier, limit) => {
@@ -63,4 +63,17 @@ describe("Assinaturas manuais", () => {
   it("novo cadastro aguarda liberação", () => expect(subscriptionState(null)).toBe("pending"));
   it("suspensão bloqueia até assinatura definitiva", () => expect(subscriptionState({status:"suspended",plan:"lifetime",expires_at:null})).toBe("suspended"));
   it("assinar leva ao WhatsApp informado", () => expect(SUBSCRIPTION_WHATSAPP).toBe("https://wa.me/message/FX6QFQ52JMXBB1"));
+});
+describe("Teste grátis", () => {
+  const trial = { status: "active", plan: "start", starts_at: "2026-11-17T03:17:00Z", expires_at: "2026-11-24T03:17:00Z", trial_ends_at: "2026-11-24T03:17:00Z" };
+  it("libera durante sete dias e bloqueia exatamente ao terminar", () => {
+    expect((Date.parse(trial.expires_at) - Date.parse(trial.starts_at)) / 86400000).toBe(7);
+    expect(subscriptionState(trial, Date.parse("2026-11-24T03:16:59Z"))).toBe("active");
+    expect(subscriptionState(trial, Date.parse("2026-11-24T03:17:00Z"))).toBe("expired");
+  });
+  it("distingue o teste de uma liberação manual posterior", () => {
+    expect(isTrialSubscription(trial)).toBe(true);
+    expect(isTrialSubscription({ ...trial, expires_at: "2026-12-25T03:00:00Z" })).toBe(false);
+    expect(isTrialSubscription({ ...trial, trial_ends_at: null })).toBe(false);
+  });
 });

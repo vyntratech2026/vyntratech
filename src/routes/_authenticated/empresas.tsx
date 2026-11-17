@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { PLATFORM_NAME } from "@/lib/brand";
 import { addDaysKey, formatDate, errorMessage, shopDayStartIso, todayInShop } from "@/lib/format";
-import { COMMERCIAL_PLANS, SUBSCRIPTION_STATUS, commercialPlanLabel, subscriptionState, subscriptionEndDate, savedCommercialPlan, type CommercialPlan } from "@/lib/subscriptions";
+import { COMMERCIAL_PLANS, SUBSCRIPTION_STATUS, commercialPlanLabel, subscriptionState, subscriptionEndDate, savedCommercialPlan, isTrialSubscription, type CommercialPlan } from "@/lib/subscriptions";
 import { listPlatformCompanies, changeSubscription } from "@/lib/subscriptions.functions";
 import platformLogo from "@/assets/logo-vyntra-tech.png.asset.json";
 
@@ -80,6 +80,7 @@ function CompanyRow({ company, onAction }: { company: Company; onAction: (plan: 
   const [plan, setPlan] = useState<CommercialPlan>(() => savedCommercialPlan(company.subscription?.plan));
   const state = subscriptionState(company.subscription);
   return <article className="surface-card flex flex-col gap-6 p-5 lg:flex-row lg:items-center lg:justify-between">
+    {isTrialSubscription(company.subscription) && <p className="text-sm font-semibold text-primary">{state === "active" ? "Teste grátis · 7 dias" : "Teste grátis encerrado"}</p>}
     <div className="min-w-0"><h2 className="break-words text-lg font-semibold">{company.name}</h2><p className="mt-1 break-all text-sm text-muted-foreground">{company.ownerEmail ?? "E-mail não disponível"}</p><a href={`/${company.slug}`} target="_blank" rel="noreferrer" className="mt-2 inline-flex max-w-full items-center gap-2 text-sm text-primary"><span className="truncate">/{company.slug}</span><ExternalLink className="size-3 shrink-0" /></a></div>
     <div className="shrink-0 text-sm"><p className={state === "active" ? "font-semibold text-primary" : "font-semibold text-muted-foreground"}>{SUBSCRIPTION_STATUS[state]}</p><p className="mt-1 text-muted-foreground">{commercialPlanLabel(company.subscription?.plan) ?? "Sem assinatura"}</p>{company.subscription?.starts_at && <p className="mt-1 text-muted-foreground">Início em {formatDate(company.subscription.starts_at)}</p>}<p className="mt-1 text-muted-foreground">{company.subscription?.expires_at ? `Vence em ${formatDate(shopDayStartIso(subscriptionEndDate(company.subscription.expires_at)))}` : company.subscription?.plan === "lifetime" ? "Sem vencimento" : "—"}</p></div>
     <div className="flex flex-wrap items-center gap-2"><select aria-label={`Plano para ${company.name}`} className="h-10 rounded-md border border-input bg-background px-3 text-sm" value={plan} onChange={(e) => setPlan(e.target.value as CommercialPlan)}>{COMMERCIAL_PLANS.map((p) => <option key={p.value} value={p.value}>{p.name}</option>)}</select><Button onClick={() => onAction(plan, false)}>{state === "active" ? "Renovar" : "Liberar"}</Button>{state !== "suspended" && <Button variant="outline" onClick={() => onAction(plan, true)}>Suspender</Button>}</div>
