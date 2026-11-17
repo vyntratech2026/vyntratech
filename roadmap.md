@@ -23,6 +23,7 @@
 - [x] Clientes (busca, histórico), Avaliações (moderação), Financeiro (pagamentos, comissão, gráfico diário)
 
 ## Próximos
+- [ ] Liberar teste grátis de 7 dias para novas empresas e atualizar Start para R$ 29,90/mês; preservar assinaturas existentes
 - [x] Cadastrar e publicar pacotes de assinatura de clientes com contratação pelo WhatsApp, sem cobrança automática; cadastro, publicação e remoção temporários verificados
 - [x] Cadastrar promoções de serviços com preço e prazo; valor público e seleção no agendamento verificados, aplicação no banco por gatilho (sem criar atendimento de teste), históricos preservados
 - [x] Corrigir plano selecionado após salvar e atualizar; Pro e Business salvos e relidos, plano original restaurado
