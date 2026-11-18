@@ -208,7 +208,7 @@
   .landing-heading { font-size: 26px; }
   .landing-hero h1 { font-size: 36px; }
   .landing-hero-copy { padding-top: 32px; }
-  .landing-hero-image { width: 115%; max-width: none; margin: 15px 0 0 -7.5%; }
+  .landing-hero-image { width: 100%; max-width: none; margin: 15px 0 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .landing-page *, .landing-page *::before, .landing-page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
