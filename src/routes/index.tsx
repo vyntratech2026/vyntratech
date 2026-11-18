@@ -53,7 +53,7 @@ function Landing() {
           </div>
           <figure className="mx-auto mt-3 max-w-6xl">
             <img src={dashboardDevices.url} alt="Dashboard real da Vyntra Tech em um MacBook e um iPhone lado a lado, com agenda, indicadores e financeiro; dados privados ocultos." width="1480" height="865" fetchPriority="high" className="landing-hero-image" />
-            <figcaption className="mb-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 px-4 text-[11px] text-muted-foreground"><span className="flex items-center gap-1.5"><MonitorSmartphone className="size-3.5" /> No computador e no celular</span><span className="flex items-center gap-1.5"><Check className="size-3.5 text-primary-glow" /> Sem instalar aplicativo</span><span>Captura real · dados privados ocultos</span></figcaption>
+            <figcaption className="mb-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 px-4 text-[11px] text-muted-foreground"><span className="flex items-center gap-1.5"><MonitorSmartphone className="size-3.5" /> No computador e no celular</span><span className="flex items-center gap-1.5"><Check className="size-3.5 text-primary-glow" /> </span><span>{"\n"}</span></figcaption>
           </figure>
         </section>
         <LandingFeatures />
