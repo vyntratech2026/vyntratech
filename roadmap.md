@@ -23,6 +23,7 @@
 - [x] Clientes (busca, histórico), Avaliações (moderação), Financeiro (pagamentos, comissão, gráfico diário)
 
 ## Próximos
+- [x] Renovar página inicial com recursos, FAQ e capturas reais do dashboard em mockups MacBook e iPhone; dados privados ocultos, imagem, FAQ, cadastro e telas desktop/celular verificados
 - [x] Liberar teste grátis de 7 dias para novas empresas e atualizar Start para R$ 29,90/mês; prazo real e leitura autenticada verificados, cadastro temporário removido e assinaturas existentes preservadas
 - [x] Cadastrar e publicar pacotes de assinatura de clientes com contratação pelo WhatsApp, sem cobrança automática; cadastro, publicação e remoção temporários verificados
 - [x] Cadastrar promoções de serviços com preço e prazo; valor público e seleção no agendamento verificados, aplicação no banco por gatilho (sem criar atendimento de teste), históricos preservados

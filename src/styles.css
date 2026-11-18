@@ -184,3 +184,32 @@
     color: var(--primary-foreground);
   }
 }
+
+/* Platform landing: editorial spacing and product-first device photography. */
+.landing-container { width: 100%; max-width: 1200px; margin-inline: auto; padding-inline: 24px; }
+.landing-section { padding-block: 80px; scroll-margin-top: 84px; }
+.landing-label { font-size: 11px; font-weight: 700; letter-spacing: 0; color: var(--primary-glow); }
+.landing-heading { font-size: 32px; line-height: 1.3; letter-spacing: 0; font-weight: 600; }
+.landing-hero { position: relative; isolation: isolate; overflow: hidden; }
+.landing-hero h1 { font-size: 56px; line-height: 1.15; letter-spacing: 0; }
+.landing-hero-image { display: block; width: 100%; max-width: 1120px; height: auto; margin: -10px auto 0; }
+.landing-hero-copy { position: relative; z-index: 1; padding-top: 48px; }
+.landing-page h1, .landing-page h2, .landing-page h3 { letter-spacing: 0; }
+.landing-page [class*="tracking-"] { letter-spacing: 0; }
+.landing-page { --radius: 0.5rem; }
+@media (min-width: 1024px) {
+  .landing-heading { font-size: 36px; }
+  .landing-hero-copy { padding-top: 60px; }
+  .landing-hero-image { margin-top: -35px; }
+}
+@media (max-width: 639px) {
+  .landing-container { padding-inline: 20px; }
+  .landing-section { padding-block: 56px; }
+  .landing-heading { font-size: 26px; }
+  .landing-hero h1 { font-size: 36px; }
+  .landing-hero-copy { padding-top: 32px; }
+  .landing-hero-image { width: 115%; max-width: none; margin: 15px 0 0 -7.5%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-page *, .landing-page *::before, .landing-page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

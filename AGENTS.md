@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 ## Project rules
+- Landing device previews use sanitized real dashboard screenshots in CDN assets, never public tenant metrics or customer names; page-only sections stay in landing-content to avoid coupling marketing to private reads.
 - Booking availability and conflict rules live in Postgres (`barber_slot_ok`, `get_available_slots`, `create_booking`, exclusion constraint on `appointments`); never re-implement them only in the client — the DB is the source of truth against double booking.
 - Public visitors never read private tables directly: booking, cancel and review go through SECURITY DEFINER RPCs keyed by the appointment `manage_token`.
 - Anon access to public tables uses column-level GRANTs; always select explicit columns on public pages (no `select("*")`).
