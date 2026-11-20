@@ -1393,6 +1393,10 @@ export type Database = {
         }[]
       }
       get_booking: { Args: { p_token: string }; Returns: Json }
+      grant_company_trial: {
+        Args: { p_company_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

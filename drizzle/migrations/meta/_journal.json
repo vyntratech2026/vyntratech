@@ -127,6 +127,13 @@
       "when": 1794885488344,
       "tag": "0017_new_company_seven_day_trial",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1795188306609,
+      "tag": "0018_platform_admin_grant_trial",
+      "breakpoints": true
     }
   ]
 }

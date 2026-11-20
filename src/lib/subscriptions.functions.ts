@@ -39,3 +39,12 @@ export const changeSubscription = createServerFn({ method: "POST" })
     if (error) throw error;
     return { ok: true };
   });
+
+export const grantCompanyTrial = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ companyId: z.string().uuid() }).parse(input))
+  .handler(async ({ context, data }) => {
+    const { error } = await context.supabase.rpc("grant_company_trial", { p_company_id: data.companyId });
+    if (error) throw error;
+    return { ok: true };
+  });
