@@ -1,7 +1,7 @@
 export const SUBSCRIPTION_WHATSAPP = "https://wa.me/message/FX6QFQ52JMXBB1";
 // Commercial tiers are distinct from the manual access durations below.
 export const COMMERCIAL_PLANS = [
-  { value: "start", name: "Vyntra Start", monthlyPriceCents: 2990, professionalLimit: 3 },
+  { value: "start", name: "Vyntra Start", monthlyPriceCents: 3990, professionalLimit: 3 },
   { value: "pro", name: "Vyntra Pro", monthlyPriceCents: 6990, professionalLimit: 6 },
   { value: "business", name: "Vyntra Business", monthlyPriceCents: 11990, professionalLimit: null },
 ] as const;

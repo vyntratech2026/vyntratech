@@ -40,7 +40,7 @@ describe("Limites de cadastro de profissionais", () => {
   });
 });
 describe("Planos comerciais", () => {
-  it.each([["start", 2990], ["pro", 6990], ["business", 11990]])("preço mensal de %s é %s centavos", (tier, price) => {
+  it.each([["start", 3990], ["pro", 6990], ["business", 11990]])("preço mensal de %s é %s centavos", (tier, price) => {
     expect(COMMERCIAL_PLANS.find((plan) => plan.value === tier)?.monthlyPriceCents).toBe(price);
   });
   it.each([["start", 3], ["pro", 6], ["business", null]])("capacidade de %s é %s", (tier, limit) => {

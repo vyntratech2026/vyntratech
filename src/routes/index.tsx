@@ -12,7 +12,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: `${PLATFORM_NAME} — Site de agendamento e gestão do seu negócio` },
-      { name: "description", content: "Conheça a Vyntra Tech: agenda online, financeiro, profissionais, produtos e site personalizado. Teste grátis por 7 dias. Planos a partir de R$ 29,90/mês." },
+      { name: "description", content: "Conheça a Vyntra Tech: agenda online, financeiro, profissionais, produtos e site personalizado. Teste grátis por 7 dias. Planos a partir de R$ 39,90/mês." },
       { property: "og:title", content: `${PLATFORM_NAME} — Seu negócio conectado, sua gestão no controle` },
       { property: "og:description", content: "Conheça o painel no computador e no celular. Agenda, equipe, financeiro e site próprio, com teste grátis por 7 dias e sem cobrança automática." },
       { property: "og:type", content: "website" },
