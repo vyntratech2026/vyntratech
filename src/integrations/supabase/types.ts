@@ -507,24 +507,42 @@ export type Database = {
           created_at: string
           full_name: string
           id: string
+          is_subscriber: boolean
           notes: string | null
           phone: string
+          subscription_ends_at: string | null
+          subscription_months: number | null
+          subscription_offer_id: string | null
+          subscription_package_name: string | null
+          subscription_started_at: string | null
         }
         Insert: {
           company_id?: string
           created_at?: string
           full_name: string
           id?: string
+          is_subscriber?: boolean
           notes?: string | null
           phone: string
+          subscription_ends_at?: string | null
+          subscription_months?: number | null
+          subscription_offer_id?: string | null
+          subscription_package_name?: string | null
+          subscription_started_at?: string | null
         }
         Update: {
           company_id?: string
           created_at?: string
           full_name?: string
           id?: string
+          is_subscriber?: boolean
           notes?: string | null
           phone?: string
+          subscription_ends_at?: string | null
+          subscription_months?: number | null
+          subscription_offer_id?: string | null
+          subscription_package_name?: string | null
+          subscription_started_at?: string | null
         }
         Relationships: [
           {
@@ -540,6 +558,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_company_directory"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customers_subscription_offer_company_fkey"
+            columns: ["subscription_offer_id", "company_id"]
+            isOneToOne: false
+            referencedRelation: "customer_offers"
+            referencedColumns: ["id", "company_id"]
           },
         ]
       }

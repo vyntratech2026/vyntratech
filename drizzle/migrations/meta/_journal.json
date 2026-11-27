@@ -141,6 +141,13 @@
       "when": 1795188306610,
       "tag": "0019_security_hardening",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1795812421170,
+      "tag": "0020_customer_subscriptions",
+      "breakpoints": true
     }
   ]
 }
